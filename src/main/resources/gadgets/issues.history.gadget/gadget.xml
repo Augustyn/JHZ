@@ -15,6 +15,8 @@
             </Param>
         </Optional>
         <Require feature="setprefs"/>
+        <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/gadgets.issues.history.gadget/i18n/ALL_ALL.xml"/>
+        <Locale lang="pl" country="PL" messages="__ATLASSIAN_BASE_URL__/download/resources/gadgets.issues.history.gadget/i18n/pl_PL.xml"/>
         #supportedLocales("${MODULE_KEY}")
     </ModulePrefs>
     <UserPref name="isConfigured" datatype="hidden" default_value="false"/>
