@@ -2,3 +2,4 @@
 - PIP-45 Dodano moduły REST i gadget to szkieletu aplikacji.
 - PIP-45 Dodano brakujące pliki lokalizacji.
 - PIP-45 Poprawiono pliki lokalizacji.
+- Fix pom.xml, teraz projekt się uruchamia
