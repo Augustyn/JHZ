@@ -1,4 +1,4 @@
 <messagebundle>
-    <msg name="gadget.title">Jira Historia zgłoszeń</msg>
-    <msg name="gadget.description">Gadżet wyświetlający historię zgłoszeń dla wybranych projektów.</msg>
+    <msg name="issues.history.gadget.title">Jira Historia zgłoszeń</msg>
+    <msg name="issues.history.gadget.description">Gadżet wyświetlający historię zgłoszeń dla wybranych projektów.</msg>
 </messagebundle>

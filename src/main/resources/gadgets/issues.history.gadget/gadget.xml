@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    <ModulePrefs title="__MSG_gadget.title__"
+    <ModulePrefs title="__MSG_issues.history.gadget.title__"
                  title_url=""
-                 directory_title="__MSG_gadget.title__"
-                 description="__MSG_gadget.description__"
+                 directory_title="__MSG_issues.history.gadget.title__"
+                 description="__MSG_issues.history.gadget.description__"
                  author=""
                  author_email=""
                  screenshot='http://www.google.com/gadgets/directory/2661487601-no_preview.gif'
