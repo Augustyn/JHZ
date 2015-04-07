@@ -9,10 +9,10 @@
         <param name="plugin-logo">images/pluginLogo.png</param>
     </plugin-info>
     <!-- add our i18n resource -->
-    <resource type="download" name="i18n/ALL_ALL.xml" location="gadgets/issues.history.gadget/i18n/ALL_ALL.xml">
+    <resource type="download" name="i18n/ALL_ALL.xml" location="gadgets/issues-history-gadget/i18n/ALL_ALL.xml">
         <param name="content-type" value="text/xml; charset=UTF-8"/>
     </resource>
-    <resource type="download" name="i18n/pl_PL.xml" location="gadgets/issues.history.gadget/i18n/pl_PL.xml">
+    <resource type="download" name="i18n/pl_PL.xml" location="gadgets/issues-history-gadget/i18n/pl_PL.xml">
         <param name="content-type" value="text/xml; charset=UTF-8"/>
     </resource>
     <!-- add our web resources -->

@@ -4,3 +4,4 @@
 - PIP-45 Poprawiono pliki lokalizacji.
 - Fix pom.xml, teraz projekt się uruchamia
 - PIP-46 Poprawiono pliki lokalizacji oraz gadget.xml
+- PIP-46 Refactoring nazwy katalogu
