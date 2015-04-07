@@ -1,4 +1,4 @@
 <messagebundle>
-    <msg name="gadget.title">Test JIRA Tutorial Gadget</msg>
-    <msg name="gadget.description">A sample gadget to install into JIRA.</msg>
+    <msg name="gadget.title">Jira Historia zgłoszeń</msg>
+    <msg name="gadget.description">Gadżet wyświetlający historię zgłoszeń dla wybranych projektów.</msg>
 </messagebundle>

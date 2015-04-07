@@ -9,10 +9,10 @@
         <param name="plugin-logo">images/pluginLogo.png</param>
     </plugin-info>
     <!-- add our i18n resource -->
-    <resource type="download" name="i18n/ALL_ALL.xml" location="i18n/ALL_ALL.xml">
+    <resource type="download" name="i18n/ALL_ALL.xml" location="gadgets/issues.history.gadget/i18n/ALL_ALL.xml">
         <param name="content-type" value="text/xml; charset=UTF-8"/>
     </resource>
-    <resource type="download" name="i18n/pl_PL.xml" location="i18n/pl_PL.xml">
+    <resource type="download" name="i18n/pl_PL.xml" location="gadgets/issues.history.gadget/i18n/pl_PL.xml">
         <param name="content-type" value="text/xml; charset=UTF-8"/>
     </resource>
     <!-- add our web resources -->
@@ -35,8 +35,8 @@
           path="/issueshistoryresource" version="1.0">
         <description key="issues-history-resource.description">The Issues History Resource Plugin</description>
     </rest>
-    <gadget name="issues-history-gadget" i18n-name-key="issues-history-gadget.name" key="issues-history-gadget"
-            location="gadgets/issues-history-gadget/gadget.xml">
+    <gadget name="issues-history-gadget" i18n-name-key="gadget.name" key="issues-history-gadget"
+            location="gadgets/issues.history.gadget/gadget.xml">
         <description key="issues-history-gadget.description">The issues-history-gadget Plugin</description>
     </gadget>
 </atlassian-plugin>
