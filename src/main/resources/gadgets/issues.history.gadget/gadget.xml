@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    <ModulePrefs title="__MSG_issues-history-gadget.name__"
+    <ModulePrefs title="__MSG_issues.history.gadget.title__"
                  title_url=""
-                 directory_title="__MSG_issues-history-gadget.name__"
-                 description="__MSG_issues-history-gadget.description__"
+                 directory_title="__MSG_issues.history.gadget.title__"
+                 description="__MSG_issues.history.gadget.description__"
                  author=""
                  author_email=""
                  screenshot='http://www.google.com/gadgets/directory/2661487601-no_preview.gif'
@@ -15,9 +15,8 @@
             </Param>
         </Optional>
         <Require feature="setprefs"/>
-        <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/gadgets.issues.history.gadget/i18n/ALL_ALL.xml"/>
-        <Locale lang="pl" country="PL" messages="__ATLASSIAN_BASE_URL__/download/resources/gadgets.issues.history.gadget/i18n/pl_PL.xml"/>
-        #supportedLocales("${MODULE_KEY}")
+        <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/ALL_ALL.xml"/>
+        <Locale lang="pl" country="PL" messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/pl_PL.xml"/>
     </ModulePrefs>
     <UserPref name="isConfigured" datatype="hidden" default_value="false"/>
     <Content type="html" view="profile">
