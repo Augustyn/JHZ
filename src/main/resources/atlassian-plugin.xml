@@ -36,7 +36,7 @@
         <description key="issues-history-resource.description">The Issues History Resource Plugin</description>
     </rest>
     <gadget name="issues-history-gadget" i18n-name-key="gadget.name" key="issues-history-gadget"
-            location="gadgets/issues.history.gadget/gadget.xml">
+            location="gadgets/issues-history-gadget/gadget.xml">
         <description key="issues-history-gadget.description">The issues-history-gadget Plugin</description>
     </gadget>
 </atlassian-plugin>
