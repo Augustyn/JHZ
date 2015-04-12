@@ -21,7 +21,6 @@
         #oauth
         <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/ALL_ALL.xml"/>
         <Locale lang="pl" country="PL" messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/pl_PL.xml"/>
-
     </ModulePrefs>
 
 
@@ -38,7 +37,6 @@
 
         <![CDATA[
 
-            #requireResource("com.atlassian.jira.gadgets:common")
             #requireResource("com.atlassian.gadgets.publisher:ajs-gadgets")
             #includeResources()
 
@@ -51,55 +49,54 @@
                         config: {
                             descriptor : function (args){
                                 var gadget = this;
-
                                 return{
                                     theme: "long-label",
                                     fields: [
                                         {
                                             userpref: "Project",
                                             class: "numField",
-                                            label: gadget.getMsg("Projects"),
-                                            description: gadget.getMsg("Field is required"),
+                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.project.label__"),
+                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.project.description__"),
                                             type: "text"
                                         },
                                         {
                                             userpref: "Issues",
                                             class: "numField",
-                                            label: gadget.getMsg("Select Issues"),
-                                            description: gadget.getMsg("Field is required"),
+                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.issue.label__"),
+                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.issue.description__"),
                                             type: "text"
                                         },
                                         {
                                             userpref: "Period",
-                                            label: gadget.getMsg("Period"),
-                                            description:gadget.getMsg("Field is required"),
+                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.period.label__"),
+                                            description:gadget.getMsg("__MSG_issues.history.gadget.field.period.description__"),
                                             type: "select",
                                             options:[
                                                 {
-                                                    label:gadget.getMsg("Hourly")
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Hourly__")
                                                 },
                                                 {
-                                                    label:gadget.getMsg("Daily")
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Daily__")
                                                 },
                                                 {
-                                                    label:gadget.getMsg("Weekly")
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Weekly__")
                                                 },
                                                 {
-                                                    label:gadget.getMsg("Monthly")
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Monthly__")
                                                 },
                                                 {
-                                                    label:gadget.getMsg("Quarterly")
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Quarterly__")
                                                 },
                                                 {
-                                                    label:gadget.getMsg("Yearly")
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Yearly__")
                                                 }
                                             ]
                                         },
                                         {
                                             userpref: "Previously",
                                             class: "numField",
-                                            label: gadget.getMsg("Days Previously"),
-                                            description: gadget.getMsg("Field is not required"),
+                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.previously.label__"),
+                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.previously.description__"),
                                             type: "text"
                                         },
                                         AJS.gadget.fields.nowConfigured()
@@ -118,14 +115,16 @@
 
                                 gadget.getView().html(userDetails);
                             },
-                            args: [{
-                                key: "user",
-                                ajaxOptions: function() {
-                                    return {
-                                        url: "/rest/gadget/1.0/currentUser"
-                                    };
-                                }
-                            }]
+                            args: [
+                                {
+                                    key: "user",
+                                    ajaxOptions: function() {
+                                        return {
+                                            url: "/rest/gadget/1.0/currentUser"
+                                        };
+                                    }
+                                },
+                            ]
                         }
                     });
                 })();
