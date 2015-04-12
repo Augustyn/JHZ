@@ -14,14 +14,124 @@
                 JIRA
             </Param>
         </Optional>
-        <Require feature="setprefs"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="setprefs" />
+        <Require feature="views" />
+        <Require feature="oauthpopup" />
+        #oauth
         <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/ALL_ALL.xml"/>
         <Locale lang="pl" country="PL" messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/pl_PL.xml"/>
+
     </ModulePrefs>
+
+
     <UserPref name="isConfigured" datatype="hidden" default_value="false"/>
+    <UserPref name="refresh" datatype="hidden" default_value="false"/>
+
+    <UserPref name="Project" datatype="hidden" required="true"/>
+    <UserPref name="Issues" datatype="hidden" required="true"/>
+    <UserPref name="Period" datatype="hidden" required="true"/>
+    <UserPref name="Previously" datatype="hidden" />
+
+
     <Content type="html" view="profile">
+
         <![CDATA[
-            Hello World!
+
+            #requireResource("com.atlassian.jira.gadgets:common")
+            #requireResource("com.atlassian.gadgets.publisher:ajs-gadgets")
+            #includeResources()
+
+            <script type="text/javascript">
+
+                (function () {
+                    var gadget = AJS.Gadget({
+                        baseUrl: "__ATLASSIAN_BASE_URL__",
+                        useOauth: "/rest/gadget/1.0/currentUser",
+                        config: {
+                            descriptor : function (args){
+                                var gadget = this;
+
+                                return{
+                                    theme: "long-label",
+                                    fields: [
+                                        {
+                                            userpref: "Project",
+                                            class: "numField",
+                                            label: gadget.getMsg("Projects"),
+                                            description: gadget.getMsg("Field is required"),
+                                            type: "text"
+                                        },
+                                        {
+                                            userpref: "Issues",
+                                            class: "numField",
+                                            label: gadget.getMsg("Select Issues"),
+                                            description: gadget.getMsg("Field is required"),
+                                            type: "text"
+                                        },
+                                        {
+                                            userpref: "Period",
+                                            label: gadget.getMsg("Period"),
+                                            description:gadget.getMsg("Field is required"),
+                                            type: "select",
+                                            options:[
+                                                {
+                                                    label:gadget.getMsg("Hourly")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("Daily")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("Weekly")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("Monthly")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("Quarterly")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("Yearly")
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            userpref: "Previously",
+                                            class: "numField",
+                                            label: gadget.getMsg("Days Previously"),
+                                            description: gadget.getMsg("Field is not required"),
+                                            type: "text"
+                                        },
+                                        AJS.gadget.fields.nowConfigured()
+                                    ]
+
+                                }
+                            }
+                        },
+                        view: {
+                            enableReload: true,
+                            onResizeReload: true,
+                            template: function(args) {
+                                var gadget = this;
+                                var userDetails = AJS.$("<h1/>").text(args.user
+                                    ["fullName"]);
+
+                                gadget.getView().html(userDetails);
+                            },
+                            args: [{
+                                key: "user",
+                                ajaxOptions: function() {
+                                    return {
+                                        url: "/rest/gadget/1.0/currentUser"
+                                    };
+                                }
+                            }]
+                        }
+                    });
+                })();
+
+            </script>
         ]]>
+
     </Content>
 </Module>
