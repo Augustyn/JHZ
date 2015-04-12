@@ -5,3 +5,4 @@
 - Fix pom.xml, teraz projekt się uruchamia
 - PIP-46 Poprawiono pliki lokalizacji oraz gadget.xml
 - PIP-46 Refactoring nazwy katalogu
+- PIP-47 dodanie pierwszych elementów gui
