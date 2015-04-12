@@ -14,14 +14,123 @@
                 JIRA
             </Param>
         </Optional>
-        <Require feature="setprefs"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="setprefs" />
+        <Require feature="views" />
+        <Require feature="oauthpopup" />
+        #oauth
         <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/ALL_ALL.xml"/>
         <Locale lang="pl" country="PL" messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/pl_PL.xml"/>
     </ModulePrefs>
+
+
     <UserPref name="isConfigured" datatype="hidden" default_value="false"/>
+    <UserPref name="refresh" datatype="hidden" default_value="false"/>
+
+    <UserPref name="Project" datatype="hidden" required="true"/>
+    <UserPref name="Issues" datatype="hidden" required="true"/>
+    <UserPref name="Period" datatype="hidden" required="true"/>
+    <UserPref name="Previously" datatype="hidden" />
+
+
     <Content type="html" view="profile">
+
         <![CDATA[
-            Hello World!
+
+            #requireResource("com.atlassian.gadgets.publisher:ajs-gadgets")
+            #includeResources()
+
+            <script type="text/javascript">
+
+                (function () {
+                    var gadget = AJS.Gadget({
+                        baseUrl: "__ATLASSIAN_BASE_URL__",
+                        useOauth: "/rest/gadget/1.0/currentUser",
+                        config: {
+                            descriptor : function (args){
+                                var gadget = this;
+                                return{
+                                    theme: "long-label",
+                                    fields: [
+                                        {
+                                            userpref: "Project",
+                                            class: "numField",
+                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.project.label__"),
+                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.project.description__"),
+                                            type: "text"
+                                        },
+                                        {
+                                            userpref: "Issues",
+                                            class: "numField",
+                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.issue.label__"),
+                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.issue.description__"),
+                                            type: "text"
+                                        },
+                                        {
+                                            userpref: "Period",
+                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.period.label__"),
+                                            description:gadget.getMsg("__MSG_issues.history.gadget.field.period.description__"),
+                                            type: "select",
+                                            options:[
+                                                {
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Hourly__")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Daily__")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Weekly__")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Monthly__")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Quarterly__")
+                                                },
+                                                {
+                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Yearly__")
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            userpref: "Previously",
+                                            class: "numField",
+                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.previously.label__"),
+                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.previously.description__"),
+                                            type: "text"
+                                        },
+                                        AJS.gadget.fields.nowConfigured()
+                                    ]
+
+                                }
+                            }
+                        },
+                        view: {
+                            enableReload: true,
+                            onResizeReload: true,
+                            template: function(args) {
+                                var gadget = this;
+                                var userDetails = AJS.$("<h1/>").text(args.user
+                                    ["fullName"]);
+
+                                gadget.getView().html(userDetails);
+                            },
+                            args: [
+                                {
+                                    key: "user",
+                                    ajaxOptions: function() {
+                                        return {
+                                            url: "/rest/gadget/1.0/currentUser"
+                                        };
+                                    }
+                                },
+                            ]
+                        }
+                    });
+                })();
+
+            </script>
         ]]>
+
     </Content>
 </Module>

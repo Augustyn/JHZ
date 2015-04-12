@@ -1,4 +1,29 @@
 <messagebundle>
     <msg name="issues.history.gadget.title">Jira Historia zgłoszeń</msg>
     <msg name="issues.history.gadget.description">Gadżet wyświetlający historię zgłoszeń dla wybranych projektów.</msg>
+    <msg name="issues.history.gadget.field.project.label">Projekty i Filtry</msg>
+    <msg name="issues.history.gadget.field.project.description">Pole jest wymagane.</msg>
+    <msg name="issues.history.gadget.field.issue.label">Wybierz Zgłoszenia</msg>
+    <msg name="issues.history.gadget.field.issue.description">Pole jest wymagane.</msg>
+    <msg name="issues.history.gadget.field.period.label">Odstęp czasu</msg>
+    <msg name="issues.history.gadget.field.period.description">Pole jest wymagane.</msg>
+    <msg name="issues.history.gadget.field.period.option.Hourly">Godzinowy</msg>
+    <msg name="issues.history.gadget.field.period.option.Daily">Dzienny</msg>
+    <msg name="issues.history.gadget.field.period.option.Weekly">Tygodniowy</msg>
+    <msg name="issues.history.gadget.field.period.option.Monthly">Miesięczny</msg>
+    <msg name="issues.history.gadget.field.period.option.Quarterly">Kwartalny</msg>
+    <msg name="issues.history.gadget.field.period.option.Yearly">Roczny</msg>
+    <msg name="issues.history.gadget.field.previously.label">Poprzednie dni</msg>
+    <msg name="issues.history.gadget.field.previously.description">Pole nie jest wymagane.</msg>
+    <msg name="gadget.common.refresh.label">Odśwież</msg>
+    <msg name="gadget.common.refresh.description">Jak często gadżet ma byc odświeżany</msg>
+    <msg name="gadget.common.refresh.never">Nigdy</msg>
+    <msg name="gadget.common.refresh.minute">Co 15 Minut</msg>
+    <msg name="gadget.common.refresh.minutes">Co 30 Minut</msg>
+    <msg name="gadget.common.refresh.hour">Co godzinę</msg>
+    <msg name="gadget.common.refresh.hours">Co 2 godziny</msg>
+    <msg name="gadget.common.configure">Edytuj</msg>
+    <msg name="gadget.common.reload">Odśwież</msg>
+    <msg name="gadget.common.save">Zapisz</msg>
+    <msg name="gadget.common.cancel">Anuluj</msg>
 </messagebundle>
