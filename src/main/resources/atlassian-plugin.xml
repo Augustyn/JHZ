@@ -46,4 +46,10 @@
         <description key="issues-history-gadget.description">The issues-history-gadget Plugin</description>
     </gadget>
 
+    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
+    <component-import key="permissionManager" interface="com.atlassian.jira.security.PermissionManager"/>
+    <component-import key="userUtil" interface="com.atlassian.jira.user.util.UserUtil"/>
+    <component-import key="projectManager" interface="com.atlassian.jira.project.ProjectManager"/>
+    <component-import key="issueManager" interface="com.atlassian.jira.issue.IssueManager"/>
+
 </atlassian-plugin>
