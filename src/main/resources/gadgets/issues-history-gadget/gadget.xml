@@ -116,7 +116,7 @@
                                     AJS.$("<h1/>").text(args.user["fullName"])
                                 );
                                 mainDiv.append(
-                                    AJS.$("<h1/>").text("Lista wszystkich issue")
+                                    AJS.$("<h1/>").text(gadget.getMsg("__MSG_issues.history.gadget.headers.allIssues__"))
                                 );
                                 var issueList = AJS.$("<ul/>");
                                 AJS.$(args.issuesData.issues).each(function() {
@@ -132,7 +132,7 @@
                                 });
                                 mainDiv.append(issueList);
                                 mainDiv.append(
-                                    AJS.$("<h1/>").text("Lista wybranych issue")
+                                    AJS.$("<h1/>").text(gadget.getMsg("__MSG_issues.history.gadget.headers.specificIssues__")+" "+gadget.getPref("Project"))
                                 );
                                 var requestedIssueList = AJS.$("<ul/>");
                                 AJS.$(args.requestedIssuesData.issues).each(function() {
@@ -170,7 +170,7 @@
                                     key: "requestedIssuesData",
                                     ajaxOptions:  function() {
                                         return{
-                                            url: "/rest/issueshistoryresource/1.0/issues/" + encodeURI(new gadgets.Prefs().getString("Project"))
+                                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(gadget.getPref("Project"))
                                         };
                                     }
                                 }

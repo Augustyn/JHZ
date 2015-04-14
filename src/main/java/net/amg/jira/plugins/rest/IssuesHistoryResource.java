@@ -20,12 +20,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Resource providing all Issues in all Projects for which the requesting User has BROWSE Permission.
  */
 @Path("/issues")
 public class IssuesHistoryResource {
+
+    private final static Logger logger = Logger.getLogger(IssuesHistoryResource.class);
 
     private UserManager userManager;
     private PermissionManager permissionManager;
@@ -72,8 +75,8 @@ public class IssuesHistoryResource {
                 }
             } catch (GenericEntityException e) {
                 String message = "Unable to get Issue id for Project "+project;
-                Logger.getLogger(this.getClass()).error(message,e);
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message+" "+e).build();
+                logger.error(message, e);
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
             }
         }
         IssuesHistoryResourceModel issuesHistoryResource = new IssuesHistoryResourceModel(issues);
@@ -89,18 +92,17 @@ public class IssuesHistoryResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{projectName}")
+    @Path("/byProjectName/{projectName}")
     public Response getProjectIssues(@PathParam("projectName") String projectName,@Context HttpServletRequest request) {
         String username = userManager.getRemoteUsername(request);
         ApplicationUser user = userUtil.getUserByName(username);
-        ArrayList<Project> projects = new ArrayList<>();
-        projects.addAll(permissionManager.getProjects(Permissions.Permission.BROWSE.getId(), user));
-        for(Project project : new ArrayList<>(projects)) {
-            if(!project.getName().equals(projectName)) {
-                projects.remove(project);
+        List<Project> projects = new ArrayList<>();
+        for(Project project : permissionManager.getProjects(Permissions.Permission.BROWSE.getId(), user)) {
+            if(project.getName().equals(projectName)) {
+                projects.add(project);
             }
         }
-        ArrayList<IssueRepresentation> issues = new ArrayList<>();
+        List<IssueRepresentation> issues = new ArrayList<>();
         for (Project project : projects) {
             try {
                 for (Issue issue : issueManager.getIssueObjects(issueManager.getIssueIdsForProject(project.getId()))) {

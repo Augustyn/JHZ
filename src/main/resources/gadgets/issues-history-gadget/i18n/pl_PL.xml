@@ -1,6 +1,8 @@
 <messagebundle>
     <msg name="issues.history.gadget.title">Jira Historia zgłoszeń</msg>
     <msg name="issues.history.gadget.description">Gadżet wyświetlający historię zgłoszeń dla wybranych projektów.</msg>
+    <msg name="issues.history.gadget.headers.allIssues">Lista wszystkich Issue</msg>
+    <msg name="issues.history.gadget.headers.specificIssues">Lista Issue z Projektu</msg>
     <msg name="issues.history.gadget.field.project.label">Projekty i Filtry</msg>
     <msg name="issues.history.gadget.field.project.description">Pole jest wymagane.</msg>
     <msg name="issues.history.gadget.field.issue.label">Wybierz Zgłoszenia</msg>

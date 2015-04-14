@@ -1,6 +1,8 @@
 <messagebundle>
     <msg name="issues.history.gadget.title">Jira Issues History Gadget</msg>
     <msg name="issues.history.gadget.description">Gadget displaying history of issues for selected projects.</msg>
+    <msg name="issues.history.gadget.headers.allIssues">List of all Issues</msg>
+    <msg name="issues.history.gadget.headers.specificIssues">List of Issues from Project</msg>
     <msg name="issues.history.gadget.field.project.label">Projects or Filters</msg>
     <msg name="issues.history.gadget.field.project.description">Field is required.</msg>
     <msg name="issues.history.gadget.field.issue.label">Select Issues</msg>

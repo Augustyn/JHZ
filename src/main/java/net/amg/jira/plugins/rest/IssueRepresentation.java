@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Represents a single Issue.
+ * Represents a subset of information about Jira Issue required by the gadget.
  */
 @Immutable
 @XmlRootElement

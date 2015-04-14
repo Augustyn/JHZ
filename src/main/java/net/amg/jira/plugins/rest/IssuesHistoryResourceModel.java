@@ -16,7 +16,7 @@ import java.util.HashSet;
 public class IssuesHistoryResourceModel {
 
     @XmlElement
-    private Collection<IssueRepresentation> issues = new ArrayList<>();
+    private Collection<IssueRepresentation> issues;
 
     /**
      * Encapsulates IssueRepresentation objects.
