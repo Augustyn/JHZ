@@ -63,8 +63,7 @@ public class IssuesHistoryResource {
     @AnonymousAllowed
     @Produces(MediaType.APPLICATION_JSON)
     public Response getIssues(@Context HttpServletRequest request) {
-        String username = userManager.getRemoteUsername(request);
-        ApplicationUser user = userUtil.getUserByName(username);
+        ApplicationUser user = userUtil.getUserByName(userManager.getRemoteUsername(request));
         ArrayList<Project> projects = new ArrayList<>();
         projects.addAll(permissionManager.getProjects(Permissions.Permission.BROWSE.getId(), user));
         ArrayList<IssueRepresentation> issues = new ArrayList<>();
@@ -94,8 +93,7 @@ public class IssuesHistoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/byProjectName/{projectName}")
     public Response getProjectIssues(@PathParam("projectName") String projectName,@Context HttpServletRequest request) {
-        String username = userManager.getRemoteUsername(request);
-        ApplicationUser user = userUtil.getUserByName(username);
+        ApplicationUser user = userUtil.getUserByName(userManager.getRemoteUsername(request));
         List<Project> projects = new ArrayList<>();
         for(Project project : permissionManager.getProjects(Permissions.Permission.BROWSE.getId(), user)) {
             if(project.getName().equals(projectName)) {
