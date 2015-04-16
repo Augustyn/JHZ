@@ -10,3 +10,4 @@
 - PIP-49 Refactoring + naprawa błędu z dwoma listami wszystkich Issue.
 - PIP-49 Refactoring.
 - PIP-49 Refactoring,logowanie z slf4j, wyświetlanie komunikatu błędy w przypadku błednego parametru usługi REST
+- PIP-58 Przeniesiono javascriptową część gadgetu do zewnętrznego pliku
