@@ -168,6 +168,7 @@
         </plugins>
     </build>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdkLevel>1.7</jdkLevel>
         <jira.version>6.1.7</jira.version>
         <amps.version>5.0.18</amps.version>
