@@ -170,7 +170,10 @@
                                     key: "requestedIssuesData",
                                     ajaxOptions:  function() {
                                         return{
-                                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(gadget.getPref("Project"))
+                                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(gadget.getPref("Project")),
+                                            error: function(msg){
+                                                gadget.showMessage("error",gadget.getMsg("__MSG_issues.history.gadget.errors.emptyProjectOrFilter__"),true,true);
+                                            }
                                         };
                                     }
                                 }

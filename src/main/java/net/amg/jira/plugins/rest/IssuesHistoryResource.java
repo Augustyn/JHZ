@@ -3,15 +3,15 @@ package net.amg.jira.plugins.rest;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.project.Project;
-import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.atlassian.sal.api.user.UserManager;
-import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericEntityException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -19,7 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,12 +27,11 @@ import java.util.List;
 @Path("/issues")
 public class IssuesHistoryResource {
 
-    private final static Logger logger = Logger.getLogger(IssuesHistoryResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(IssuesHistoryResource.class);
 
     private UserManager userManager;
     private PermissionManager permissionManager;
     private UserUtil userUtil;
-    private ProjectManager projectManager;
     private IssueManager issueManager;
 
     /**
@@ -41,15 +39,13 @@ public class IssuesHistoryResource {
      * @param userManager
      * @param userUtil
      * @param permissionManager
-     * @param projectManager
      * @param issueManager
      */
     public IssuesHistoryResource(UserManager userManager, UserUtil userUtil, PermissionManager permissionManager,
-                                 ProjectManager projectManager, IssueManager issueManager) {
+                                 IssueManager issueManager) {
         this.userManager = userManager;
         this.userUtil = userUtil;
         this.permissionManager = permissionManager;
-        this.projectManager = projectManager;
         this.issueManager = issueManager;
     }
 
@@ -64,9 +60,9 @@ public class IssuesHistoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getIssues(@Context HttpServletRequest request) {
         ApplicationUser user = userUtil.getUserByName(userManager.getRemoteUsername(request));
-        ArrayList<Project> projects = new ArrayList<>();
+        List<Project> projects = new ArrayList<>();
         projects.addAll(permissionManager.getProjects(Permissions.Permission.BROWSE.getId(), user));
-        ArrayList<IssueRepresentation> issues = new ArrayList<>();
+        List<IssueRepresentation> issues = new ArrayList<>();
         for (Project project : projects) {
             try {
                 for (Issue issue : issueManager.getIssueObjects(issueManager.getIssueIdsForProject(project.getId()))) {
@@ -85,14 +81,19 @@ public class IssuesHistoryResource {
     /**
      * Returns all Issues in Projects with given name, for which the requesting User has BROWSE Permission. Response is
      * an IssuesHistoryResourceModel in JSON format.
-     * @param projectName
+     * @param projectName of the Project containing requested issues
      * @param request
      * @return
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/byProjectName/{projectName}")
+    @Path("/byProjectName/{projectName: .*}")
     public Response getProjectIssues(@PathParam("projectName") String projectName,@Context HttpServletRequest request) {
+        if(projectName.isEmpty()) {
+            String cause = "Missing request parameter projectName.";
+            logger.debug(cause);
+            return Response.status(Response.Status.BAD_REQUEST).entity(cause).build();
+        }
         ApplicationUser user = userUtil.getUserByName(userManager.getRemoteUsername(request));
         List<Project> projects = new ArrayList<>();
         for(Project project : permissionManager.getProjects(Permissions.Permission.BROWSE.getId(), user)) {
@@ -108,8 +109,8 @@ public class IssuesHistoryResource {
                 }
             } catch (GenericEntityException e) {
                 String message = "Unable to get Issue id for Project "+project;
-                Logger.getLogger(this.getClass()).error(message,e);
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message+" "+e).build();
+                logger.error(message, e);
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
             }
         }
         IssuesHistoryResourceModel issuesHistoryResource = new IssuesHistoryResourceModel(issues);
