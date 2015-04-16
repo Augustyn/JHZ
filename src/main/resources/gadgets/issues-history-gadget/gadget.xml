@@ -55,6 +55,7 @@
                                         {
                                             userpref: "Project",
                                             class: "numField",
+                                            value: gadget.getPref("Project"),
                                             label: gadget.getMsg("__MSG_issues.history.gadget.field.project.label__"),
                                             description: gadget.getMsg("__MSG_issues.history.gadget.field.project.description__"),
                                             type: "text"
@@ -110,10 +111,43 @@
                             onResizeReload: true,
                             template: function(args) {
                                 var gadget = this;
-                                var userDetails = AJS.$("<h1/>").text(args.user
-                                    ["fullName"]);
-
-                                gadget.getView().html(userDetails);
+                                var mainDiv = AJS.$("<div/>");
+                                mainDiv.append(
+                                    AJS.$("<h1/>").text(args.user["fullName"])
+                                );
+                                mainDiv.append(
+                                    AJS.$("<h1/>").text(gadget.getMsg("__MSG_issues.history.gadget.headers.allIssues__"))
+                                );
+                                var issueList = AJS.$("<ul/>");
+                                AJS.$(args.issuesData.issues).each(function() {
+                                    issueList.append(
+                                        AJS.$("<li/>").append(
+                                            AJS.$("<a/>").attr({
+                                                target: "_parent",
+                                                title: gadgets.util.escapeString(this.key),
+                                                href: "__ATLASSIAN_BASE_URL__" + "/browse/" + this.key
+                                            }).text(this.id+ " " + this.key + " status:"+ this.statusName)
+                                        )
+                                    );
+                                });
+                                mainDiv.append(issueList);
+                                mainDiv.append(
+                                    AJS.$("<h1/>").text(gadget.getMsg("__MSG_issues.history.gadget.headers.specificIssues__")+" "+gadget.getPref("Project"))
+                                );
+                                var requestedIssueList = AJS.$("<ul/>");
+                                AJS.$(args.requestedIssuesData.issues).each(function() {
+                                    requestedIssueList.append(
+                                        AJS.$("<li/>").append(
+                                            AJS.$("<a/>").attr({
+                                                target: "_parent",
+                                                title: gadgets.util.escapeString(this.key),
+                                                href: "__ATLASSIAN_BASE_URL__" + "/browse/" + this.key
+                                            }).text(this.id+ " " + this.key + " status:"+ this.statusName)
+                                        )
+                                    );
+                                });
+                                mainDiv.append(requestedIssueList);
+                                gadget.getView().html(mainDiv);
                             },
                             args: [
                                 {
@@ -124,6 +158,25 @@
                                         };
                                     }
                                 },
+                                {
+                                    key: "issuesData",
+                                    ajaxOptions: function() {
+                                        return {
+                                            url: "/rest/issueshistoryresource/1.0/issues.json"
+                                        };
+                                    }
+                                },
+                                {
+                                    key: "requestedIssuesData",
+                                    ajaxOptions:  function() {
+                                        return{
+                                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(gadget.getPref("Project")),
+                                            error: function(msg){
+                                                gadget.showMessage("error",gadget.getMsg("__MSG_issues.history.gadget.errors.emptyProjectOrFilter__"),true,true);
+                                            }
+                                        };
+                                    }
+                                }
                             ]
                         }
                     });
