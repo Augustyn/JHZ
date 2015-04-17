@@ -40,9 +40,13 @@
             #requireResource("net.amg.jira.plugins.jira-issues-history:jira-issues-history-resources")
             #includeResources()
             <script type="text/javascript">
-                AMG.jhz.init({
-                    baseUrl : "__ATLASSIAN_BASE_URL__"
-                });
+                var args = {};
+                args.baseUrl = "__ATLASSIAN_BASE_URL__"
+                try {
+                   gadgets.util.registerOnLoadHandler(AMG.jhz.init(args));
+                } catch (e) {
+                    console.log("Unable to initialize gadget.",e);
+                }
             </script>
         ]]>
     </Content>

@@ -1,5 +1,4 @@
-AMG = window.AMG || {};
-AMG.jhz = AMG.jhz || {};
+jQuery.namespace("AMG.jhz");
 AMG.jhz.init = function (args) {
     var gadget = AJS.Gadget({
         baseUrl: args.baseUrl,
@@ -83,8 +82,8 @@ AMG.jhz.init = function (args) {
                             AJS.$("<a/>").attr({
                                 target: "_parent",
                                 title: gadgets.util.escapeString(this.key),
-                                href: args.baseUrl + "/browse/" + this.key
-                            }).text(this.id + " " + this.key + " status:" + this.statusName)
+                                href: gadget.getBaseUrl() + "/browse/" + this.key
+                            }).text(this.id+ " " + this.key + " status:" + this.statusName)
                         )
                     );
                 });
@@ -99,7 +98,7 @@ AMG.jhz.init = function (args) {
                             AJS.$("<a/>").attr({
                                 target: "_parent",
                                 title: gadgets.util.escapeString(this.key),
-                                href: args.baseUrl + "/browse/" + this.key
+                                href: gadget.getBaseUrl() + "/browse/" + this.key
                             }).text(this.id + " " + this.key + " status:" + this.statusName)
                         )
                     );
