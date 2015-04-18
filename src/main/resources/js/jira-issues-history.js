@@ -8,6 +8,7 @@ AMG.jhz.init = function (args) {
                 var gadget = this;
                 return {
                     theme: "long-label",
+                    action: "/rest/issueshistoryresource/1.0/configuration/validate",
                     fields: [
                         {
                             userpref: "Project",
@@ -20,6 +21,7 @@ AMG.jhz.init = function (args) {
                         {
                             userpref: "Issues",
                             class: "numField",
+                            value: gadget.getPref("Issues"),
                             label: gadget.getMsg("issues.history.gadget.field.issue.label"),
                             description: gadget.getMsg("issues.history.gadget.field.issue.description"),
                             type: "text"
@@ -27,32 +29,40 @@ AMG.jhz.init = function (args) {
                         {
                             userpref: "Period",
                             label: gadget.getMsg("issues.history.gadget.field.period.label"),
+                            selected: gadget.getPref("Period"),
                             description: gadget.getMsg("issues.history.gadget.field.period.description"),
                             type: "select",
                             options: [
                                 {
-                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Hourly")
+                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Hourly"),
+                                    value: "hourly"
                                 },
                                 {
-                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Daily")
+                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Daily"),
+                                    value: "daily"
                                 },
                                 {
-                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Weekly")
+                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Weekly"),
+                                    value: "weekly"
                                 },
                                 {
-                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Monthly")
+                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Monthly"),
+                                    value: "monthly"
                                 },
                                 {
-                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Quarterly")
+                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Quarterly"),
+                                    value: "quarterly"
                                 },
                                 {
-                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Yearly")
+                                    label: gadget.getMsg("issues.history.gadget.field.period.option.Yearly"),
+                                    value: "yearly"
                                 }
                             ]
                         },
                         {
                             userpref: "Previously",
                             class: "numField",
+                            value: gadget.getPref("Previously"),
                             label: gadget.getMsg("issues.history.gadget.field.previously.label"),
                             description: gadget.getMsg("issues.history.gadget.field.previously.description"),
                             type: "text"
@@ -83,7 +93,7 @@ AMG.jhz.init = function (args) {
                                 target: "_parent",
                                 title: gadgets.util.escapeString(this.key),
                                 href: gadget.getBaseUrl() + "/browse/" + this.key
-                            }).text(this.id+ " " + this.key + " status:" + this.statusName)
+                            }).text(this.id + " " + this.key + " status:" + this.statusName)
                         )
                     );
                 });
@@ -127,7 +137,7 @@ AMG.jhz.init = function (args) {
                     key: "requestedIssuesData",
                     ajaxOptions: function () {
                         return {
-                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(gadget.getPref("Project")),
+                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(this.getPref("Project")),
                             error: function (msg) {
                                 gadget.showMessage("error", gadget.getMsg("issues.history.gadget.errors.emptyProjectOrFilter"), true, true);
                             }
