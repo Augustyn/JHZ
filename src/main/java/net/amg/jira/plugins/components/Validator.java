@@ -15,5 +15,5 @@ public interface Validator {
      * @param paramMap contains pairs [field name, field value]
      * @return JAXB class with detected errors
      */
-    public ErrorCollection validate(Map<String, String> paramMap);
+    public ErrorCollection validate(Map<FormField, String> paramMap);
 }

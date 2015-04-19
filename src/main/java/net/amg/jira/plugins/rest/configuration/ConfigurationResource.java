@@ -2,11 +2,15 @@ package net.amg.jira.plugins.rest.configuration;
 
 import com.atlassian.jira.rest.api.messages.TextMessage;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+import net.amg.jira.plugins.components.FormField;
 import net.amg.jira.plugins.components.Validator;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,11 +38,11 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPrefsValidation(@QueryParam("Project") String project, @QueryParam("Issues") String issues
             , @QueryParam("Period") String period, @QueryParam("Previously") String previously) {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("Project", project);
-        paramMap.put("Issues", issues);
-        paramMap.put("Period", period);
-        paramMap.put("Previously", previously);
+        Map<FormField, String> paramMap = new HashMap<>();
+        paramMap.put(FormField.PROJECT, project);
+        paramMap.put(FormField.ISSUES, issues);
+        paramMap.put(FormField.PERIOD, period);
+        paramMap.put(FormField.PREVIOUSLY, previously);
         ErrorCollection errorCollection = validator.validate(paramMap);
         if (errorCollection.isEmpty()) {
             return Response.ok(new TextMessage("No input configuration errors found.")).build();
