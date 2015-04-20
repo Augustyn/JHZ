@@ -4,6 +4,8 @@
     <msg name="issues.history.gadget.headers.allIssues">Lista wszystkich Issue</msg>
     <msg name="issues.history.gadget.headers.specificIssues">Lista Issue z Projektu</msg>
     <msg name="issues.history.gadget.errors.emptyProjectOrFilter">Pole Projekty i Filtry nie może być puste.</msg>
+    <msg name="issues.history.gadget.errors.emptyField">Pole jest wymagane.</msg>
+    <msg name="issues.history.gadget.errors.mustBeNumeric">Wartość musi być liczbą.</msg>
     <msg name="issues.history.gadget.field.project.label">Projekty i Filtry</msg>
     <msg name="issues.history.gadget.field.project.description">Pole jest wymagane.</msg>
     <msg name="issues.history.gadget.field.issue.label">Wybierz Zgłoszenia</msg>

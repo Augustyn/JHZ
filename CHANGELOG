@@ -12,3 +12,5 @@
 - PIP-49 Refactoring,logowanie z slf4j, wyświetlanie komunikatu błędy w przypadku błednego parametru usługi REST
 - PIP-58 Przeniesiono javascriptową część gadgetu do zewnętrznego pliku
 - PIP-58 Dodano obsługę wyjątków javascript oraz poprawiono linki do pobranych issue w GUI
+- PIP-64 PIP-65 Naprawiono zapisywanie ustawień, dodano zasób walidujący konfigurację
+- PIP-65 Refactoring

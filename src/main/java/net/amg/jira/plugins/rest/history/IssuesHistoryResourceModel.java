@@ -1,10 +1,9 @@
-package net.amg.jira.plugins.rest;
+package net.amg.jira.plugins.rest.history;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 

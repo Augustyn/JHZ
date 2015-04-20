@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.rest;
+package net.amg.jira.plugins.rest.history;
 
 import com.atlassian.jira.issue.Issue;
 
