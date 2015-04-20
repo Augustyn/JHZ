@@ -7,22 +7,23 @@
                  author=""
                  author_email=""
                  screenshot='http://www.google.com/gadgets/directory/2661487601-no_preview.gif'
-                 thumbnail='http://www.google.com/gadgets/directory/348515928-no_image_gadget_thm.png'
-                 >
+                 thumbnail='http://www.google.com/gadgets/directory/348515928-no_image_gadget_thm.png'>
         <Optional feature="gadget-directory">
             <Param name="categories">
                 JIRA
             </Param>
         </Optional>
         <Require feature="dynamic-height"/>
-        <Require feature="setprefs" />
-        <Require feature="views" />
-        <Require feature="oauthpopup" />
+        <Require feature="setprefs"/>
+        <Require feature="views"/>
+        <Require feature="oauthpopup"/>
         #oauth
         <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/ALL_ALL.xml"/>
-        <Locale lang="pl" country="PL" messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/pl_PL.xml"/>
+        <Locale lang="pl" country="PL"
+                messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/pl_PL.xml"/>
     </ModulePrefs>
 
+    <UserPref name="baseUrl" datatype="hidden" default_value="__ATLASSIAN_BASE_URL__"/>
 
     <UserPref name="isConfigured" datatype="hidden" default_value="false"/>
     <UserPref name="refresh" datatype="hidden" default_value="false"/>
@@ -30,160 +31,23 @@
     <UserPref name="Project" datatype="hidden" required="true"/>
     <UserPref name="Issues" datatype="hidden" required="true"/>
     <UserPref name="Period" datatype="hidden" required="true"/>
-    <UserPref name="Previously" datatype="hidden" />
+    <UserPref name="Previously" datatype="hidden"/>
 
 
     <Content type="html" view="profile">
-
         <![CDATA[
-
             #requireResource("com.atlassian.gadgets.publisher:ajs-gadgets")
+            #requireResource("net.amg.jira.plugins.jira-issues-history:jira-issues-history-resources")
             #includeResources()
-
             <script type="text/javascript">
-
-                (function () {
-                    var gadget = AJS.Gadget({
-                        baseUrl: "__ATLASSIAN_BASE_URL__",
-                        useOauth: "/rest/gadget/1.0/currentUser",
-                        config: {
-                            descriptor : function (args){
-                                var gadget = this;
-                                return{
-                                    theme: "long-label",
-                                    fields: [
-                                        {
-                                            userpref: "Project",
-                                            class: "numField",
-                                            value: gadget.getPref("Project"),
-                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.project.label__"),
-                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.project.description__"),
-                                            type: "text"
-                                        },
-                                        {
-                                            userpref: "Issues",
-                                            class: "numField",
-                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.issue.label__"),
-                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.issue.description__"),
-                                            type: "text"
-                                        },
-                                        {
-                                            userpref: "Period",
-                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.period.label__"),
-                                            description:gadget.getMsg("__MSG_issues.history.gadget.field.period.description__"),
-                                            type: "select",
-                                            options:[
-                                                {
-                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Hourly__")
-                                                },
-                                                {
-                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Daily__")
-                                                },
-                                                {
-                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Weekly__")
-                                                },
-                                                {
-                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Monthly__")
-                                                },
-                                                {
-                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Quarterly__")
-                                                },
-                                                {
-                                                    label:gadget.getMsg("__MSG_issues.history.gadget.field.period.option.Yearly__")
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            userpref: "Previously",
-                                            class: "numField",
-                                            label: gadget.getMsg("__MSG_issues.history.gadget.field.previously.label__"),
-                                            description: gadget.getMsg("__MSG_issues.history.gadget.field.previously.description__"),
-                                            type: "text"
-                                        },
-                                        AJS.gadget.fields.nowConfigured()
-                                    ]
-
-                                }
-                            }
-                        },
-                        view: {
-                            enableReload: true,
-                            onResizeReload: true,
-                            template: function(args) {
-                                var gadget = this;
-                                var mainDiv = AJS.$("<div/>");
-                                mainDiv.append(
-                                    AJS.$("<h1/>").text(args.user["fullName"])
-                                );
-                                mainDiv.append(
-                                    AJS.$("<h1/>").text(gadget.getMsg("__MSG_issues.history.gadget.headers.allIssues__"))
-                                );
-                                var issueList = AJS.$("<ul/>");
-                                AJS.$(args.issuesData.issues).each(function() {
-                                    issueList.append(
-                                        AJS.$("<li/>").append(
-                                            AJS.$("<a/>").attr({
-                                                target: "_parent",
-                                                title: gadgets.util.escapeString(this.key),
-                                                href: "__ATLASSIAN_BASE_URL__" + "/browse/" + this.key
-                                            }).text(this.id+ " " + this.key + " status:"+ this.statusName)
-                                        )
-                                    );
-                                });
-                                mainDiv.append(issueList);
-                                mainDiv.append(
-                                    AJS.$("<h1/>").text(gadget.getMsg("__MSG_issues.history.gadget.headers.specificIssues__")+" "+gadget.getPref("Project"))
-                                );
-                                var requestedIssueList = AJS.$("<ul/>");
-                                AJS.$(args.requestedIssuesData.issues).each(function() {
-                                    requestedIssueList.append(
-                                        AJS.$("<li/>").append(
-                                            AJS.$("<a/>").attr({
-                                                target: "_parent",
-                                                title: gadgets.util.escapeString(this.key),
-                                                href: "__ATLASSIAN_BASE_URL__" + "/browse/" + this.key
-                                            }).text(this.id+ " " + this.key + " status:"+ this.statusName)
-                                        )
-                                    );
-                                });
-                                mainDiv.append(requestedIssueList);
-                                gadget.getView().html(mainDiv);
-                            },
-                            args: [
-                                {
-                                    key: "user",
-                                    ajaxOptions: function() {
-                                        return {
-                                            url: "/rest/gadget/1.0/currentUser"
-                                        };
-                                    }
-                                },
-                                {
-                                    key: "issuesData",
-                                    ajaxOptions: function() {
-                                        return {
-                                            url: "/rest/issueshistoryresource/1.0/issues.json"
-                                        };
-                                    }
-                                },
-                                {
-                                    key: "requestedIssuesData",
-                                    ajaxOptions:  function() {
-                                        return{
-                                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(gadget.getPref("Project")),
-                                            error: function(msg){
-                                                gadget.showMessage("error",gadget.getMsg("__MSG_issues.history.gadget.errors.emptyProjectOrFilter__"),true,true);
-                                            }
-                                        };
-                                    }
-                                }
-                            ]
-                        }
-                    });
-                })();
-
+                var args = {};
+                args.baseUrl = "__ATLASSIAN_BASE_URL__"
+                try {
+                   gadgets.util.registerOnLoadHandler(AMG.jhz.init(args));
+                } catch (e) {
+                    console.log("Unable to initialize gadget.",e);
+                }
             </script>
         ]]>
-
     </Content>
 </Module>

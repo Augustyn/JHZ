@@ -3,11 +3,7 @@ package it.net.amg.jira.plugins.rest;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
-import org.mockito.Mockito;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import net.amg.jira.plugins.rest.IssuesHistoryResource;
-import net.amg.jira.plugins.rest.IssuesHistoryResourceModel;
+import net.amg.jira.plugins.rest.history.IssuesHistoryResourceModel;
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
 

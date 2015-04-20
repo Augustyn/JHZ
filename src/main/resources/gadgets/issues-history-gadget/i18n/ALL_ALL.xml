@@ -4,6 +4,8 @@
     <msg name="issues.history.gadget.headers.allIssues">List of all Issues</msg>
     <msg name="issues.history.gadget.headers.specificIssues">List of Issues from Project</msg>
     <msg name="issues.history.gadget.errors.emptyProjectOrFilter">Project or Filter field cannot be empty.</msg>
+    <msg name="issues.history.gadget.errors.emptyField">Field is required.</msg>
+    <msg name="issues.history.gadget.errors.mustBeNumeric">Value must be a number.</msg>
     <msg name="issues.history.gadget.field.project.label">Projects or Filters</msg>
     <msg name="issues.history.gadget.field.project.description">Field is required.</msg>
     <msg name="issues.history.gadget.field.issue.label">Select Issues</msg>
