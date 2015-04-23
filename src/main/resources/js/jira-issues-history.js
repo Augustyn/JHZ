@@ -6,21 +6,29 @@ AMG.jhz.init = function (args) {
         config: {
             descriptor: function (args) {
                 var gadget = this;
+                var searchParam;
+                if (/^jql-/.test(this.getPref("Project")) || this.getPref("isPopup") === "true"){
+                    searchParam =
+                    {
+                        userpref: "projectOrFilterId",
+                        type: "hidden",
+                        value: gadgets.util.unescapeString(gadget.getPref("Project"))
+                    };
+                }
+                else{
+                    searchParam = AJS.gadget.fields.projectOrFilterPicker(gadget,"Project");
+                }
                 return {
                     theme: "long-label",
                     action: "/rest/issueshistoryresource/1.0/configuration/validate",
                     fields: [
-                        {
-                            userpref: "Project",
-                            class: "numField",
-                            value: gadget.getPref("Project"),
+                        jQuery.extend(true, {}, searchParam, {
                             label: gadget.getMsg("issues.history.gadget.field.project.label"),
-                            description: gadget.getMsg("issues.history.gadget.field.project.description"),
-                            type: "text"
-                        },
+                            description: gadget.getMsg("issues.history.gadget.field.project.description")
+                        }),
                         {
                             userpref: "Issues",
-                            class: "numField",
+                            "class": "numField",
                             value: gadget.getPref("Issues"),
                             label: gadget.getMsg("issues.history.gadget.field.issue.label"),
                             description: gadget.getMsg("issues.history.gadget.field.issue.description"),
@@ -61,7 +69,7 @@ AMG.jhz.init = function (args) {
                         },
                         {
                             userpref: "Previously",
-                            class: "numField",
+                            "class": "numField",
                             value: gadget.getPref("Previously"),
                             label: gadget.getMsg("issues.history.gadget.field.previously.label"),
                             description: gadget.getMsg("issues.history.gadget.field.previously.description"),

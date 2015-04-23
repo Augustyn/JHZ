@@ -13,11 +13,14 @@
                 JIRA
             </Param>
         </Optional>
+        <Optional feature="atlassian.util" />
         <Require feature="dynamic-height"/>
+        <Require feature="settitle"/>
         <Require feature="setprefs"/>
         <Require feature="views"/>
         <Require feature="oauthpopup"/>
         #oauth
+        #supportedLocales("gadget.common")
         <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/ALL_ALL.xml"/>
         <Locale lang="pl" country="PL"
                 messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/pl_PL.xml"/>
@@ -38,6 +41,7 @@
         <![CDATA[
             #requireResource("com.atlassian.gadgets.publisher:ajs-gadgets")
             #requireResource("net.amg.jira.plugins.jira-issues-history:jira-issues-history-resources")
+            #requireResource("com.atlassian.jira.gadgets:autocomplete")
             #includeResources()
             <script type="text/javascript">
                 var args = {};
@@ -45,7 +49,7 @@
                 try {
                    gadgets.util.registerOnLoadHandler(AMG.jhz.init(args));
                 } catch (e) {
-                    console.log("Unable to initialize gadget.",e);
+                    AJS.log("Unable to initialize gadget.",e);
                 }
             </script>
         ]]>

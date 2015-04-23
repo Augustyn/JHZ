@@ -31,4 +31,8 @@
     <msg name="gadget.common.reload">Refresh</msg>
     <msg name="gadget.common.save">Save</msg>
     <msg name="gadget.common.cancel">Cancel</msg>
+    <msg name="gadget.common.filterid.none.selected">No Filter/Project selected</msg>
+    <msg name="gadget.common.advanced.search">Advanced Search</msg>
+    <msg name="gadget.common.quick.find">Quick Find</msg>
+    <msg name="gadget.common.projects">Projects</msg>
 </messagebundle>
