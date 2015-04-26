@@ -24,6 +24,9 @@
         <Locale messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/ALL_ALL.xml"/>
         <Locale lang="pl" country="PL"
                 messages="__ATLASSIAN_BASE_URL__/download/resources/net.amg.jira.plugins.jira-issues-history/i18n/pl_PL.xml"/>
+        #set( $displayParameters = {"theme": "aui"} )
+        #set( $auiparams = {"controlHeaderClass": "aui-field-datepicker"} )
+        #customControlHeader($action $customField.id $customField.name true|false $displayParameters $auiparams)
     </ModulePrefs>
 
     <UserPref name="baseUrl" datatype="hidden" default_value="__ATLASSIAN_BASE_URL__"/>
@@ -35,7 +38,8 @@
     <UserPref name="Issues" datatype="hidden" required="true"/>
     <UserPref name="Period" datatype="hidden" required="true"/>
     <UserPref name="Previously" datatype="hidden"/>
-
+    <UserPref name="Version" datatype="hidden"/>
+    <UserPref name="Date" datatype="hidden"/>
 
     <Content type="html" view="profile">
         <![CDATA[

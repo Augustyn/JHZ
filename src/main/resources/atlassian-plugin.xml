@@ -25,6 +25,10 @@
         <resource type="download" name="jira-issues-history.js" location="/js/jira-issues-history.js"/>
         <resource type="download" name="images/" location="/images"/>
         <context>jira-issues-history</context>
+        <dependency>jira.webresources:calendar</dependency>
+        <dependency>jira.webresources:calendar-en</dependency>
+        <dependency>jira.webresources:calendar-pl</dependency>
+        <resource type="download" name="calendar.css" location="css/calendar.css" />
     </web-resource>
 
 
