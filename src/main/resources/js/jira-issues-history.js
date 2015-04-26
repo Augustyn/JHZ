@@ -85,15 +85,15 @@ AMG.jhz.init = function (args) {
                                     AJS.$("<input/>").attr({
                                         id: "date-picker",
                                         type: "text",
-                                        name: "date-picker"
-                                        //class: "text"
+                                        name: "date-picker",
+                                        "class": "text"
                                     }).val(gadget.getPref("Date"))
                                 );
                                 parentDiv.append(
                                     AJS.$("<button />").attr({
                                         id: "date-picker-button",
-                                        type: "button"
-                                        //class: "aui-icon icon-date"
+                                        type: "button",
+                                        "class": "aui-icon icon-date"
                                     }).val("date")
                                 );
                                 Calendar.setup({
