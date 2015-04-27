@@ -14,11 +14,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -65,8 +69,11 @@ public class IssuesHistoryResource {
         List<IssueRepresentation> issues = new ArrayList<>();
         for (Project project : projects) {
             try {
-                for (Issue issue : issueManager.getIssueObjects(issueManager.getIssueIdsForProject(project.getId()))) {
-                    issues.add(new IssueRepresentation(issue));
+                Collection<Long> idCollection = issueManager.getIssueIdsForProject(project.getId());
+                if (!idCollection.isEmpty()) {
+                    for (Issue issue : issueManager.getIssueObjects(idCollection)) {
+                        issues.add(new IssueRepresentation(issue));
+                    }
                 }
             } catch (GenericEntityException e) {
                 String message = "Unable to get Issue id for Project "+project;
@@ -81,6 +88,7 @@ public class IssuesHistoryResource {
     /**
      * Returns all Issues in Projects with given name, for which the requesting User has BROWSE Permission. Response is
      * an IssuesHistoryResourceModel in JSON format.
+     *
      * @param projectName of the Project containing requested issues
      * @param request
      * @return
@@ -104,8 +112,11 @@ public class IssuesHistoryResource {
         List<IssueRepresentation> issues = new ArrayList<>();
         for (Project project : projects) {
             try {
-                for (Issue issue : issueManager.getIssueObjects(issueManager.getIssueIdsForProject(project.getId()))) {
-                    issues.add(new IssueRepresentation(issue));
+                Collection<Long> idCollection = issueManager.getIssueIdsForProject(project.getId());
+                if (!idCollection.isEmpty()) {
+                    for (Issue issue : issueManager.getIssueObjects(idCollection)) {
+                        issues.add(new IssueRepresentation(issue));
+                    }
                 }
             } catch (GenericEntityException e) {
                 String message = "Unable to get Issue id for Project "+project;
