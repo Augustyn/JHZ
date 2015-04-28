@@ -75,6 +75,60 @@ AMG.jhz.init = function (args) {
                             description: gadget.getMsg("issues.history.gadget.field.previously.description"),
                             type: "text"
                         },
+                        {
+                            id: "Calendar",
+                            userpref: "Date",
+                            label: gadget.getMsg("issues.history.gadget.field.date.label"),
+                            type: "callbackBuilder",
+                            callback: function(parentDiv){
+                                parentDiv.append(
+                                    AJS.$("<input/>").attr({
+                                        id: "date-picker",
+                                        type: "text",
+                                        name: "date-picker",
+                                        "class": "text"
+                                    }).val(gadget.getPref("Date"))
+                                );
+                                parentDiv.append(
+                                    AJS.$("<button />").attr({
+                                        id: "date-picker-button",
+                                        type: "button",
+                                        "class": "aui-icon icon-date"
+                                    }).val("date")
+                                );
+                                Calendar.setup({
+                                    firstDay : 1,
+                                    inputField : 'date-picker',
+                                    button : 'date-picker-button',
+                                    align : 'Br',
+                                    singleClick : true,
+                                    showsTime : true,
+                                    useISO8601WeekNumbers : false,
+                                    ifFormat : '%d-%m-%Y'
+                                });
+                            }
+                        },
+                        {
+                            userpref: "Version",
+                            label: gadget.getMsg("issues.history.gadget.field.version.label"),
+                            selected: gadget.getPref("Version"),
+                            description: gadget.getMsg("issues.history.gadget.field.version.description"),
+                            type: "select",
+                            options: [
+                                {
+                                    label: gadget.getMsg("issues.history.gadget.field.version.option.All"),
+                                    value: "All versions"
+                                },
+                                {
+                                    label: gadget.getMsg("issues.history.gadget.field.version.option.Major"),
+                                    value: "Only major versions"
+                                },
+                                {
+                                    label: gadget.getMsg("issues.history.gadget.field.version.option.None"),
+                                    value: "None"
+                                }
+                            ]
+                        },
                         AJS.gadget.fields.nowConfigured()
                     ]
 
@@ -122,6 +176,15 @@ AMG.jhz.init = function (args) {
                     );
                 });
                 mainDiv.append(requestedIssueList);
+                mainDiv.append(
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.project.label")+gadget.getPref("Project")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.issue.label")+gadget.getPref("Issues")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.period.label")+gadget.getPref("Period")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.previously.label")+gadget.getPref("Previously")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.date.label")+gadget.getPref("Date")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.version.label")+gadget.getPref("Version")),
+                    AJS.$("<h1/>").text(gadget.getMsg("gadget.common.refresh.label")+gadget.getPref("refresh"))
+                );
                 gadget.getView().html(mainDiv);
             },
             args: [

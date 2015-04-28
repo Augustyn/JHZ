@@ -15,3 +15,5 @@
 - PIP-64 PIP-65 Naprawiono zapisywanie ustawień, dodano zasób walidujący konfigurację
 - PIP-65 Refactoring
 - PIP-66 Zmieniono pole project
+- PIP-87 Dodano pola Daty oraz Wersji + małe poprawki w bundle
+- PIP-87 Dodanie pliku calendar.css
