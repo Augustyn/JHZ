@@ -26,10 +26,10 @@ public enum FormField {
                         ERROR_PREFIX + "emptyField"));
             }
         }
-    }, PREVIOUSLY("Previously") {
+    }, DATE("Date") {
         public void validate(ErrorCollection errorCollection, String value) {
             if (!value.matches("\\d+") && !value.isEmpty()) {
-                errorCollection.addValidationError(new ValidationError(FormField.PREVIOUSLY.fieldName,
+                errorCollection.addValidationError(new ValidationError(FormField.DATE.fieldName,
                         ERROR_PREFIX + "mustBeNumeric"));
             }
         }

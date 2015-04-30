@@ -18,8 +18,6 @@
     <msg name="issues.history.gadget.field.period.option.Monthly">Miesięczny</msg>
     <msg name="issues.history.gadget.field.period.option.Quarterly">Kwartalny</msg>
     <msg name="issues.history.gadget.field.period.option.Yearly">Roczny</msg>
-    <msg name="issues.history.gadget.field.previously.label">Poprzednie dni:</msg>
-    <msg name="issues.history.gadget.field.previously.description">Dni (łącznie z dzisiejszym) jakie będą pokazane na wykresie.</msg>
     <msg name="issues.history.gadget.field.version.label">Wyświetl wersje:</msg>
     <msg name="issues.history.gadget.field.version.description">Dodaj do wykresu znaczniki, kiedy wypuszczono wersje.</msg>
     <msg name="issues.history.gadget.field.version.option.All">Wszystkie</msg>

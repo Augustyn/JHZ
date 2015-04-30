@@ -68,14 +68,6 @@ AMG.jhz.init = function (args) {
                             ]
                         },
                         {
-                            userpref: "Previously",
-                            "class": "numField",
-                            value: gadget.getPref("Previously"),
-                            label: gadget.getMsg("issues.history.gadget.field.previously.label"),
-                            description: gadget.getMsg("issues.history.gadget.field.previously.description"),
-                            type: "text"
-                        },
-                        {
                             id: "Calendar",
                             userpref: "Date",
                             label: gadget.getMsg("issues.history.gadget.field.date.label"),
@@ -85,7 +77,7 @@ AMG.jhz.init = function (args) {
                                     AJS.$("<input/>").attr({
                                         id: "date-picker",
                                         type: "text",
-                                        name: "date-picker",
+                                        name: "Date",
                                         "class": "text"
                                     }).val(gadget.getPref("Date"))
                                 );

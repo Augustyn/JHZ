@@ -18,8 +18,6 @@
     <msg name="issues.history.gadget.field.period.option.Monthly">Monthly</msg>
     <msg name="issues.history.gadget.field.period.option.Quarterly">Quarterly</msg>
     <msg name="issues.history.gadget.field.period.option.Yearly">Yearly</msg>
-    <msg name="issues.history.gadget.field.previously.label">Days Previously:</msg>
-    <msg name="issues.history.gadget.field.previously.description">Days (including today) to show in the graph.</msg>
     <msg name="issues.history.gadget.field.version.label">Display Versions:</msg>
     <msg name="issues.history.gadget.field.version.description">Show when versions were released on the chart.</msg>
     <msg name="issues.history.gadget.field.version.option.All">All versions</msg>
