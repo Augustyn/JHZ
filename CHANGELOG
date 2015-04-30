@@ -17,3 +17,4 @@
 - PIP-66 Zmieniono pole project
 - PIP-87 Dodano pola Daty oraz Wersji + małe poprawki w bundle
 - PIP-87 Dodanie pliku calendar.css
+- PIP-49 Naprawione błąd powodujący NPE
