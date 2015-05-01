@@ -29,7 +29,7 @@ public class ConfigurationResource {
      * @param project    value of Project field
      * @param issues     values of Issues field
      * @param period     value of Period field
-     * @param previously value of Previously field
+     * @param date
      * @return JAXB object encapsulating errors detected.
      */
     @Path("/validate")
@@ -37,12 +37,12 @@ public class ConfigurationResource {
     @AnonymousAllowed
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPrefsValidation(@QueryParam("Project") String project, @QueryParam("Issues") String issues
-            , @QueryParam("Period") String period, @QueryParam("Previously") String previously) {
+            , @QueryParam("Period") String period, @QueryParam("Date") String date) {
         Map<FormField, String> paramMap = new HashMap<>();
         paramMap.put(FormField.PROJECT, project);
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.PERIOD, period);
-        paramMap.put(FormField.PREVIOUSLY, previously);
+        paramMap.put(FormField.DATE, date);
         ErrorCollection errorCollection = validator.validate(paramMap);
         if (errorCollection.isEmpty()) {
             return Response.ok(new TextMessage("No input configuration errors found.")).build();
