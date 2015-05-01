@@ -88,6 +88,11 @@ AMG.jhz.init = function (args) {
                                         "class": "aui-icon icon-date"
                                     }).val("date")
                                 );
+                                parentDiv.append(
+                                    AJS.$("<div/>").attr({
+                                        "class": "description"
+                                    }).text(gadget.getMsg("issues.history.gadget.field.date.description"))
+                                );
                                 Calendar.setup({
                                     firstDay : 1,
                                     inputField : 'date-picker',

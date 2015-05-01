@@ -28,9 +28,17 @@ public enum FormField {
         }
     }, DATE("Date") {
         public void validate(ErrorCollection errorCollection, String value) {
-            if (!value.matches("\\d+") && !value.isEmpty()) {
+
+            if(value.isEmpty()){
                 errorCollection.addValidationError(new ValidationError(FormField.DATE.fieldName,
-                        ERROR_PREFIX + "mustBeNumeric"));
+                        ERROR_PREFIX + "emptyField"));
+            }else {
+                if (!value.matches("-?\\d{1,4}d") &&
+                        !value.matches("^[1-2]\\d{3}[/\\-[.]](0[1-9]|1[012])[/\\-[.]](0[1-9]|[12][0-9]|3[01])$") ) {
+
+                    errorCollection.addValidationError(new ValidationError(FormField.DATE.fieldName,
+                            ERROR_PREFIX + "wrongFormat"));
+                }
             }
         }
     }, PERIOD("Period") {
