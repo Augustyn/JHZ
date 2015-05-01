@@ -20,3 +20,4 @@
 - PIP-49 Naprawione błąd powodujący NPE
 - PIP-99 Poprawienie tytułu i dodanie opisu dla pola
 - PIP-100 Dodanie walidacji na połączone pole Data i Poprzednie dni + usunięcie linku do nikąd z tytułu gadżetu
+- PIP-63 Utworzono serwis wyszukujący

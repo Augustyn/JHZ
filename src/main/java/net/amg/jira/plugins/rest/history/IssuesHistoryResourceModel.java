@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * Represents a collection of issues created in accordance to user preferences.
+ * Represents a collection of issues requested by the gadget.
  */
 @XmlRootElement(name = "issues")
 @XmlAccessorType(XmlAccessType.FIELD)
