@@ -3,7 +3,7 @@ package ut.net.amg.jira.plugins.components;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import net.amg.jira.plugins.components.ValidatorImpl;
+import net.amg.jira.plugins.services.ValidatorImpl;
 
 import static org.mockito.Mockito.*;
 

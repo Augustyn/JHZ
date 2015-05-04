@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.rest.history;
+package net.amg.jira.plugins.rest.model;
 
 import com.atlassian.jira.issue.status.Status;
 

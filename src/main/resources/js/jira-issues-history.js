@@ -147,35 +147,6 @@ AMG.jhz.init = function (params) {
                 mainDiv.append(
                     AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.headers.allIssues"))
                 );
-                var issueList = AJS.$("<ul/>");
-                AJS.$(args.issuesData.issues).each(function () {
-                    issueList.append(
-                        AJS.$("<li/>").append(
-                            AJS.$("<a/>").attr({
-                                target: "_parent",
-                                title: gadgets.util.escapeString(this.key),
-                                href: gadget.getBaseUrl() + "/browse/" + this.key
-                            }).text(this.id + " " + this.key + " status:" + this.statusName)
-                        )
-                    );
-                });
-                mainDiv.append(issueList);
-                mainDiv.append(
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.headers.specificIssues") + " " + gadget.getPref("Project"))
-                );
-                var requestedIssueList = AJS.$("<ul/>");
-                AJS.$(args.requestedIssuesData.issues).each(function () {
-                    requestedIssueList.append(
-                        AJS.$("<li/>").append(
-                            AJS.$("<a/>").attr({
-                                target: "_parent",
-                                title: gadgets.util.escapeString(this.key),
-                                href: gadget.getBaseUrl() + "/browse/" + this.key
-                            }).text(this.id + " " + this.key + " status:" + this.statusName)
-                        )
-                    );
-                });
-                mainDiv.append(requestedIssueList);
                 mainDiv.append(
                     AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.project.label") + gadget.getPref("Project")),
                     AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.issue.label") + gadget.getPref("Issues")),
@@ -193,25 +164,6 @@ AMG.jhz.init = function (params) {
                     ajaxOptions: function () {
                         return {
                             url: "/rest/gadget/1.0/currentUser"
-                        };
-                    }
-                },
-                {
-                    key: "issuesData",
-                    ajaxOptions: function () {
-                        return {
-                            url: "/rest/issueshistoryresource/1.0/issues.json"
-                        };
-                    }
-                },
-                {
-                    key: "requestedIssuesData",
-                    ajaxOptions: function () {
-                        return {
-                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(this.getPref("Project")),
-                            error: function (msg) {
-                                gadget.showMessage("error", gadget.getMsg("issues.history.gadget.errors.emptyProjectOrFilter"), true, true);
-                            }
                         };
                     }
                 }

@@ -12,7 +12,7 @@
                 JIRA
             </Param>
         </Optional>
-        <Optional feature="atlassian.util" />
+        <Optional feature="atlassian.util"/>
         <Require feature="dynamic-height"/>
         <Require feature="settitle"/>
         <Require feature="setprefs"/>

@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.rest.history;
+package net.amg.jira.plugins.rest.model;
 
 import com.atlassian.jira.issue.Issue;
 
@@ -26,6 +26,7 @@ public class IssueRepresentation {
 
     /**
      * Extracts information required by the gadget from an Issue object.
+     *
      * @param issue
      */
     public IssueRepresentation(Issue issue) {

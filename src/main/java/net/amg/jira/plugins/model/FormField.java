@@ -1,7 +1,9 @@
-package net.amg.jira.plugins.components;
+package net.amg.jira.plugins.model;
 
-import net.amg.jira.plugins.rest.configuration.ErrorCollection;
-import net.amg.jira.plugins.rest.configuration.ValidationError;
+import net.amg.jira.plugins.rest.model.ErrorCollection;
+import net.amg.jira.plugins.rest.model.ValidationError;
+
+import java.util.regex.Pattern;
 
 /**
  * A set of field categories constituting gadget configuration.
@@ -9,33 +11,31 @@ import net.amg.jira.plugins.rest.configuration.ValidationError;
  */
 public enum FormField {
 
-    //TODO more detailed validation
-
     PROJECT("Project") {
         @Override
         public void validate(ErrorCollection errorCollection, String value) {
-            if (value.isEmpty()) {
+            if (value == null || value.isEmpty()) {
                 errorCollection.addValidationError(new ValidationError(FormField.PROJECT.fieldName,
-                        ERROR_PREFIX + "emptyField"));
+                        ERROR_PREFIX + EMPTY_FIELD));
+            } else if (!projectPattern.matcher(value).matches()) {
+                errorCollection.addValidationError(new ValidationError(FormField.PROJECT.fieldName,
+                        ERROR_PREFIX + "invalidValue"));
             }
         }
     }, ISSUES("Issues") {
         public void validate(ErrorCollection errorCollection, String value) {
-            if (value.isEmpty()) {
+            if (value == null || value.isEmpty()) {
                 errorCollection.addValidationError(new ValidationError(FormField.ISSUES.fieldName,
-                        ERROR_PREFIX + "emptyField"));
+                        ERROR_PREFIX + EMPTY_FIELD));
             }
         }
     }, DATE("Date") {
         public void validate(ErrorCollection errorCollection, String value) {
-
-            if(value.isEmpty()){
+            if (value == null || value.isEmpty()) {
                 errorCollection.addValidationError(new ValidationError(FormField.DATE.fieldName,
-                        ERROR_PREFIX + "emptyField"));
-            }else {
-                if (!value.matches("-?\\d{1,4}d") &&
-                        !value.matches("^[1-2]\\d{3}[/\\-[.]](0[1-9]|1[012])[/\\-[.]](0[1-9]|[12][0-9]|3[01])$") ) {
-
+                        ERROR_PREFIX + EMPTY_FIELD));
+            } else {
+                if (!daysBackPattern.matcher(value).matches() && !datePattern.matcher(value).matches()) {
                     errorCollection.addValidationError(new ValidationError(FormField.DATE.fieldName,
                             ERROR_PREFIX + "wrongFormat"));
                 }
@@ -43,14 +43,18 @@ public enum FormField {
         }
     }, PERIOD("Period") {
         public void validate(ErrorCollection errorCollection, String value) {
-            if (value.isEmpty()) {
+            if (value == null || value.isEmpty()) {
                 errorCollection.addValidationError(new ValidationError(FormField.PERIOD.fieldName,
-                        ERROR_PREFIX + "emptyField"));
+                        ERROR_PREFIX + EMPTY_FIELD));
             }
         }
     };
 
     private static final String ERROR_PREFIX = "issues.history.gadget.errors.";
+    private static final String EMPTY_FIELD = "emptyField";
+    public static final Pattern daysBackPattern = Pattern.compile("-?\\d{1,4}d", Pattern.CASE_INSENSITIVE);
+    public static final Pattern datePattern = Pattern.compile("^[1-2]\\d{3}[/\\-[.]](0[1-9]|1[012])[/\\-[.]](0[1-9]|[12][0-9]|3[01])$", Pattern.CASE_INSENSITIVE);
+    public static final Pattern projectPattern = Pattern.compile("(project-|filter-)\\d+", Pattern.CASE_INSENSITIVE);
 
     private final String fieldName;
 
@@ -60,8 +64,9 @@ public enum FormField {
 
     /**
      * Checks field value for correctness.
+     *
      * @param errorCollection container for detected errors
-     * @param value checked
+     * @param value           checked
      */
     public abstract void validate(ErrorCollection errorCollection, String value);
 }

@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.rest.history;
+package net.amg.jira.plugins.rest.model;
 
 import com.atlassian.jira.issue.status.Status;
 
@@ -15,7 +15,7 @@ import java.util.HashSet;
  */
 @XmlRootElement(name = "statuses")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class StatusRepresentations {
+public class StatusesResourceModel {
 
     @XmlElement
     private Collection<StatusRepresentation> statuses;
@@ -25,7 +25,7 @@ public class StatusRepresentations {
      *
      * @param statusTypes requested by gadget
      */
-    public StatusRepresentations(Iterable<Status> statusTypes) {
+    public StatusesResourceModel(Iterable<Status> statusTypes) {
         this.statuses = new HashSet<StatusRepresentation>();
         for (Status status : statusTypes) {
             this.statuses.add(new StatusRepresentation(status));

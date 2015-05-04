@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.components;
+package net.amg.jira.plugins.services;
 
 import com.atlassian.jira.bc.config.ConstantsService;
 import com.atlassian.jira.issue.Issue;
@@ -8,7 +8,6 @@ import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.jql.builder.JqlClauseBuilder;
 import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.util.InjectableComponent;
 import com.atlassian.jira.web.bean.PagerFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Implementation of SearchService that uses Apache Lucene.
@@ -27,18 +25,18 @@ import java.util.regex.Pattern;
 public class SearchServiceImpl implements SearchService {
 
     private static final Logger log = LoggerFactory.getLogger(SearchServiceImpl.class);
-    private static final Pattern datePattern = Pattern.compile("\\d{4}[-\\.\\/]\\d{1,2}[-\\.\\/]\\d{1,2}", Pattern.CASE_INSENSITIVE);
-    private static final Pattern daysPattern = Pattern.compile("-?\\d{1,4}d", Pattern.CASE_INSENSITIVE);
 
-    private JiraAuthenticationContext jiraAuthenticationContext;
-    private SearchProvider searchProvider;
-    private ConstantsService constantsService;
+    private final JiraAuthenticationContext jiraAuthenticationContext;
+    private final SearchProvider searchProvider;
+    private final ConstantsService constantsService;
+    private final Validator validator;
     private JqlClauseBuilder jqlClauseBuilder;
 
-    public SearchServiceImpl(JiraAuthenticationContext authenticationContext, SearchProvider searchProvider, ConstantsService constantsService) {
+    public SearchServiceImpl(JiraAuthenticationContext authenticationContext, SearchProvider searchProvider, ConstantsService constantsService, Validator validator) {
         this.jiraAuthenticationContext = authenticationContext;
         this.searchProvider = searchProvider;
         this.constantsService = constantsService;
+        this.validator = validator;
     }
 
     @Override
@@ -48,42 +46,38 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<Issue> findIssues(String projectOrFilter, String issueTypes, String daysPreviously)
-            throws SearchException, InvalidPreferenceException, ParseException {
+            throws SearchException, ParseException {
         jqlClauseBuilder = JqlQueryBuilder.newBuilder().where();
         resolveProjectOrFilter(projectOrFilter);
+        jqlClauseBuilder.and();
         resolveIssueTypes(issueTypes);
+        jqlClauseBuilder.and();
         resolveDaysPreviously(daysPreviously);
         return searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
                 PagerFilter.getUnlimitedFilter()).getIssues();
     }
 
-    private void resolveProjectOrFilter(String projectOrFilter) throws InvalidPreferenceException {
-        if (projectOrFilter.startsWith("project")) {
+    private void resolveProjectOrFilter(String projectOrFilter) {
+        if (validator.checkIfProject(projectOrFilter)) {
             jqlClauseBuilder.project(projectOrFilter.split("-")[1]);
-        } else if (projectOrFilter.startsWith("filter")) {
-            jqlClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
         } else {
-            throw new InvalidPreferenceException("Invalid projectOrFilter format:" + projectOrFilter);
+            jqlClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
         }
-        jqlClauseBuilder.and();
     }
 
     private void resolveIssueTypes(String issueTypes) {
-        //TODO issue types parsing
-        jqlClauseBuilder.status("open", "resolved").and();
+        jqlClauseBuilder.status(issueTypes.split("\\|"));
     }
 
-    private void resolveDaysPreviously(String daysPreviously) throws ParseException, InvalidPreferenceException {
-        Date date;
-        if (datePattern.matcher(daysPreviously).matches()) {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(daysPreviously.replace("/", "-").replace(".", "-"));
-        } else if (daysPattern.matcher(daysPreviously).matches()) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_YEAR, -Integer.parseInt(daysPreviously.replaceAll("[d-]", "")));
-            date = calendar.getTime();
+    private void resolveDaysPreviously(String date) throws ParseException {
+        Date beginningDate;
+        if (validator.checkIfDate(date)) {
+            beginningDate = new SimpleDateFormat("yyyy-MM-dd").parse(date.replace("/", "-").replace(".", "-"));
         } else {
-            throw new InvalidPreferenceException("Invalid daysPreviously format:" + daysPreviously);
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_YEAR, -Integer.parseInt(date.replaceAll("[d-]", "")));
+            beginningDate = calendar.getTime();
         }
-        jqlClauseBuilder.createdAfter(date);
+        jqlClauseBuilder.createdAfter(beginningDate);
     }
 }

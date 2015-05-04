@@ -1,9 +1,13 @@
-package net.amg.jira.plugins.rest.configuration;
+package net.amg.jira.plugins.rest.controller;
 
 import com.atlassian.jira.rest.api.messages.TextMessage;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import net.amg.jira.plugins.components.FormField;
-import net.amg.jira.plugins.components.Validator;
+import com.google.gson.Gson;
+import net.amg.jira.plugins.model.FormField;
+import net.amg.jira.plugins.rest.model.ErrorCollection;
+import net.amg.jira.plugins.services.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,14 +26,16 @@ import java.util.Map;
 @Path("/configuration")
 public class ConfigurationResource {
 
-    Validator validator;
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationResource.class);
+
+    private Validator validator;
 
     /**
      * Accepts field values and checks the configuration for errors.
      *
-     * @param project    value of Project field
-     * @param issues     values of Issues field
-     * @param period     value of Period field
+     * @param project value of Project field
+     * @param issues  values of Issues field
+     * @param period  value of Period field
      * @param date
      * @return JAXB object encapsulating errors detected.
      */
@@ -44,10 +51,15 @@ public class ConfigurationResource {
         paramMap.put(FormField.PERIOD, period);
         paramMap.put(FormField.DATE, date);
         ErrorCollection errorCollection = validator.validate(paramMap);
+        Gson gson = new Gson();
         if (errorCollection.isEmpty()) {
-            return Response.ok(new TextMessage("No input configuration errors found.")).build();
+            return Response.ok(gson.toJson(new TextMessage("No input configuration errors found."))).build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity(errorCollection).build();
+            String timestamp = "TIMESTAMP: " +
+                    new java.text.SimpleDateFormat("MM/dd/yyyy h:mm:ss a").format(new Date());
+            log.error(timestamp, "Invalid request parameters", errorCollection);
+            return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(timestamp))
+                    .entity(gson.toJson(errorCollection)).build();
         }
     }
 
