@@ -146,7 +146,7 @@ public class IssuesHistoryResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/issues/history")
+    @Path("/history")
     public Response getIssuesHistory(@QueryParam("Project") String projectOrFilter, @QueryParam("Issues") String issues
             , @QueryParam("Previously") String previously) {
         List<Issue> issueList = null;
@@ -172,7 +172,7 @@ public class IssuesHistoryResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/issues/statuses")
+    @Path("/statuses")
     public Response getStatusTypes() {
         Collection<Status> allStatuses = searchService.findAllStatuses();
         Gson gson = new Gson();

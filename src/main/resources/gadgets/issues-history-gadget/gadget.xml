@@ -34,7 +34,7 @@
     <UserPref name="refresh" datatype="hidden" default_value="false"/>
 
     <UserPref name="Project" datatype="hidden" required="true"/>
-    <UserPref name="Issues" datatype="hidden" required="true"/>
+    <UserPref name="Issues" datatype="select" required="true"/>
     <UserPref name="Period" datatype="hidden" required="true"/>
     <UserPref name="Version" datatype="hidden"/>
     <UserPref name="Date" datatype="hidden"/>

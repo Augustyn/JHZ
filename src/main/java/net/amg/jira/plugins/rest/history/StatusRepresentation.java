@@ -15,7 +15,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class StatusRepresentation {
 
     @XmlElement
-    private String name;
+    private String value;
+
+    @XmlElement
+    private String label;
+
 
     /**
      * Extracts required attributes from the given JIRA status.
@@ -23,7 +27,8 @@ public class StatusRepresentation {
      * @param status
      */
     public StatusRepresentation(Status status) {
-        this.name = status.getName();
+        this.value = status.getName();
+        this.label = status.getNameTranslation();
     }
 
 }
