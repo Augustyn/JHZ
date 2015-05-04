@@ -8,16 +8,13 @@
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
     </plugin-info>
-
     <!-- add our i18n resource -->
     <resource type="download" name="i18n/ALL_ALL.xml" location="gadgets/issues-history-gadget/i18n/ALL_ALL.xml">
         <param name="content-type" value="text/xml; charset=UTF-8"/>
     </resource>
-
     <resource type="download" name="i18n/pl_PL.xml" location="gadgets/issues-history-gadget/i18n/pl_PL.xml">
         <param name="content-type" value="text/xml; charset=UTF-8"/>
     </resource>
-
     <!-- add our web resources -->
     <web-resource key="jira-issues-history-resources" name="jira-issues-history Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
@@ -28,36 +25,35 @@
         <dependency>jira.webresources:calendar</dependency>
         <dependency>jira.webresources:calendar-en</dependency>
         <dependency>jira.webresources:calendar-pl</dependency>
-        <resource type="download" name="calendar.css" location="css/calendar.css" />
+        <resource type="download" name="calendar.css" location="css/calendar.css"/>
     </web-resource>
-
-
-    <!-- publish our component -->
-    <component key="myPluginComponent" class="net.amg.jira.plugins.MyPluginComponentImpl" public="true">
-        <interface>net.amg.jira.plugins.MyPluginComponent</interface>
-    </component>
-
     <!-- import from the product container -->
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
-
     <rest name="Issues History Resource" i18n-name-key="issues-history-resource.name" key="issues-history-resource"
           path="/issueshistoryresource" version="1.0">
         <description key="issues-history-resource.description">The Issues History Resource Plugin</description>
     </rest>
-
     <gadget name="issues-history-gadget" i18n-name-key="gadget.name" key="issues-history-gadget"
             location="gadgets/issues-history-gadget/gadget.xml">
         <description key="issues-history-gadget.description">The issues-history-gadget Plugin</description>
     </gadget>
-
     <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
     <component-import key="permissionManager" interface="com.atlassian.jira.security.PermissionManager"/>
     <component-import key="userUtil" interface="com.atlassian.jira.user.util.UserUtil"/>
     <component-import key="issueManager" interface="com.atlassian.jira.issue.IssueManager"/>
+    <component-import key="jiraAuthenticationContext"
+                      interface="com.atlassian.jira.security.JiraAuthenticationContext"/>
+    <component-import key="searchProvider" interface="com.atlassian.jira.issue.search.SearchProvider"/>
+    <component-import key="constantsService" interface="com.atlassian.jira.bc.config.ConstantsService"/>
 
-    <component key="validator-impl" class="net.amg.jira.plugins.components.ValidatorImpl" name="Validator Impl" i18n-name-key="validator-impl.name">
+    <component key="validator-impl" class="net.amg.jira.plugins.services.ValidatorImpl" name="Validator Impl"
+               i18n-name-key="validator-impl.name">
         <description key="validator-impl.description">The Validator Impl Plugin</description>
-        <interface>net.amg.jira.plugins.components.Validator</interface>
+        <interface>net.amg.jira.plugins.services.Validator</interface>
     </component>
-
+    <component key="search-service-impl" class="net.amg.jira.plugins.services.SearchServiceImpl"
+               name="Search Service Impl" i18n-name-key="search-service-impl.name">
+        <description key="search-service-impl.description">The SearchService Impl Plugin</description>
+        <interface>net.amg.jira.plugins.services.SearchService</interface>
+    </component>
 </atlassian-plugin>

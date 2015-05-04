@@ -1,11 +1,10 @@
-package net.amg.jira.plugins.components;
+package net.amg.jira.plugins.services;
 
-import net.amg.jira.plugins.rest.configuration.ErrorCollection;
-import net.amg.jira.plugins.rest.configuration.ValidationError;
+import net.amg.jira.plugins.model.FormField;
+import net.amg.jira.plugins.rest.model.ErrorCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,8 +21,18 @@ public class ValidatorImpl implements Validator {
     public ErrorCollection validate(Map<FormField, String> paramMap) {
         ErrorCollection errorCollection = new ErrorCollection();
         for (Map.Entry<FormField, String> entry : paramMap.entrySet()) {
-            entry.getKey().validate(errorCollection,entry.getValue());
+            entry.getKey().validate(errorCollection, entry.getValue());
         }
         return errorCollection;
+    }
+
+    @Override
+    public boolean checkIfDate(String value) {
+        return FormField.datePattern.matcher(value).matches();
+    }
+
+    @Override
+    public boolean checkIfProject(String value) {
+        return value.startsWith("project-");
     }
 }

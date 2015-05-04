@@ -1,13 +1,13 @@
 jQuery.namespace("AMG.jhz");
-AMG.jhz.init = function (args) {
+AMG.jhz.init = function (params) {
     var gadget = AJS.Gadget({
-        baseUrl: args.baseUrl,
+        baseUrl: params.baseUrl,
         useOauth: "/rest/gadget/1.0/currentUser",
         config: {
             descriptor: function (args) {
                 var gadget = this;
                 var searchParam;
-                if (/^jql-/.test(this.getPref("Project")) || this.getPref("isPopup") === "true"){
+                if (/^jql-/.test(this.getPref("Project")) || this.getPref("isPopup") === "true") {
                     searchParam =
                     {
                         userpref: "projectOrFilterId",
@@ -15,8 +15,8 @@ AMG.jhz.init = function (args) {
                         value: gadgets.util.unescapeString(gadget.getPref("Project"))
                     };
                 }
-                else{
-                    searchParam = AJS.gadget.fields.projectOrFilterPicker(gadget,"Project");
+                else {
+                    searchParam = AJS.gadget.fields.projectOrFilterPicker(gadget, "Project");
                 }
                 return {
                     theme: "long-label",
@@ -28,11 +28,11 @@ AMG.jhz.init = function (args) {
                         }),
                         {
                             userpref: "Issues",
-                            "class": "numField",
-                            value: gadget.getPref("Issues"),
+                            selected: gadget.getPref("Issues"),
                             label: gadget.getMsg("issues.history.gadget.field.issue.label"),
                             description: gadget.getMsg("issues.history.gadget.field.issue.description"),
-                            type: "text"
+                            type: "multiselect",
+                            options: args.statuses.statuses
                         },
                         {
                             userpref: "Period",
@@ -68,24 +68,16 @@ AMG.jhz.init = function (args) {
                             ]
                         },
                         {
-                            userpref: "Previously",
-                            "class": "numField",
-                            value: gadget.getPref("Previously"),
-                            label: gadget.getMsg("issues.history.gadget.field.previously.label"),
-                            description: gadget.getMsg("issues.history.gadget.field.previously.description"),
-                            type: "text"
-                        },
-                        {
                             id: "Calendar",
                             userpref: "Date",
                             label: gadget.getMsg("issues.history.gadget.field.date.label"),
                             type: "callbackBuilder",
-                            callback: function(parentDiv){
+                            callback: function (parentDiv) {
                                 parentDiv.append(
                                     AJS.$("<input/>").attr({
                                         id: "date-picker",
                                         type: "text",
-                                        name: "date-picker",
+                                        name: "Date",
                                         "class": "text"
                                     }).val(gadget.getPref("Date"))
                                 );
@@ -96,15 +88,20 @@ AMG.jhz.init = function (args) {
                                         "class": "aui-icon icon-date"
                                     }).val("date")
                                 );
+                                parentDiv.append(
+                                    AJS.$("<div/>").attr({
+                                        "class": "description"
+                                    }).text(gadget.getMsg("issues.history.gadget.field.date.description"))
+                                );
                                 Calendar.setup({
-                                    firstDay : 1,
-                                    inputField : 'date-picker',
-                                    button : 'date-picker-button',
-                                    align : 'Br',
-                                    singleClick : true,
-                                    showsTime : true,
-                                    useISO8601WeekNumbers : false,
-                                    ifFormat : '%d-%m-%Y'
+                                    firstDay: 1,
+                                    inputField: 'date-picker',
+                                    button: 'date-picker-button',
+                                    align: 'Br',
+                                    singleClick: true,
+                                    showsTime: true,
+                                    useISO8601WeekNumbers: false,
+                                    ifFormat: '%Y-%m-%d'
                                 });
                             }
                         },
@@ -131,9 +128,12 @@ AMG.jhz.init = function (args) {
                         },
                         AJS.gadget.fields.nowConfigured()
                     ]
-
                 }
-            }
+            },
+            args: [{
+                key: "statuses",
+                ajaxOptions: "/rest/issueshistoryresource/1.0/issues/statuses.json"
+            }]
         },
         view: {
             enableReload: true,
@@ -147,43 +147,14 @@ AMG.jhz.init = function (args) {
                 mainDiv.append(
                     AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.headers.allIssues"))
                 );
-                var issueList = AJS.$("<ul/>");
-                AJS.$(args.issuesData.issues).each(function () {
-                    issueList.append(
-                        AJS.$("<li/>").append(
-                            AJS.$("<a/>").attr({
-                                target: "_parent",
-                                title: gadgets.util.escapeString(this.key),
-                                href: gadget.getBaseUrl() + "/browse/" + this.key
-                            }).text(this.id + " " + this.key + " status:" + this.statusName)
-                        )
-                    );
-                });
-                mainDiv.append(issueList);
                 mainDiv.append(
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.headers.specificIssues") + " " + gadget.getPref("Project"))
-                );
-                var requestedIssueList = AJS.$("<ul/>");
-                AJS.$(args.requestedIssuesData.issues).each(function () {
-                    requestedIssueList.append(
-                        AJS.$("<li/>").append(
-                            AJS.$("<a/>").attr({
-                                target: "_parent",
-                                title: gadgets.util.escapeString(this.key),
-                                href: gadget.getBaseUrl() + "/browse/" + this.key
-                            }).text(this.id + " " + this.key + " status:" + this.statusName)
-                        )
-                    );
-                });
-                mainDiv.append(requestedIssueList);
-                mainDiv.append(
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.project.label")+gadget.getPref("Project")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.issue.label")+gadget.getPref("Issues")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.period.label")+gadget.getPref("Period")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.previously.label")+gadget.getPref("Previously")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.date.label")+gadget.getPref("Date")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.version.label")+gadget.getPref("Version")),
-                    AJS.$("<h1/>").text(gadget.getMsg("gadget.common.refresh.label")+gadget.getPref("refresh"))
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.project.label") + gadget.getPref("Project")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.issue.label") + gadget.getPref("Issues")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.period.label") + gadget.getPref("Period")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.previously.label") + gadget.getPref("Previously")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.date.label") + gadget.getPref("Date")),
+                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.version.label") + gadget.getPref("Version")),
+                    AJS.$("<h1/>").text(gadget.getMsg("gadget.common.refresh.label") + gadget.getPref("refresh"))
                 );
                 gadget.getView().html(mainDiv);
             },
@@ -193,25 +164,6 @@ AMG.jhz.init = function (args) {
                     ajaxOptions: function () {
                         return {
                             url: "/rest/gadget/1.0/currentUser"
-                        };
-                    }
-                },
-                {
-                    key: "issuesData",
-                    ajaxOptions: function () {
-                        return {
-                            url: "/rest/issueshistoryresource/1.0/issues.json"
-                        };
-                    }
-                },
-                {
-                    key: "requestedIssuesData",
-                    ajaxOptions: function () {
-                        return {
-                            url: "/rest/issueshistoryresource/1.0/issues/byProjectName/" + encodeURI(this.getPref("Project")),
-                            error: function (msg) {
-                                gadget.showMessage("error", gadget.getMsg("issues.history.gadget.errors.emptyProjectOrFilter"), true, true);
-                            }
                         };
                     }
                 }

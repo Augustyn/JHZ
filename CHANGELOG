@@ -18,3 +18,8 @@
 - PIP-87 Dodano pola Daty oraz Wersji + małe poprawki w bundle
 - PIP-87 Dodanie pliku calendar.css
 - PIP-49 Naprawione błąd powodujący NPE
+- PIP-99 Poprawienie tytułu i dodanie opisu dla pola
+- PIP-100 Dodanie walidacji na połączone pole Data i Poprzednie dni + usunięcie linku do nikąd z tytułu gadżetu
+- PIP-63 Utworzono serwis wyszukujący
+- PIP-75 Utworzono pole multiselect zawierające statusy
+- PIP-102 Refaktoring + usunięcie zbędnych zasobów REST

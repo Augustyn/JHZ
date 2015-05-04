@@ -1,4 +1,6 @@
-package net.amg.jira.plugins.rest.history;
+package net.amg.jira.plugins.rest.model;
+
+import com.atlassian.jira.issue.Issue;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * Represents a collection of issues created in accordance to user preferences.
+ * Represents a collection of issues requested by the gadget.
  */
 @XmlRootElement(name = "issues")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -19,12 +21,13 @@ public class IssuesHistoryResourceModel {
 
     /**
      * Encapsulates IssueRepresentation objects.
+     *
      * @param issues requested by gadget
      */
-    public IssuesHistoryResourceModel(Iterable<IssueRepresentation> issues) {
+    public IssuesHistoryResourceModel(Iterable<Issue> issues) {
         this.issues = new HashSet<IssueRepresentation>();
-        for (IssueRepresentation representation : issues) {
-            this.issues.add(representation);
+        for (Issue issue : issues) {
+            this.issues.add(new IssueRepresentation(issue));
         }
     }
 

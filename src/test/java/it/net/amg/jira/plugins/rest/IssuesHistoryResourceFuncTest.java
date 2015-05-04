@@ -1,11 +1,11 @@
 package it.net.amg.jira.plugins.rest;
 
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import net.amg.jira.plugins.rest.history.IssuesHistoryResourceModel;
+import net.amg.jira.plugins.rest.model.IssuesHistoryResourceModel;
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IssuesHistoryResourceFuncTest {
 

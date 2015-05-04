@@ -3,14 +3,11 @@ package it.net.amg.jira.plugins.components;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import net.amg.jira.plugins.services.ValidatorImpl;
-
-import static org.mockito.Mockito.*;
 
 /**
  * @since 3.5
  */
-public class ValidatorImplFuncTest {
+public class SearchServiceImplFuncTest {
 
     @Before
     public void setup() {
@@ -25,9 +22,9 @@ public class ValidatorImplFuncTest {
     @Test(expected=Exception.class)
     public void testSomething() throws Exception {
 
-        //ValidatorImpl testClass = new ValidatorImpl();
+        //SearchServiceImpl testClass = new SearchServiceImpl();
 
-        throw new Exception("ValidatorImpl has no tests!");
+        throw new Exception("SearchServiceImpl has no tests!");
 
     }
 
