@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Represents a collection of issues requested by the gadget.
@@ -17,25 +18,27 @@ import java.util.HashSet;
 public class IssuesHistoryResourceModel {
 
     @XmlElement
-    private Collection<IssueRepresentation> issues;
+    private Collection<IssueGroup> issueGroups;
 
     /**
      * Encapsulates IssueRepresentation objects.
      *
      * @param issues requested by gadget
      */
-    public IssuesHistoryResourceModel(Iterable<Issue> issues) {
-        this.issues = new HashSet<IssueRepresentation>();
-        for (Issue issue : issues) {
-            this.issues.add(new IssueRepresentation(issue));
+    public IssuesHistoryResourceModel(List<List<Issue>> issues) {
+        this.issueGroups = new HashSet<>();
+        int groupCounter=0;
+        for (List<Issue> issueGroup : issues) {
+            this.issueGroups.add(new IssueGroup(issueGroup,groupCounter));
+            groupCounter++;
         }
     }
 
-    public Collection<IssueRepresentation> getIssues() {
-        return issues;
+    public Collection<IssueGroup> getIssueGroups() {
+        return issueGroups;
     }
 
-    public void setIssues(Collection<IssueRepresentation> issues) {
-        this.issues = issues;
+    public void setIssueGroups(Collection<IssueGroup> issueGroups) {
+        this.issueGroups = issueGroups;
     }
 }

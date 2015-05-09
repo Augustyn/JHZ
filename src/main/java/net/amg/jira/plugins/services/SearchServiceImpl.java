@@ -9,21 +9,21 @@ import com.atlassian.jira.jql.builder.JqlClauseBuilder;
 import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.web.bean.PagerFilter;
+import com.atlassian.query.Query;
+import com.atlassian.query.clause.Clause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implementation of SearchService that uses Apache Lucene.
  */
 public class SearchServiceImpl implements SearchService {
 
+    private final static int ISSUE_GROUP_COUNT = 5;
     private static final Logger log = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     private final JiraAuthenticationContext jiraAuthenticationContext;
@@ -45,31 +45,32 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<Issue> findIssues(String projectOrFilter, String issueTypes, String daysPreviously)
+    public List<List<Issue>> findIssues(String projectOrFilter, String issueTypes, String date)
             throws SearchException, ParseException {
-        jqlClauseBuilder = JqlQueryBuilder.newBuilder().where();
-        resolveProjectOrFilter(projectOrFilter);
-        jqlClauseBuilder.and();
-        resolveIssueTypes(issueTypes);
-        jqlClauseBuilder.and();
-        resolveDaysPreviously(daysPreviously);
-        return searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
-                PagerFilter.getUnlimitedFilter()).getIssues();
-    }
-
-    private void resolveProjectOrFilter(String projectOrFilter) {
+        Date beginningDate = resolveDaysPreviously(date);
+        String[][] groupedIssueTypes = groupIssueNamesByIndex(issueTypes);
+        JqlClauseBuilder commonClauseBuilder = JqlQueryBuilder.newBuilder().where().createdAfter(beginningDate).and();
         if (validator.checkIfProject(projectOrFilter)) {
-            jqlClauseBuilder.project(projectOrFilter.split("-")[1]);
+            commonClauseBuilder.project(projectOrFilter.split("-")[1]);
         } else {
-            jqlClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
+            commonClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
         }
+        Query commonQuery = commonClauseBuilder.buildQuery();
+        List<List<Issue>> issueLists = new ArrayList<>();
+        for (int i = 0; i < ISSUE_GROUP_COUNT; i++) {
+            if (groupedIssueTypes[i].length > 0) {
+                jqlClauseBuilder = JqlQueryBuilder.newBuilder(commonQuery).where().and().status(groupedIssueTypes[i]);
+                System.out.println(jqlClauseBuilder.buildQuery().toString());
+                issueLists.add(searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
+                        PagerFilter.getUnlimitedFilter()).getIssues());
+            } else {
+                issueLists.add(new ArrayList<Issue>());
+            }
+        }
+        return issueLists;
     }
 
-    private void resolveIssueTypes(String issueTypes) {
-        jqlClauseBuilder.status(issueTypes.split("\\|"));
-    }
-
-    private void resolveDaysPreviously(String date) throws ParseException {
+    private Date resolveDaysPreviously(String date) throws ParseException {
         Date beginningDate;
         if (validator.checkIfDate(date)) {
             beginningDate = new SimpleDateFormat("yyyy-MM-dd").parse(date.replace("/", "-").replace(".", "-"));
@@ -78,6 +79,22 @@ public class SearchServiceImpl implements SearchService {
             calendar.add(Calendar.DAY_OF_YEAR, -Integer.parseInt(date.replaceAll("[d-]", "")));
             beginningDate = calendar.getTime();
         }
-        jqlClauseBuilder.createdAfter(beginningDate);
+        return beginningDate;
+    }
+
+    private String[][] groupIssueNamesByIndex(String issues) {
+        String[] ungroupedTypes = issues.split("\\|");
+        String[][] typeGroups = new String[ISSUE_GROUP_COUNT][];
+        for (int i = 0; i < ISSUE_GROUP_COUNT; i++) {
+            List<String> typeGroupList = new ArrayList<>();
+            for (String issue : ungroupedTypes) {
+                if (issue.endsWith(String.valueOf(i))) {
+                    typeGroupList.add(issue.replace(String.valueOf(i), ""));
+                }
+            }
+            typeGroups[i] = new String[typeGroupList.size()];
+            typeGroupList.toArray(typeGroups[i]);
+        }
+        return typeGroups;
     }
 }

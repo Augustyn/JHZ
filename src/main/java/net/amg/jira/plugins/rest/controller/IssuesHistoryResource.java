@@ -13,10 +13,7 @@ import net.amg.jira.plugins.services.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
@@ -53,7 +50,7 @@ public class IssuesHistoryResource {
      *                issue history
      * @return Response with issue history (IssueHistoryResourceModel) in JSON format.
      */
-    @GET
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/history")
     public Response getIssuesHistory(@QueryParam("Project") String project, @QueryParam("Issues") String issues
@@ -67,7 +64,7 @@ public class IssuesHistoryResource {
         if (!errorCollection.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorCollection)).build();
         }
-        List<Issue> issueList = null;
+        List<List<Issue>> issueList = null;
         try {
             issueList = searchService.findIssues(project, issues, date);
         } catch (SearchException | ParseException e) {

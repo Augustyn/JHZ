@@ -1,4 +1,11 @@
 jQuery.namespace("AMG.jhz");
+AMG.jhz.appendStatusesValue = function (statuses, index) {
+    var statusGroup = JSON.parse(JSON.stringify(statuses));
+    for (var i = 0, len = statusGroup.length; i < len; i++) {
+        statusGroup[i].value = statusGroup[i].label.concat(index);
+    }
+    return statusGroup;
+}
 AMG.jhz.init = function (params) {
     var gadget = AJS.Gadget({
         baseUrl: params.baseUrl,
@@ -32,7 +39,39 @@ AMG.jhz.init = function (params) {
                             label: gadget.getMsg("issues.history.gadget.field.issue.label"),
                             description: gadget.getMsg("issues.history.gadget.field.issue.description"),
                             type: "multiselect",
-                            options: args.statuses.statuses
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "0")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "1")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "2")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "3")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "4")
                         },
                         {
                             userpref: "Period",
