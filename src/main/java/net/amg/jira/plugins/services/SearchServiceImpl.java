@@ -60,7 +60,6 @@ public class SearchServiceImpl implements SearchService {
         for (int i = 0; i < ISSUE_GROUP_COUNT; i++) {
             if (groupedIssueTypes[i].length > 0) {
                 jqlClauseBuilder = JqlQueryBuilder.newBuilder(commonQuery).where().and().status(groupedIssueTypes[i]);
-                System.out.println(jqlClauseBuilder.buildQuery().toString());
                 issueLists.add(searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
                         PagerFilter.getUnlimitedFilter()).getIssues());
             } else {
