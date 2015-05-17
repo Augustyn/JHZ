@@ -33,4 +33,13 @@ public interface SearchService {
      */
     Collection<Status> findAllStatuses();
 
+    
+     /**
+     * Finds all issues from chosen project or filter
+     * 
+     * @param projectOrFilter id of project or filter, should start with 'project-' or 'filter-'
+     * @return List of issues
+     * @throws SearchException thrown by Lucene SearchProvider
+     */
+    List<Issue> findAllIssues(String projectOrFilter) throws SearchException;
 }

@@ -96,4 +96,18 @@ public class SearchServiceImpl implements SearchService {
         }
         return typeGroups;
     }
+    
+    @Override
+    public List<Issue> findAllIssues(String projectOrFilter) throws SearchException {
+        JqlClauseBuilder commonClauseBuilder = JqlQueryBuilder.newBuilder().where();
+        if (validator.checkIfProject(projectOrFilter)) {
+            commonClauseBuilder.project(projectOrFilter.split("-")[1]);
+        } else {
+            commonClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
+        }
+        Query commonQuery = commonClauseBuilder.buildQuery();
+        
+        return searchProvider.search(commonQuery, jiraAuthenticationContext.getUser(),
+                        PagerFilter.getUnlimitedFilter()).getIssues();
+    }
 }
