@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.model.charting;
+package net.amg.jira.plugins.services;
 
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
@@ -18,7 +18,6 @@ import java.awt.Color;
 import java.awt.geom.Ellipse2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
-import net.amg.jira.plugins.services.SearchService;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.ValueMarker;
@@ -45,9 +43,9 @@ import org.slf4j.LoggerFactory;
  * Class responsible for generating chart using JFreeChart
  * @author jarek
  */
-public class JiraChart {
+public class JiraChartService {
 
-    private final static Logger logger = LoggerFactory.getLogger(JiraChart.class);
+    private final static Logger logger = LoggerFactory.getLogger(JiraChartService.class);
 
     
     private final VersionManager versionManager;
@@ -57,7 +55,7 @@ public class JiraChart {
     private final ProjectManager projectManager;
 
     
-    public JiraChart(SearchProvider searchProvider, VersionManager versionManager,
+    public JiraChartService(SearchProvider searchProvider, VersionManager versionManager,
             SearchService searchService, TimeZoneManager timeZoneManager,
             ChangeHistoryManager changeHistoryManager, ProjectManager projectManager) {
         this.versionManager = versionManager;
@@ -103,12 +101,12 @@ public class JiraChart {
         String[] seriesName = new String[list.size()];
         for (int i = 0; i < dataMaps.length; i++) {
             dataMaps[i] = list.get(i);
-            seriesName[i] = "" + i;
+            seriesName[i] = "status" + (i + 1);
         }
 
         XYDataset issuesHistoryDataset = generateTimeSeries(seriesName, dataMaps);
 
-        ChartHelper helper = new ChartHelper(org.jfree.chart.ChartFactory.createTimeSeriesChart(null, null, null, issuesHistoryDataset, false, false, false));
+        ChartHelper helper = new ChartHelper(org.jfree.chart.ChartFactory.createTimeSeriesChart(null, null, null, issuesHistoryDataset, true, false, false));
 
         XYPlot plot = (XYPlot) helper.getChart().getPlot();
         
@@ -118,7 +116,7 @@ public class JiraChart {
         renderer.setAutoPopulateSeriesShape(false);
         renderer.setBaseShapesVisible(true);
         renderer.setBaseStroke(new BasicStroke(3));
-        renderer.setBaseShape(new Ellipse2D.Double(-3.0, -3.0, 5.0, 5.0));
+        renderer.setBaseShape(new Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0));
         
         NumberAxis numberAxis = (NumberAxis)plot.getRangeAxis();
         numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -133,12 +131,10 @@ public class JiraChart {
         try {
             helper.generate(width, height);
         } catch (IOException e) {
-            String timestamp = "TIMESTAMP: " +
-                    new java.text.SimpleDateFormat("MM/dd/yyyy h:mm:ss a").format(new Date());
-            String message = String.format("Unable to get generate chart");
-            logger.error(timestamp, message, e);
+            logger.error("Error while generating chart" + e.getMessage());
         }
 
+         
         
         return new Chart(helper.getLocation(), helper.getImageMapHtml(), helper.getImageMapName(), params);
 
@@ -170,17 +166,12 @@ public class JiraChart {
 
         Date currentDate = new Date();
         List<Issue> issues = new ArrayList<>();
-        List<ChangeItemBean> items = new ArrayList<>();
+        List<ChangeItemBean> items;
         RegularTimePeriod timePeriod;
         try {
             issues = searchService.findAllIssues(projectName);
-            System.out.println(issues.size() + "issues size");
         } catch (SearchException e) {
-            String timestamp = "TIMESTAMP: " +
-                    new java.text.SimpleDateFormat("MM/dd/yyyy h:mm:ss a").format(new Date());
-            String message = String.format("Unable to get Issues for projectOrFilter=%1",
-                    projectName);
-            logger.error(timestamp, message, e);
+            logger.error("Unable to get issues" + e.getMessage());
         }
 
         for (Issue is : issues) {

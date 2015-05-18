@@ -25,3 +25,4 @@
 - PIP-102 Refaktoring + usunięcie zbędnych zasobów REST
 - PIP-97 Dodano brakujące pola oraz odpowiednie modyfikacje backendu, min. REST pozwalający na testowanie usługi wyszukiwania
 - PIP-97 Drobna poprawka
+- PIP-118 Dodanie usługi chart

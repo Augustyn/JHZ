@@ -1,5 +1,6 @@
-package net.amg.jira.plugins.model.charting;
+package net.amg.jira.plugins.rest.controller;
 
+import net.amg.jira.plugins.services.JiraChartService;
 import net.amg.jira.plugins.rest.model.IssuesHistoryChartModel;
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
@@ -22,6 +23,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import static net.amg.jira.plugins.model.FormField.daysBackPattern;
 import net.amg.jira.plugins.services.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +36,8 @@ import org.slf4j.LoggerFactory;
 public class JiraChartResource {
 
     private static final Logger logger = LoggerFactory.getLogger(JiraChartResource.class);
-
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    
     private final int ISSUES_GROUPS = 5;
     private final SearchService searchService;
     private final SearchProvider searchProvider;
@@ -102,11 +105,11 @@ public class JiraChartResource {
         final ChartFactory.VersionLabel label = getVersionLabel(versionLabel);
         
         
-        JiraChart jirachart = new JiraChart(searchProvider, versionManager,
+        JiraChartService jirachart = new JiraChartService(searchProvider, versionManager,
                 searchService, timeZoneManager, changeHistoryManager, projectManager);
 
         Chart chart = jirachart.generateChart(project, statusesSets, period, label, dateBegin, width, height);
-
+        
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), "title", chart.getImageMap(), chart.getImageMapName(), width, height);
 
         return Response.ok(jiraIssuesHistoryChart).cacheControl(CacheControl.NO_CACHE).build();
@@ -121,12 +124,12 @@ public class JiraChartResource {
 
     private Date getBeginDate(String date) throws ParseException {
         Date beginningDate;
-        if (date.startsWith("[d-]")) {
+        if (daysBackPattern.matcher(date).matches()) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DAY_OF_YEAR, -Integer.parseInt(date.replaceAll("[d-]", "")));
             beginningDate = calendar.getTime();
         } else {
-             beginningDate = new SimpleDateFormat("yyyy-MM-dd").parse(date.replace("/", "-").replace(".", "-"));
+             beginningDate = dateFormat.parse(date.replace("/", "-").replace(".", "-"));
         }
         return beginningDate;
     }
