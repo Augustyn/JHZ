@@ -29,3 +29,4 @@
 - PIP-125 Walidacja dni
 - PIP-130 Walidacja pola issue + zmieniona metoda grupowania statusów + mały refactoring
 - PIP-140 Spring skonfigurowany
+- PIP-134 Dodano licencje + usunięto puste testy jednostkowe
