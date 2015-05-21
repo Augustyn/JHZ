@@ -30,8 +30,7 @@
     <msg name="gadget.common.refresh.label">Odśwież:</msg>
     <msg name="gadget.common.refresh.description">Jak często gadżet ma byc odświeżany</msg>
     <msg name="gadget.common.refresh.never">Nigdy</msg>
-    <msg name="gadget.common.refresh.minute">Co 15 Minut</msg>
-    <msg name="gadget.common.refresh.minutes">Co 30 Minut</msg>
+    <msg name="gadget.common.refresh.minutes">Co {0} Minut</msg>
     <msg name="gadget.common.refresh.hour">Co godzinę</msg>
     <msg name="gadget.common.refresh.hours">Co 2 godziny</msg>
     <msg name="gadget.common.configure">Edytuj</msg>

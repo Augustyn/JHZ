@@ -30,8 +30,7 @@
     <msg name="gadget.common.refresh.label">Refresh Interval</msg>
     <msg name="gadget.common.refresh.description">How often you would like this gadget to update</msg>
     <msg name="gadget.common.refresh.never">Never</msg>
-    <msg name="gadget.common.refresh.minute">Every 15 Minutes</msg>
-    <msg name="gadget.common.refresh.minutes">Every 30 Minutes</msg>
+    <msg name="gadget.common.refresh.minutes">Every {0} Minutes</msg>
     <msg name="gadget.common.refresh.hour">Every 1 Hour</msg>
     <msg name="gadget.common.refresh.hours">Every 2 Hours</msg>
     <msg name="gadget.common.configure">Edit</msg>
