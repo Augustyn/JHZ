@@ -28,4 +28,4 @@
 - PIP-118 Dodanie usługi chart
 - PIP-125 Walidacja dni
 - PIP-130 Walidacja pola issue + zmieniona metoda grupowania statusów + mały refactoring
-
+- PIP-140 Spring skonfigurowany

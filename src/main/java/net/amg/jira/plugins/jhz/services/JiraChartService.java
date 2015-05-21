@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.services;
+package net.amg.jira.plugins.jhz.services;
 
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
@@ -13,6 +13,7 @@ import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.project.version.VersionManager;
 import com.atlassian.jira.timezone.TimeZoneManager;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.geom.Ellipse2D;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
+
 import org.apache.commons.lang.mutable.MutableInt;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.ValueMarker;
@@ -38,42 +40,35 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.osgi.extensions.annotation.ServiceReference;
+import org.springframework.stereotype.Component;
 
 /**
  * Class responsible for generating chart using JFreeChart
+ *
  * @author jarek
  */
+@Component
 public class JiraChartService {
 
     private final static Logger logger = LoggerFactory.getLogger(JiraChartService.class);
 
-    private final VersionManager versionManager;
-    private final SearchService searchService;
-    private final TimeZoneManager timeZoneManager;
-    private final ChangeHistoryManager changeHistoryManager;
-    private final ProjectManager projectManager;
-
-
-    public JiraChartService(SearchProvider searchProvider, VersionManager versionManager,
-            SearchService searchService, TimeZoneManager timeZoneManager,
-            ChangeHistoryManager changeHistoryManager, ProjectManager projectManager) {
-        this.versionManager = versionManager;
-        this.searchService = searchService;
-        this.timeZoneManager = timeZoneManager;
-        this.changeHistoryManager = changeHistoryManager;
-        this.projectManager = projectManager;
-    }
-
+    private VersionManager versionManager;
+    private SearchService searchService;
+    private TimeZoneManager timeZoneManager;
+    private ChangeHistoryManager changeHistoryManager;
+    private ProjectManager projectManager;
 
     /**
      * Generates chart for Jira using JFreeChart
+     *
      * @param projectName project id of filter or project
      * @param statusNames statuses of the issues to be acquired
-     * @param periodName time period on the chart
-     * @param label labels shown on the chart
-     * @param dateBegin beginning date from which chart will be drawn
-     * @param width chart width
-     * @param height chart height
+     * @param periodName  time period on the chart
+     * @param label       labels shown on the chart
+     * @param dateBegin   beginning date from which chart will be drawn
+     * @param width       chart width
+     * @param height      chart height
      * @return chart with values
      */
     public Chart generateChart(
@@ -85,7 +80,6 @@ public class JiraChartService {
             final int width,
             final int height
     ) {
-
         List<ValueMarker> versionMarkers = getVersionMarkers(projectName, dateBegin, periodName, label);
 
 
@@ -117,7 +111,7 @@ public class JiraChartService {
         renderer.setBaseStroke(new BasicStroke(3));
         renderer.setBaseShape(new Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0));
 
-        NumberAxis numberAxis = (NumberAxis)plot.getRangeAxis();
+        NumberAxis numberAxis = (NumberAxis) plot.getRangeAxis();
         numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         plot.setBackgroundPaint(Color.white);
@@ -134,7 +128,6 @@ public class JiraChartService {
         }
 
 
-
         return new Chart(helper.getLocation(), helper.getImageMapHtml(), helper.getImageMapName(), params);
 
     }
@@ -145,7 +138,7 @@ public class JiraChartService {
         TimeSeries series = null;
         for (int i = 0; i < maps.length; i++) {
             series = new TimeSeries(seriesNames[i]);
-            for (Iterator iterator = maps[i].keySet().iterator(); iterator.hasNext();) {
+            for (Iterator iterator = maps[i].keySet().iterator(); iterator.hasNext(); ) {
                 RegularTimePeriod period = (RegularTimePeriod) iterator.next();
 
                 series.add(period, (Integer) maps[i].get(period));
@@ -257,15 +250,15 @@ public class JiraChartService {
             timePeriod = RegularTimePeriod.createInstance(timePeriodClass, dateBegin, timeZone);
 
 
-                while (timePeriod.getStart().before(currentDate)) {
-                    if (lists.get(i).get(timePeriod) != null) {
-                        temp = lists.get(i).get(timePeriod);
-                    } else {
-                        lists.get(i).put(timePeriod, temp);
-                    }
-
-                    timePeriod = timePeriod.next();
+            while (timePeriod.getStart().before(currentDate)) {
+                if (lists.get(i).get(timePeriod) != null) {
+                    temp = lists.get(i).get(timePeriod);
+                } else {
+                    lists.get(i).put(timePeriod, temp);
                 }
+
+                timePeriod = timePeriod.next();
+            }
         }
 
         return lists;
@@ -281,21 +274,46 @@ public class JiraChartService {
 
         final Class periodClass = ChartUtil.getTimePeriodClass(periodName);
         final List<ValueMarker> markers = new ArrayList<>();
-        for(Version version : versions) {
+        for (Version version : versions) {
             if (version.getReleaseDate() != null && beginDate.before(version.getReleaseDate())) {
                 RegularTimePeriod timePeriod = RegularTimePeriod.createInstance(periodClass, version.getReleaseDate(), timeZoneManager.getLoggedInUserTimeZone());
                 ValueMarker vMarker = new ValueMarker(timePeriod.getFirstMillisecond());
 
 
-                    vMarker.setPaint(Color.GRAY);
-                    vMarker.setStroke(new BasicStroke(1.2f));
-                    vMarker.setLabelPaint(Color.GRAY);
-                    vMarker.setLabel(version.getName());
+                vMarker.setPaint(Color.GRAY);
+                vMarker.setStroke(new BasicStroke(1.2f));
+                vMarker.setLabelPaint(Color.GRAY);
+                vMarker.setLabel(version.getName());
 
-                    markers.add(vMarker);
-                }
+                markers.add(vMarker);
             }
-        return markers;
         }
+        return markers;
     }
+
+    @ServiceReference
+    public void setVersionManager(VersionManager versionManager) {
+        this.versionManager = versionManager;
+    }
+
+    @ServiceReference
+    public void setSearchService(SearchService searchService) {
+        this.searchService = searchService;
+    }
+
+    @ServiceReference
+    public void setTimeZoneManager(TimeZoneManager timeZoneManager) {
+        this.timeZoneManager = timeZoneManager;
+    }
+
+    @ServiceReference
+    public void setChangeHistoryManager(ChangeHistoryManager changeHistoryManager) {
+        this.changeHistoryManager = changeHistoryManager;
+    }
+
+    @ServiceReference
+    public void setProjectManager(ProjectManager projectManager) {
+        this.projectManager = projectManager;
+    }
+}
 

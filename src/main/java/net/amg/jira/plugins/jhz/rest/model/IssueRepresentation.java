@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.rest.model;
+package net.amg.jira.plugins.jhz.rest.model;
 
 import com.atlassian.jira.issue.Issue;
 
@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Immutable
 @XmlRootElement
 public class IssueRepresentation {
+
     @XmlElement
     private Long id;
 

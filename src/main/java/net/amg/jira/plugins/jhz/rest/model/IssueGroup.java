@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.rest.model;
+package net.amg.jira.plugins.jhz.rest.model;
 
 import com.atlassian.jira.issue.Issue;
 

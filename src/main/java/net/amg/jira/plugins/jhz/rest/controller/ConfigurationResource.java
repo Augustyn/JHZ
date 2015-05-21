@@ -1,13 +1,14 @@
-package net.amg.jira.plugins.rest.controller;
+package net.amg.jira.plugins.jhz.rest.controller;
 
 import com.atlassian.jira.rest.api.messages.TextMessage;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.google.gson.Gson;
-import net.amg.jira.plugins.model.FormField;
-import net.amg.jira.plugins.rest.model.ErrorCollection;
-import net.amg.jira.plugins.services.Validator;
+import net.amg.jira.plugins.jhz.services.Validator;
+import net.amg.jira.plugins.jhz.model.FormField;
+import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.osgi.extensions.annotation.ServiceReference;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -72,6 +73,7 @@ public class ConfigurationResource {
      *
      * @param validator
      */
+    @ServiceReference
     public void setValidator(Validator validator) {
         this.validator = validator;
     }

@@ -1,21 +1,21 @@
-package net.amg.jira.plugins.services;
+package net.amg.jira.plugins.jhz.services;
 
-import net.amg.jira.plugins.model.FormField;
-import net.amg.jira.plugins.rest.model.ErrorCollection;
+import com.atlassian.jira.util.InjectableComponent;
+import net.amg.jira.plugins.jhz.model.FormField;
+import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 /**
  * Simple implementation of Validator.
  */
+@Component
 public class ValidatorImpl implements Validator {
 
     private static final Logger log = LoggerFactory.getLogger(ValidatorImpl.class);
-
-    public ValidatorImpl() {
-    }
 
     @Override
     public ErrorCollection validate(Map<FormField, String> paramMap) {

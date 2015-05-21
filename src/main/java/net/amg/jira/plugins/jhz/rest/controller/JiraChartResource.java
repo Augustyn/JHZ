@@ -1,10 +1,11 @@
-package net.amg.jira.plugins.rest.controller;
+package net.amg.jira.plugins.jhz.rest.controller;
 
 import com.google.gson.Gson;
-import net.amg.jira.plugins.model.FormField;
-import net.amg.jira.plugins.rest.model.ErrorCollection;
-import net.amg.jira.plugins.services.JiraChartService;
-import net.amg.jira.plugins.rest.model.IssuesHistoryChartModel;
+import net.amg.jira.plugins.jhz.services.Validator;
+import net.amg.jira.plugins.jhz.model.FormField;
+import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
+import net.amg.jira.plugins.jhz.services.JiraChartService;
+import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryChartModel;
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
 import com.atlassian.jira.issue.changehistory.ChangeHistoryManager;
@@ -23,12 +24,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import static net.amg.jira.plugins.model.FormField.daysBackPattern;
+import static net.amg.jira.plugins.jhz.model.FormField.daysBackPattern;
 
-import net.amg.jira.plugins.services.SearchService;
-import net.amg.jira.plugins.services.Validator;
+import net.amg.jira.plugins.jhz.services.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.osgi.extensions.annotation.ServiceReference;
 
 /**
  * @author jarek
@@ -40,38 +41,9 @@ public class JiraChartResource {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private final int ISSUES_GROUPS = 5;
-    private final SearchService searchService;
-    private final SearchProvider searchProvider;
-    private final TimeZoneManager timeZoneManager;
-    private final ChangeHistoryManager changeHistoryManager;
-    private final VersionManager versionManager;
-    private final ProjectManager projectManager;
-    private final Validator validator;
-
-    /**
-     * Used by Spring to inject dependencies
-     *
-     * @param searchService
-     * @param searchProvider
-     * @param timeZoneManager
-     * @param versionManager
-     * @param projectManager
-     * @param changeHistoryManager
-     * @param validator
-     */
-    public JiraChartResource(SearchService searchService,
-                             SearchProvider searchProvider, TimeZoneManager timeZoneManager,
-                             VersionManager versionManager, ProjectManager projectManager,
-                             ChangeHistoryManager changeHistoryManager, Validator validator) {
-        this.searchService = searchService;
-        this.searchProvider = searchProvider;
-        this.timeZoneManager = timeZoneManager;
-        this.versionManager = versionManager;
-        this.changeHistoryManager = changeHistoryManager;
-        this.projectManager = projectManager;
-        this.validator = validator;
-    }
-
+    private SearchService searchService;
+    private Validator validator;
+    private JiraChartService jiraChartService;
 
     /**
      * Allows to generate chart which will be displayed later
@@ -116,13 +88,7 @@ public class JiraChartResource {
 
         final ChartFactory.PeriodName period = ChartFactory.PeriodName.valueOf(periodName.toLowerCase());
         final ChartFactory.VersionLabel label = getVersionLabel(versionLabel);
-
-
-        JiraChartService jirachart = new JiraChartService(searchProvider, versionManager,
-                searchService, timeZoneManager, changeHistoryManager, projectManager);
-
-
-        Chart chart = jirachart.generateChart(project, /*TODO refactor chart genertion so it uses the map*/new ArrayList<>(statusesSets.values()), period, label, dateBegin, width, height);
+        Chart chart = jiraChartService.generateChart(project, /*TODO refactor chart genertion so it uses the map*/new ArrayList<>(statusesSets.values()), period, label, dateBegin, width, height);
 
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), "title", chart.getImageMap(), chart.getImageMapName(), width, height);
 
@@ -148,5 +114,20 @@ public class JiraChartResource {
             beginningDate = dateFormat.parse(date.replace("/", "-").replace(".", "-"));
         }
         return beginningDate;
+    }
+
+    @ServiceReference
+    public void setSearchService(SearchService searchService) {
+        this.searchService = searchService;
+    }
+
+    @ServiceReference
+    public void setValidator(Validator validator) {
+        this.validator = validator;
+    }
+
+    @ServiceReference
+    public void setJiraChartService(JiraChartService jiraChartService) {
+        this.jiraChartService = jiraChartService;
     }
 }

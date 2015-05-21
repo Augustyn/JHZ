@@ -37,23 +37,4 @@
             location="gadgets/issues-history-gadget/gadget.xml">
         <description key="issues-history-gadget.description">The issues-history-gadget Plugin</description>
     </gadget>
-    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
-    <component-import key="permissionManager" interface="com.atlassian.jira.security.PermissionManager"/>
-    <component-import key="userUtil" interface="com.atlassian.jira.user.util.UserUtil"/>
-    <component-import key="issueManager" interface="com.atlassian.jira.issue.IssueManager"/>
-    <component-import key="jiraAuthenticationContext"
-                      interface="com.atlassian.jira.security.JiraAuthenticationContext"/>
-    <component-import key="searchProvider" interface="com.atlassian.jira.issue.search.SearchProvider"/>
-    <component-import key="constantsService" interface="com.atlassian.jira.bc.config.ConstantsService"/>
-
-    <component key="validator-impl" class="net.amg.jira.plugins.services.ValidatorImpl" name="Validator Impl"
-               i18n-name-key="validator-impl.name">
-        <description key="validator-impl.description">The Validator Impl Plugin</description>
-        <interface>net.amg.jira.plugins.services.Validator</interface>
-    </component>
-    <component key="search-service-impl" class="net.amg.jira.plugins.services.SearchServiceImpl"
-               name="Search Service Impl" i18n-name-key="search-service-impl.name">
-        <description key="search-service-impl.description">The SearchService Impl Plugin</description>
-        <interface>net.amg.jira.plugins.services.SearchService</interface>
-    </component>
 </atlassian-plugin>

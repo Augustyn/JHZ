@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.services;
+package net.amg.jira.plugins.jhz.services;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.search.SearchException;

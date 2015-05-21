@@ -1,7 +1,7 @@
-package net.amg.jira.plugins.services;
+package net.amg.jira.plugins.jhz.services;
 
-import net.amg.jira.plugins.model.FormField;
-import net.amg.jira.plugins.rest.model.ErrorCollection;
+import net.amg.jira.plugins.jhz.model.FormField;
+import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
 
 import java.util.Map;
 

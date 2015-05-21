@@ -1,8 +1,7 @@
 package it.net.amg.jira.plugins.components;
 
-import net.amg.jira.plugins.services.JiraChartService;
-import net.amg.jira.plugins.services.SearchService;
-import net.amg.jira.plugins.services.SearchServiceImpl;
+import net.amg.jira.plugins.jhz.services.SearchService;
+import net.amg.jira.plugins.jhz.services.SearchServiceImpl;
 import org.junit.Test;
 
 import java.util.Map;
@@ -16,7 +15,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class SearchServiceImplTest {
 
-    SearchService searchService = new SearchServiceImpl(null,null,null,null);
+    SearchService searchService = new SearchServiceImpl();
 
     @Test
     public void getGroupedIssueTypes() {

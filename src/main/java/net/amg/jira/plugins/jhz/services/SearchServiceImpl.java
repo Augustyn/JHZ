@@ -1,4 +1,4 @@
-package net.amg.jira.plugins.services;
+package net.amg.jira.plugins.jhz.services;
 
 import com.atlassian.jira.bc.config.ConstantsService;
 import com.atlassian.jira.issue.Issue;
@@ -12,6 +12,8 @@ import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.osgi.extensions.annotation.ServiceReference;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,22 +24,16 @@ import java.util.regex.Pattern;
 /**
  * Implementation of SearchService that uses Apache Lucene.
  */
+@Component
 public class SearchServiceImpl implements SearchService {
 
     private static final Logger log = LoggerFactory.getLogger(SearchServiceImpl.class);
 
-    private final JiraAuthenticationContext jiraAuthenticationContext;
-    private final SearchProvider searchProvider;
-    private final ConstantsService constantsService;
-    private final Validator validator;
+    private JiraAuthenticationContext jiraAuthenticationContext;
+    private SearchProvider searchProvider;
+    private ConstantsService constantsService;
+    private Validator validator;
     private JqlClauseBuilder jqlClauseBuilder;
-
-    public SearchServiceImpl(JiraAuthenticationContext authenticationContext, SearchProvider searchProvider, ConstantsService constantsService, Validator validator) {
-        this.jiraAuthenticationContext = authenticationContext;
-        this.searchProvider = searchProvider;
-        this.constantsService = constantsService;
-        this.validator = validator;
-    }
 
     @Override
     public Collection<Status> findAllStatuses() {
@@ -107,5 +103,25 @@ public class SearchServiceImpl implements SearchService {
             issueTypeMap.get(groupName).add(type.replaceAll("\\d",""));
         }
         return  issueTypeMap;
+    }
+
+    @ServiceReference
+    public void setJiraAuthenticationContext(JiraAuthenticationContext jiraAuthenticationContext) {
+        this.jiraAuthenticationContext = jiraAuthenticationContext;
+    }
+
+    @ServiceReference
+    public void setSearchProvider(SearchProvider searchProvider) {
+        this.searchProvider = searchProvider;
+    }
+
+    @ServiceReference
+    public void setConstantsService(ConstantsService constantsService) {
+        this.constantsService = constantsService;
+    }
+
+    @ServiceReference
+    public void setValidator(Validator validator) {
+        this.validator = validator;
     }
 }

@@ -1,6 +1,6 @@
 package it.net.amg.jira.plugins.rest;
 
-import net.amg.jira.plugins.rest.model.IssuesHistoryResourceModel;
+import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryResourceModel;
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
 import org.junit.After;
