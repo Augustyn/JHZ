@@ -5,7 +5,7 @@
     <msg name="issues.history.gadget.headers.specificIssues">Lista Issue z Projektu</msg>
     <msg name="issues.history.gadget.errors.emptyProjectOrFilter">Pole Projekty i Filtry nie może być puste.</msg>
     <msg name="issues.history.gadget.errors.emptyField">Pole jest wymagane.</msg>
-    <msg name="issues.history.gadget.errors.wrongFormat">Błędny format. (np. 10d, -10d, RRRR-MM-DD)</msg>
+    <msg name="issues.history.gadget.errors.wrongFormat">Błędny format. (np. 10d, -10d, RRRR-MM-DD, max 1 rok)</msg>
     <msg name="issues.history.gadget.errors.mustBeNumeric">Wartość musi być liczbą.</msg>
     <msg name="issues.history.gadget.errors.invalidValue">Wartość nieprawidłowa.</msg>
     <msg name="issues.history.gadget.field.project.label">Projekty i Zapisane Filtry:</msg>

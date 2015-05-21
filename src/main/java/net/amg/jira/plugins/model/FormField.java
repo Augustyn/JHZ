@@ -52,10 +52,9 @@ public enum FormField {
 
     private static final String ERROR_PREFIX = "issues.history.gadget.errors.";
     private static final String EMPTY_FIELD = "emptyField";
-    public static final Pattern daysBackPattern = Pattern.compile("-?\\d{1,4}d", Pattern.CASE_INSENSITIVE);
+    public static final Pattern daysBackPattern = Pattern.compile("^-?([0-9][0-9]?|[12][0-9][0-9]|3[0-5][0-9]|36[0-5])d$", Pattern.CASE_INSENSITIVE);
     public static final Pattern datePattern = Pattern.compile("^[1-2]\\d{3}[/\\-[.]](0[1-9]|1[012])[/\\-[.]](0[1-9]|[12][0-9]|3[01])$", Pattern.CASE_INSENSITIVE);
     public static final Pattern projectPattern = Pattern.compile("(project-|filter-)\\d+", Pattern.CASE_INSENSITIVE);
-
     private final String fieldName;
 
     private FormField(String fieldName) {
