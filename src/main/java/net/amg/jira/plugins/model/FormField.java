@@ -27,6 +27,9 @@ public enum FormField {
             if (value == null || value.isEmpty()) {
                 errorCollection.addValidationError(new ValidationError(FormField.ISSUES.fieldName,
                         ERROR_PREFIX + EMPTY_FIELD));
+            } else if(!issuesPattern.matcher(value).matches()){
+                errorCollection.addValidationError(new ValidationError(FormField.ISSUES.fieldName,
+                        ERROR_PREFIX + "invalidValue"));
             }
         }
     }, DATE("Date") {
@@ -55,6 +58,8 @@ public enum FormField {
     public static final Pattern daysBackPattern = Pattern.compile("^-?([0-9][0-9]?|[12][0-9][0-9]|3[0-5][0-9]|36[0-5])d$", Pattern.CASE_INSENSITIVE);
     public static final Pattern datePattern = Pattern.compile("^[1-2]\\d{3}[/\\-[.]](0[1-9]|1[012])[/\\-[.]](0[1-9]|[12][0-9]|3[01])$", Pattern.CASE_INSENSITIVE);
     public static final Pattern projectPattern = Pattern.compile("(project-|filter-)\\d+", Pattern.CASE_INSENSITIVE);
+    public static final Pattern issuesPattern = Pattern.compile("[aA-zZ]+\\d+((\\|[aA-zZ]+\\d+)?)*", Pattern.CASE_INSENSITIVE);
+
     private final String fieldName;
 
     private FormField(String fieldName) {

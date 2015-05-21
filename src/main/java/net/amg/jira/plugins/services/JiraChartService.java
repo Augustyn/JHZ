@@ -47,14 +47,13 @@ public class JiraChartService {
 
     private final static Logger logger = LoggerFactory.getLogger(JiraChartService.class);
 
-    
     private final VersionManager versionManager;
     private final SearchService searchService;
     private final TimeZoneManager timeZoneManager;
     private final ChangeHistoryManager changeHistoryManager;
     private final ProjectManager projectManager;
 
-    
+
     public JiraChartService(SearchProvider searchProvider, VersionManager versionManager,
             SearchService searchService, TimeZoneManager timeZoneManager,
             ChangeHistoryManager changeHistoryManager, ProjectManager projectManager) {
@@ -64,8 +63,8 @@ public class JiraChartService {
         this.changeHistoryManager = changeHistoryManager;
         this.projectManager = projectManager;
     }
-    
-    
+
+
     /**
      * Generates chart for Jira using JFreeChart
      * @param projectName project id of filter or project
@@ -75,23 +74,23 @@ public class JiraChartService {
      * @param dateBegin beginning date from which chart will be drawn
      * @param width chart width
      * @param height chart height
-     * @return chart with values 
+     * @return chart with values
      */
     public Chart generateChart(
             final String projectName,
-            final List<Set<String>> statusNames,
+            final List<Set<String>> statusNames, //TODO przerobić na nową mapę z metody SearchService.getGroupedIssueTypes
             final ChartFactory.PeriodName periodName,
             final ChartFactory.VersionLabel label,
             Date dateBegin,
             final int width,
             final int height
     ) {
-        
+
         List<ValueMarker> versionMarkers = getVersionMarkers(projectName, dateBegin, periodName, label);
-        
-        
+
+
         final Map<String, Object> params = new HashMap<String, Object>();
-        
+
         final Class timePeriodClass = ChartUtil.getTimePeriodClass(periodName);
 
         List<Map<RegularTimePeriod, Integer>> list = generateMapsForChart(projectName, dateBegin, statusNames, timePeriodClass, timeZoneManager.getLoggedInUserTimeZone());
@@ -101,7 +100,7 @@ public class JiraChartService {
         String[] seriesName = new String[list.size()];
         for (int i = 0; i < dataMaps.length; i++) {
             dataMaps[i] = list.get(i);
-            seriesName[i] = "status" + (i + 1);
+            seriesName[i] = SearchService.LABEL_BASE + (i + 1);
         }
 
         XYDataset issuesHistoryDataset = generateTimeSeries(seriesName, dataMaps);
@@ -109,21 +108,21 @@ public class JiraChartService {
         ChartHelper helper = new ChartHelper(org.jfree.chart.ChartFactory.createTimeSeriesChart(null, null, null, issuesHistoryDataset, true, false, false));
 
         XYPlot plot = (XYPlot) helper.getChart().getPlot();
-        
-        
+
+
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
         renderer.setAutoPopulateSeriesStroke(false);
         renderer.setAutoPopulateSeriesShape(false);
         renderer.setBaseShapesVisible(true);
         renderer.setBaseStroke(new BasicStroke(3));
         renderer.setBaseShape(new Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0));
-        
+
         NumberAxis numberAxis = (NumberAxis)plot.getRangeAxis();
         numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         plot.setBackgroundPaint(Color.white);
         plot.setRangeGridlinePaint(Color.black);
-        
+
         for (ValueMarker versionMarker : versionMarkers) {
             plot.addDomainMarker(versionMarker);
         }
@@ -134,8 +133,8 @@ public class JiraChartService {
             logger.error("Error while generating chart" + e.getMessage());
         }
 
-         
-        
+
+
         return new Chart(helper.getLocation(), helper.getImageMapHtml(), helper.getImageMapName(), params);
 
     }
@@ -158,9 +157,9 @@ public class JiraChartService {
 
     private List<Map<RegularTimePeriod, Integer>> generateMapsForChart(String projectName, Date dateBegin, List<Set<String>> statuses, Class timePeriodClass, TimeZone timeZone) {
 
-        
+
         List<TreeMap<RegularTimePeriod, MutableInt>> chartPeriods = new ArrayList<>(statuses.size());
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5 /* TODO usunąć sztywniaka */; i++) {
             chartPeriods.add(new TreeMap<RegularTimePeriod, MutableInt>());
         }
 
@@ -173,16 +172,16 @@ public class JiraChartService {
         } catch (SearchException e) {
             logger.error("Unable to get issues" + e.getMessage());
         }
-
+        //TODO rozbić tego potwora. Gdzieś tu leci indexOutOfBounds 5 size: 5 ale boję się ruszać bo nie rozumiem
         for (Issue is : issues) {
 
             items = changeHistoryManager.getChangeItemsForField(is, "status");
 
-            
+
             if (items.isEmpty()) {
                 for (int i = 0; i < statuses.size(); i++) {
                     if (statuses.get(i).contains(is.getStatusObject().getName())) {
-                        
+
                         if (is.getCreated().after(dateBegin)) {
                             timePeriod = RegularTimePeriod.createInstance(timePeriodClass, is.getCreated(), timeZone);
                         } else {
@@ -274,25 +273,25 @@ public class JiraChartService {
 
     private List<ValueMarker> getVersionMarkers(String projectName, Date beginDate, ChartFactory.PeriodName periodName, ChartFactory.VersionLabel versionLabel) {
         final Set<Version> versions = new HashSet<Version>();
-        
-        
+
+
         Long projectID = projectManager.getProjectObj(Long.parseLong(projectName.replace("project-", ""))).getId();
-        
+
         versions.addAll(versionManager.getVersionsUnarchived(projectID));
-        
+
         final Class periodClass = ChartUtil.getTimePeriodClass(periodName);
         final List<ValueMarker> markers = new ArrayList<>();
         for(Version version : versions) {
             if (version.getReleaseDate() != null && beginDate.before(version.getReleaseDate())) {
                 RegularTimePeriod timePeriod = RegularTimePeriod.createInstance(periodClass, version.getReleaseDate(), timeZoneManager.getLoggedInUserTimeZone());
                 ValueMarker vMarker = new ValueMarker(timePeriod.getFirstMillisecond());
-                
-                
+
+
                     vMarker.setPaint(Color.GRAY);
                     vMarker.setStroke(new BasicStroke(1.2f));
                     vMarker.setLabelPaint(Color.GRAY);
                     vMarker.setLabel(version.getName());
-                    
+
                     markers.add(vMarker);
                 }
             }

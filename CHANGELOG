@@ -27,3 +27,5 @@
 - PIP-97 Drobna poprawka
 - PIP-118 Dodanie usługi chart
 - PIP-125 Walidacja dni
+- PIP-130 Walidacja pola issue + zmieniona metoda grupowania statusów + mały refactoring
+

@@ -53,7 +53,7 @@ public class IssuesHistoryResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/history")
-    public Response getIssuesHistory(@QueryParam("Project") String project, @QueryParam("Issues") String issues
+    public Response getIssues(@QueryParam("Project") String project, @QueryParam("Issues") String issues
             , @QueryParam("Date") String date) {
         Map<FormField, String> paramMap = new HashMap<>();
         paramMap.put(FormField.PROJECT, project);
@@ -64,7 +64,7 @@ public class IssuesHistoryResource {
         if (!errorCollection.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorCollection)).build();
         }
-        List<List<Issue>> issueList = null;
+        Map<String,List<Issue>> issueList = null;
         try {
             issueList = searchService.findIssues(project, issues, date);
         } catch (SearchException | ParseException e) {

@@ -39,14 +39,6 @@ AMG.jhz.init = function (params) {
                             label: gadget.getMsg("issues.history.gadget.field.issue.label"),
                             description: gadget.getMsg("issues.history.gadget.field.issue.description"),
                             type: "multiselect",
-                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "0")
-                        },
-                        {
-                            userpref: "Issues",
-                            selected: gadget.getPref("Issues"),
-                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
-                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
-                            type: "multiselect",
                             options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "1")
                         },
                         {
@@ -72,6 +64,14 @@ AMG.jhz.init = function (params) {
                             description: gadget.getMsg("issues.history.gadget.field.issue.description"),
                             type: "multiselect",
                             options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "4")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "5")
                         },
                         {
                             userpref: "Period",
@@ -215,7 +215,7 @@ AMG.jhz.init = function (params) {
             args: [
                 {
                     key: "chart",
-                        ajaxOptions: function () {
+                    ajaxOptions: function () {
                             
                             var width = Math.round(gadgets.window.getViewportDimensions().width * 0.9);
                             if (width < 150){

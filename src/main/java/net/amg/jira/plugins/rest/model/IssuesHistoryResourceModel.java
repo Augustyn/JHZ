@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a collection of issues requested by the gadget.
@@ -25,12 +26,10 @@ public class IssuesHistoryResourceModel {
      *
      * @param issues requested by gadget
      */
-    public IssuesHistoryResourceModel(List<List<Issue>> issues) {
+    public IssuesHistoryResourceModel(Map<String, List<Issue>> issues) {
         this.issueGroups = new HashSet<>();
-        int groupCounter=0;
-        for (List<Issue> issueGroup : issues) {
-            this.issueGroups.add(new IssueGroup(issueGroup,groupCounter));
-            groupCounter++;
+        for (String groupName : issues.keySet()) {
+            this.issueGroups.add(new IssueGroup(issues.get(groupName), groupName));
         }
     }
 

@@ -10,20 +10,20 @@ import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.query.Query;
-import com.atlassian.query.clause.Clause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implementation of SearchService that uses Apache Lucene.
  */
 public class SearchServiceImpl implements SearchService {
 
-    private final static int ISSUE_GROUP_COUNT = 5;
     private static final Logger log = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     private final JiraAuthenticationContext jiraAuthenticationContext;
@@ -45,10 +45,10 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<List<Issue>> findIssues(String projectOrFilter, String issueTypes, String date)
+    public Map<String, List<Issue>> findIssues(String projectOrFilter, String issueTypes, String date)
             throws SearchException, ParseException {
         Date beginningDate = resolveDaysPreviously(date);
-        String[][] groupedIssueTypes = groupIssueNamesByIndex(issueTypes);
+        Map<String,Set<String>> groupedIssueTypes = getGroupedIssueTypes(issueTypes);
         JqlClauseBuilder commonClauseBuilder = JqlQueryBuilder.newBuilder().where().createdAfter(beginningDate).and();
         if (validator.checkIfProject(projectOrFilter)) {
             commonClauseBuilder.project(projectOrFilter.split("-")[1]);
@@ -56,17 +56,14 @@ public class SearchServiceImpl implements SearchService {
             commonClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
         }
         Query commonQuery = commonClauseBuilder.buildQuery();
-        List<List<Issue>> issueLists = new ArrayList<>();
-        for (int i = 0; i < ISSUE_GROUP_COUNT; i++) {
-            if (groupedIssueTypes[i].length > 0) {
-                jqlClauseBuilder = JqlQueryBuilder.newBuilder(commonQuery).where().and().status(groupedIssueTypes[i]);
-                issueLists.add(searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
-                        PagerFilter.getUnlimitedFilter()).getIssues());
-            } else {
-                issueLists.add(new ArrayList<Issue>());
-            }
+        Map<String,List<Issue>> issueMap = new HashMap<>();
+        for(String groupName : groupedIssueTypes.keySet()) {
+            String[] typesGroup = groupedIssueTypes.get(groupName).toArray(new String[0]);
+            jqlClauseBuilder = JqlQueryBuilder.newBuilder(commonQuery).where().and().status(typesGroup);
+            issueMap.put(groupName,searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
+                    PagerFilter.getUnlimitedFilter()).getIssues());
         }
-        return issueLists;
+        return issueMap;
     }
 
     private Date resolveDaysPreviously(String date) throws ParseException {
@@ -81,22 +78,6 @@ public class SearchServiceImpl implements SearchService {
         return beginningDate;
     }
 
-    private String[][] groupIssueNamesByIndex(String issues) {
-        String[] ungroupedTypes = issues.split("\\|");
-        String[][] typeGroups = new String[ISSUE_GROUP_COUNT][];
-        for (int i = 0; i < ISSUE_GROUP_COUNT; i++) {
-            List<String> typeGroupList = new ArrayList<>();
-            for (String issue : ungroupedTypes) {
-                if (issue.endsWith(String.valueOf(i))) {
-                    typeGroupList.add(issue.replace(String.valueOf(i), ""));
-                }
-            }
-            typeGroups[i] = new String[typeGroupList.size()];
-            typeGroupList.toArray(typeGroups[i]);
-        }
-        return typeGroups;
-    }
-    
     @Override
     public List<Issue> findAllIssues(String projectOrFilter) throws SearchException {
         JqlClauseBuilder commonClauseBuilder = JqlQueryBuilder.newBuilder().where();
@@ -106,8 +87,25 @@ public class SearchServiceImpl implements SearchService {
             commonClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
         }
         Query commonQuery = commonClauseBuilder.buildQuery();
-        
+
         return searchProvider.search(commonQuery, jiraAuthenticationContext.getUser(),
-                        PagerFilter.getUnlimitedFilter()).getIssues();
+                PagerFilter.getUnlimitedFilter()).getIssues();
+    }
+
+    @Override
+    public Map<String, Set<String>> getGroupedIssueTypes(String ungroupedTypes) {
+        String[] ungroupedTypesArr = ungroupedTypes.split("\\|");
+        Map<String,Set<String>> issueTypeMap = new HashMap<>();
+        Pattern pattern = Pattern.compile("\\d");
+        for(String type : ungroupedTypesArr) {
+            Matcher matcher = pattern.matcher(type);
+            matcher.find();
+            String groupName = LABEL_BASE +type.substring(matcher.start());
+            if(!issueTypeMap.containsKey(groupName)) {
+                issueTypeMap.put(groupName,new HashSet<String>());
+            }
+            issueTypeMap.get(groupName).add(type.replaceAll("\\d",""));
+        }
+        return  issueTypeMap;
     }
 }

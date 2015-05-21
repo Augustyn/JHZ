@@ -18,13 +18,13 @@ import java.util.List;
 public class IssueGroup {
 
     @XmlElement
-    private int index;
+    private String name;
 
     @XmlElement
     private Collection<IssueRepresentation> issues;
 
-    public IssueGroup(List<Issue> issueGroup, int index) {
-        this.index = index;
+    public IssueGroup(List<Issue> issueGroup, String name) {
+        this.name = name;
         issues = new HashSet<>();
         for (Issue issue : issueGroup) {
             issues.add(new IssueRepresentation(issue));
