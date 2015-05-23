@@ -1,4 +1,11 @@
 jQuery.namespace("AMG.jhz");
+AMG.jhz.appendStatusesValue = function (statuses, index) {
+    var statusGroup = JSON.parse(JSON.stringify(statuses));
+    for (var i = 0, len = statusGroup.length; i < len; i++) {
+        statusGroup[i].value = statusGroup[i].label.concat(index);
+    }
+    return statusGroup;
+}
 AMG.jhz.init = function (params) {
     var gadget = AJS.Gadget({
         baseUrl: params.baseUrl,
@@ -32,7 +39,39 @@ AMG.jhz.init = function (params) {
                             label: gadget.getMsg("issues.history.gadget.field.issue.label"),
                             description: gadget.getMsg("issues.history.gadget.field.issue.description"),
                             type: "multiselect",
-                            options: args.statuses.statuses
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "1")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "2")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "3")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "4")
+                        },
+                        {
+                            userpref: "Issues",
+                            selected: gadget.getPref("Issues"),
+                            label: gadget.getMsg("issues.history.gadget.field.issue.label"),
+                            description: gadget.getMsg("issues.history.gadget.field.issue.description"),
+                            type: "multiselect",
+                            options: AMG.jhz.appendStatusesValue(args.statuses.statuses, "5")
                         },
                         {
                             userpref: "Period",
@@ -140,31 +179,62 @@ AMG.jhz.init = function (params) {
             onResizeReload: true,
             template: function (args) {
                 var gadget = this;
-                var mainDiv = AJS.$("<div/>");
-                mainDiv.append(
-                    AJS.$("<h1/>").text(args.user["fullName"])
-                );
-                mainDiv.append(
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.headers.allIssues"))
-                );
-                mainDiv.append(
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.project.label") + gadget.getPref("Project")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.issue.label") + gadget.getPref("Issues")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.period.label") + gadget.getPref("Period")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.previously.label") + gadget.getPref("Previously")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.date.label") + gadget.getPref("Date")),
-                    AJS.$("<h1/>").text(gadget.getMsg("issues.history.gadget.field.version.label") + gadget.getPref("Version")),
-                    AJS.$("<h1/>").text(gadget.getMsg("gadget.common.refresh.label") + gadget.getPref("refresh"))
-                );
-                gadget.getView().html(mainDiv);
+                gadget.getView().addClass("chart").empty();
+                        
+                        var getChartContainer = function () {
+                            var chart = AJS.$("<div id='chart' />").appendTo(gadget.getView());
+                            return function () {
+                                return chart;
+                            };
+                        }();
+                        
+                        var safeEscapeString = function(text) {
+                            if(text) {
+                                return gadgets.util.escapeString(text);
+                            } else {
+                                return '';
+                            }
+                        };
+                        
+                        var getChartImg = function () {
+                            AJS.$("#chart", gadget.getView()).get(0).innerHTML += "<img style='display:none' src='" + gadget.getBaseUrl() + "/charts?filename=" + args.chart.location + "' alt='" + safeEscapeString(args.chart.filterTitle) + "' usemap='#" +
+                            args.chart.imageMapName + "' height='" + args.chart.height + "' width='" + args.chart.width + "' />";
+                            gadget.getView().append(args.chart.imageMap);
+                            gadget.showLoading();
+                            var chartImg = AJS.$("img", getChartContainer());
+                            AJS.$(chartImg, gadget.getView()).load(function () {
+                                AJS.$(this).show();
+                                gadget.hideLoading();
+                                gadget.resize();
+                            });
+                            return function () {
+                                return chartImg;
+                            };
+                        }();
             },
             args: [
                 {
-                    key: "user",
+                    key: "chart",
                     ajaxOptions: function () {
-                        return {
-                            url: "/rest/gadget/1.0/currentUser"
-                        };
+                            
+                            var width = Math.round(gadgets.window.getViewportDimensions().width * 0.9);
+                            if (width < 150){
+                                width = 150;
+                            }
+                            var height = Math.round(width*2/3);
+                            
+                            return {
+                                url: "/rest/issueshistoryresource/1.0/chart/generate",
+                                data:  {
+                                    project: gadget.getPref("Project"),
+                                    date: gadget.getPref("Date"),
+                                    period: gadget.getPref("Period"),
+                                    issues: gadget.getPref("Issues"),
+                                    width: width,
+                                    height: height,
+                                    version: gadget.getPref("Version")
+                                }
+                            };
                     }
                 }
             ]

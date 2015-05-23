@@ -1,22 +1,36 @@
-package net.amg.jira.plugins.rest.controller;
+/*
+ * Copyright 2015 AMG.net - Politechnika Łódzka
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.amg.jira.plugins.jhz.rest.controller;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.issue.status.Status;
 import com.google.gson.Gson;
-import net.amg.jira.plugins.model.FormField;
-import net.amg.jira.plugins.rest.model.ErrorCollection;
-import net.amg.jira.plugins.rest.model.IssuesHistoryResourceModel;
-import net.amg.jira.plugins.rest.model.StatusesResourceModel;
-import net.amg.jira.plugins.services.SearchService;
-import net.amg.jira.plugins.services.Validator;
+import net.amg.jira.plugins.jhz.services.Validator;
+import net.amg.jira.plugins.jhz.model.FormField;
+import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
+import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryResourceModel;
+import net.amg.jira.plugins.jhz.rest.model.StatusesResourceModel;
+import net.amg.jira.plugins.jhz.services.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.osgi.extensions.annotation.ServiceReference;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
@@ -30,19 +44,8 @@ public class IssuesHistoryResource {
 
     private static final Logger logger = LoggerFactory.getLogger(IssuesHistoryResource.class);
 
-    private final SearchService searchService;
-    private final Validator validator;
-
-    /**
-     * Used by Spring to inject dependencies
-     *
-     * @param searchService
-     * @param validator
-     */
-    public IssuesHistoryResource(SearchService searchService, Validator validator) {
-        this.searchService = searchService;
-        this.validator = validator;
-    }
+    private SearchService searchService;
+    private Validator validator;
 
     /**
      * Returns issue history required by the gadget according to the user preferences.
@@ -53,10 +56,10 @@ public class IssuesHistoryResource {
      *                issue history
      * @return Response with issue history (IssueHistoryResourceModel) in JSON format.
      */
-    @GET
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/history")
-    public Response getIssuesHistory(@QueryParam("Project") String project, @QueryParam("Issues") String issues
+    public Response getIssues(@QueryParam("Project") String project, @QueryParam("Issues") String issues
             , @QueryParam("Date") String date) {
         Map<FormField, String> paramMap = new HashMap<>();
         paramMap.put(FormField.PROJECT, project);
@@ -67,7 +70,7 @@ public class IssuesHistoryResource {
         if (!errorCollection.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorCollection)).build();
         }
-        List<Issue> issueList = null;
+        Map<String, List<Issue>> issueList = null;
         try {
             issueList = searchService.findIssues(project, issues, date);
         } catch (SearchException | ParseException e) {
@@ -94,5 +97,15 @@ public class IssuesHistoryResource {
         Collection<Status> allStatuses = searchService.findAllStatuses();
         Gson gson = new Gson();
         return Response.ok(gson.toJson(new StatusesResourceModel(allStatuses))).build();
+    }
+
+    @ServiceReference
+    public void setSearchService(SearchService searchService) {
+        this.searchService = searchService;
+    }
+
+    @ServiceReference
+    public void setValidator(Validator validator) {
+        this.validator = validator;
     }
 }

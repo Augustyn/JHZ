@@ -23,3 +23,12 @@
 - PIP-63 Utworzono serwis wyszukujący
 - PIP-75 Utworzono pole multiselect zawierające statusy
 - PIP-102 Refaktoring + usunięcie zbędnych zasobów REST
+- PIP-97 Dodano brakujące pola oraz odpowiednie modyfikacje backendu, min. REST pozwalający na testowanie usługi wyszukiwania
+- PIP-97 Drobna poprawka
+- PIP-118 Dodanie usługi chart
+- PIP-125 Walidacja dni
+- PIP-130 Walidacja pola issue + zmieniona metoda grupowania statusów + mały refactoring
+- PIP-140 Spring skonfigurowany
+- PIP-134 Dodano licencje + usunięto puste testy jednostkowe
+- PIP-110 Interwał odświeżania poprawiony
+- PIP-125 Walidacja daty
