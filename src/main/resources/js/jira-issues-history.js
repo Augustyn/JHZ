@@ -165,6 +165,25 @@ AMG.jhz.init = function (params) {
                                 }
                             ]
                         },
+                        {
+                            id: "my-callback-field",
+                            label: gadget.getMsg("gadget.common.builder.label"),
+                            description: gadget.getMsg("gadget.common.builder.description"),
+                            type: "callbackBuilder",
+                            callback: function (parentDiv) {
+                                parentDiv.append(
+                                    AJS.$("<select>").attr({
+                                        "class": "js-example-basic-multiple",
+                                        multiple: "multiple"
+                                    }).append(
+                                        AJS.$("<option>").attr({value: "AL"}).text("Alabame")
+                                    ).append(
+                                        AJS.$("<option>").attr({value: "AL"}).text("Alabame")
+                                    )
+                                );
+                                AJS.$('select').select2();
+                            }
+                        },
                         AJS.gadget.fields.nowConfigured()
                     ]
                 }
@@ -180,64 +199,65 @@ AMG.jhz.init = function (params) {
             template: function (args) {
                 var gadget = this;
                 gadget.getView().addClass("chart").empty();
-                        
-                        var getChartContainer = function () {
-                            var chart = AJS.$("<div id='chart' />").appendTo(gadget.getView());
-                            return function () {
-                                return chart;
-                            };
-                        }();
-                        
-                        var safeEscapeString = function(text) {
-                            if(text) {
-                                return gadgets.util.escapeString(text);
-                            } else {
-                                return '';
-                            }
-                        };
-                        
-                        var getChartImg = function () {
-                            AJS.$("#chart", gadget.getView()).get(0).innerHTML += "<img style='display:none' src='" + gadget.getBaseUrl() + "/charts?filename=" + args.chart.location + "' alt='" + safeEscapeString(args.chart.filterTitle) + "' usemap='#" +
-                            args.chart.imageMapName + "' height='" + args.chart.height + "' width='" + args.chart.width + "' />";
-                            gadget.getView().append(args.chart.imageMap);
-                            gadget.showLoading();
-                            var chartImg = AJS.$("img", getChartContainer());
-                            AJS.$(chartImg, gadget.getView()).load(function () {
-                                AJS.$(this).show();
-                                gadget.hideLoading();
-                                gadget.resize();
-                            });
-                            return function () {
-                                return chartImg;
-                            };
-                        }();
+
+                var getChartContainer = function () {
+                    var chart = AJS.$("<div id='chart' />").appendTo(gadget.getView());
+                    return function () {
+                        return chart;
+                    };
+                }();
+
+                var safeEscapeString = function (text) {
+                    if (text) {
+                        return gadgets.util.escapeString(text);
+                    } else {
+                        return '';
+                    }
+                };
+
+                var getChartImg = function () {
+                    AJS.$("#chart", gadget.getView()).get(0).innerHTML += "<img style='display:none' src='" + gadget.getBaseUrl() + "/charts?filename=" + args.chart.location + "' alt='" + safeEscapeString(args.chart.filterTitle) + "' usemap='#" +
+                    args.chart.imageMapName + "' height='" + args.chart.height + "' width='" + args.chart.width + "' />";
+                    gadget.getView().append(args.chart.imageMap);
+                    gadget.showLoading();
+                    var chartImg = AJS.$("img", getChartContainer());
+                    AJS.$(chartImg, gadget.getView()).load(function () {
+                        AJS.$(this).show();
+                        gadget.hideLoading();
+                        gadget.resize();
+                    });
+                    return function () {
+                        return chartImg;
+                    };
+                }();
             },
             args: [
                 {
                     key: "chart",
                     ajaxOptions: function () {
-                            
-                            var width = Math.round(gadgets.window.getViewportDimensions().width * 0.9);
-                            if (width < 150){
-                                width = 150;
+
+                        var width = Math.round(gadgets.window.getViewportDimensions().width * 0.9);
+                        if (width < 150) {
+                            width = 150;
+                        }
+                        var height = Math.round(width * 2 / 3);
+
+                        return {
+                            url: "/rest/issueshistoryresource/1.0/chart/generate",
+                            data: {
+                                project: gadget.getPref("Project"),
+                                date: gadget.getPref("Date"),
+                                period: gadget.getPref("Period"),
+                                issues: gadget.getPref("Issues"),
+                                width: width,
+                                height: height,
+                                version: gadget.getPref("Version")
                             }
-                            var height = Math.round(width*2/3);
-                            
-                            return {
-                                url: "/rest/issueshistoryresource/1.0/chart/generate",
-                                data:  {
-                                    project: gadget.getPref("Project"),
-                                    date: gadget.getPref("Date"),
-                                    period: gadget.getPref("Period"),
-                                    issues: gadget.getPref("Issues"),
-                                    width: width,
-                                    height: height,
-                                    version: gadget.getPref("Version")
-                                }
-                            };
+                        };
                     }
                 }
             ]
         }
     });
+
 }
