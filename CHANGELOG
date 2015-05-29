@@ -34,3 +34,4 @@
 - PIP-125 Walidacja daty
 - PIP-143 Podwaliny pola multiselect
 - PIP-143 Przerzucenie select.min.2 js i css do resource oraz zmiania Ivo tyczy się już tylko pól od Issue.
+- Refactoring treści etykiet, opisów i błędów.
