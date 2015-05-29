@@ -167,21 +167,9 @@ AMG.jhz.init = function (params) {
                         },
                         {
                             id: "my-callback-field",
-                            label: gadget.getMsg("gadget.common.builder.label"),
-                            description: gadget.getMsg("gadget.common.builder.description"),
                             type: "callbackBuilder",
                             callback: function (parentDiv) {
-                                parentDiv.append(
-                                    AJS.$("<select>").attr({
-                                        "class": "js-example-basic-multiple",
-                                        multiple: "multiple"
-                                    }).append(
-                                        AJS.$("<option>").attr({value: "AL"}).text("Alabame")
-                                    ).append(
-                                        AJS.$("<option>").attr({value: "AL"}).text("Alabame")
-                                    )
-                                );
-                                AJS.$('select').select2();
+                                AJS.$("[name='Issues']").select2();
                             }
                         },
                         AJS.gadget.fields.nowConfigured()
