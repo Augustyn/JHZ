@@ -79,6 +79,7 @@ public class JiraChartResource {
             @QueryParam("height") int height,
             @QueryParam("version") String versionLabel) {
         Map<FormField, String> paramMap = new HashMap<>();
+        issues = issues.replace("+"," ");
         paramMap.put(FormField.PROJECT, project);
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.DATE, date);

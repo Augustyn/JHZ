@@ -214,8 +214,7 @@ public class JiraChartServiceImpl implements JiraChartService {
             chartMap.put(groupName, new HashMap<RegularTimePeriod, Integer>());
         }
         Integer temp;
-        System.out.println("8");
-        for (String groupName : statuses.keySet()) {
+        for (String groupName :     statuses.keySet()) {
             temp = 0;
             for (Map.Entry<RegularTimePeriod, MutableInt> entry : chartPeriods.get(groupName).entrySet()) {
                 chartMap.get(groupName).put(entry.getKey(), entry.getValue().intValue());
