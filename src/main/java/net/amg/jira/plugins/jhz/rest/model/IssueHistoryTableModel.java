@@ -20,6 +20,7 @@ import org.jfree.data.time.RegularTimePeriod;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.*;
+import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 
 /**
  * Created by Ivo on 31/05/15.
@@ -31,16 +32,22 @@ public class IssueHistoryTableModel {
 
     @XmlElement
     Set<String> groupNames;
-
-    public IssueHistoryTableModel(Map<String, Map<RegularTimePeriod, Integer>> history) {
-        groupNames = history.keySet();
+    
+    public IssueHistoryTableModel(List<XYSeriesWithStatusList> list) {
+        
         entries = new ArrayList<>();
-        Iterator<Map<RegularTimePeriod, Integer>> iterator = history.values().iterator();
-        Map<RegularTimePeriod, Integer> periods = iterator.next();
+        groupNames = new HashSet<>();
+        
+        for (XYSeriesWithStatusList elem : list) {
+            groupNames.add(elem.getLineName());
+        }
+        
+        Map<RegularTimePeriod, Integer> periods = list.get(0).getXYSeries();
+        
         for (RegularTimePeriod period : periods.keySet()) {
             TableEntry entry = new TableEntry(new Date(period.getLastMillisecond()));
-            for (String groupName : history.keySet()) {
-                entry.getIssueCount().add(history.get(groupName).get(period));
+            for (XYSeriesWithStatusList elem: list) {
+                entry.getIssueCount().add(elem.getXYSeries().get(period));
             }
             entries.add(entry);
         }
