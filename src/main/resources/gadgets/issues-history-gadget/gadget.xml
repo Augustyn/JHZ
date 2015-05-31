@@ -39,7 +39,7 @@
     <UserPref name="Version" datatype="hidden"/>
     <UserPref name="Date" datatype="hidden"/>
 
-    <Content type="html" view="profile">
+    <Content type="html" view="profile,canvas">
         <![CDATA[
             #requireResource("com.atlassian.gadgets.publisher:ajs-gadgets")
             #requireResource("net.amg.jira.plugins.jira-issues-history:jira-issues-history-resources")

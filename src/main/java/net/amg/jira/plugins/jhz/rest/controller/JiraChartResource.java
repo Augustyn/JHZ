@@ -16,6 +16,7 @@
 
 package net.amg.jira.plugins.jhz.rest.controller;
 
+import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.google.gson.Gson;
 import net.amg.jira.plugins.jhz.services.*;
 import net.amg.jira.plugins.jhz.model.FormField;
@@ -68,6 +69,7 @@ public class JiraChartResource {
      */
     @GET
     @Path("/generate")
+    @AnonymousAllowed
     public Response generateChart(
             @QueryParam("project") String project,
             @QueryParam("date") String date,
