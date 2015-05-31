@@ -229,13 +229,13 @@ AMG.jhz.init = function (params) {
                         return {
                             url: "/rest/issueshistoryresource/1.0/chart/generate",
                             data: {
-                                project: gadget.getPref("Project"),
-                                date: gadget.getPref("Date"),
-                                period: gadget.getPref("Period"),
-                                issues: gadget.getPref("Issues"),
+                                project: this.getPref("Project"),
+                                date: this.getPref("Date"),
+                                period: this.getPref("Period"),
+                                issues: this.getPref("Issues"),
                                 width: width,
                                 height: height,
-                                version: gadget.getPref("Version")
+                                version: this.getPref("Version")
                             }
                         };
                     }
