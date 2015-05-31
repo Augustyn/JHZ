@@ -17,19 +17,13 @@
 package net.amg.jira.plugins.jhz.rest.controller;
 
 import com.google.gson.Gson;
-import net.amg.jira.plugins.jhz.services.Validator;
+import net.amg.jira.plugins.jhz.services.*;
 import net.amg.jira.plugins.jhz.model.FormField;
 import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
-import net.amg.jira.plugins.jhz.services.JiraChartService;
 import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryChartModel;
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
-import com.atlassian.jira.issue.changehistory.ChangeHistoryManager;
-import com.atlassian.jira.issue.search.SearchProvider;
-import com.atlassian.jira.project.ProjectManager;
-import com.atlassian.jira.project.version.VersionManager;
 import com.atlassian.jira.rest.v1.util.CacheControl;
-import com.atlassian.jira.timezone.TimeZoneManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,7 +36,6 @@ import javax.ws.rs.core.Response;
 
 import static net.amg.jira.plugins.jhz.model.FormField.daysBackPattern;
 
-import net.amg.jira.plugins.jhz.services.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
@@ -57,9 +50,9 @@ public class JiraChartResource {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private final int ISSUES_GROUPS = 5;
-    private SearchService searchService;
+    private SearchServiceImpl searchService;
     private Validator validator;
-    private JiraChartService jiraChartService;
+    private JiraChartServiceImpl jiraChartService;
 
     /**
      * Allows to generate chart which will be displayed later
@@ -104,7 +97,7 @@ public class JiraChartResource {
 
         final ChartFactory.PeriodName period = ChartFactory.PeriodName.valueOf(periodName.toLowerCase());
         final ChartFactory.VersionLabel label = getVersionLabel(versionLabel);
-        Chart chart = jiraChartService.generateChart(project, /*TODO refactor chart genertion so it uses the map*/new ArrayList<>(statusesSets.values()), period, label, dateBegin, width, height);
+        Chart chart = jiraChartService.generateChart(project, statusesSets, period, label, dateBegin, width, height);
 
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), "title", chart.getImageMap(), chart.getImageMapName(), width, height);
 
@@ -133,7 +126,7 @@ public class JiraChartResource {
     }
 
     @ServiceReference
-    public void setSearchService(SearchService searchService) {
+    public void setSearchService(SearchServiceImpl searchService) {
         this.searchService = searchService;
     }
 
@@ -143,7 +136,7 @@ public class JiraChartResource {
     }
 
     @ServiceReference
-    public void setJiraChartService(JiraChartService jiraChartService) {
+    public void setJiraChartService(JiraChartServiceImpl jiraChartService) {
         this.jiraChartService = jiraChartService;
     }
 }

@@ -20,6 +20,7 @@ import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.issue.status.Status;
 import com.google.gson.Gson;
+import net.amg.jira.plugins.jhz.services.SearchServiceImpl;
 import net.amg.jira.plugins.jhz.services.Validator;
 import net.amg.jira.plugins.jhz.model.FormField;
 import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
@@ -44,7 +45,7 @@ public class IssuesHistoryResource {
 
     private static final Logger logger = LoggerFactory.getLogger(IssuesHistoryResource.class);
 
-    private SearchService searchService;
+    private SearchServiceImpl searchService;
     private Validator validator;
 
     /**
@@ -100,7 +101,7 @@ public class IssuesHistoryResource {
     }
 
     @ServiceReference
-    public void setSearchService(SearchService searchService) {
+    public void setSearchService(SearchServiceImpl searchService) {
         this.searchService = searchService;
     }
 
