@@ -18,6 +18,7 @@ package net.amg.jira.plugins.jhz.services;
 
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
+import org.jfree.data.time.RegularTimePeriod;
 
 import java.util.Date;
 import java.util.Map;
@@ -42,5 +43,17 @@ public interface JiraChartService {
      */
     public Chart generateChart(final String projectName, final Map<String, Set<String>> statusNames, final ChartFactory.PeriodName periodName,
                                final ChartFactory.VersionLabel label, Date dateBegin, final int width, final int height);
+
+    /**
+     * TODO Javadoc
+     *
+     * @param projectName
+     * @param statusNames
+     * @param periodName
+     * @param dateBegin
+     * @return
+     */
+    public Map<String, Map<RegularTimePeriod, Integer>> generateTable(final String projectName, final Map<String,
+            Set<String>> statusNames, final ChartFactory.PeriodName periodName, Date dateBegin);
 
 }

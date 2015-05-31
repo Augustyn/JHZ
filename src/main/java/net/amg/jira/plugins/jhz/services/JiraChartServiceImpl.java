@@ -74,14 +74,20 @@ public class JiraChartServiceImpl implements JiraChartService {
     private ChangeHistoryManager changeHistoryManager;
     private ProjectManager projectManager;
 
+    public Map<String, Map<RegularTimePeriod, Integer>> generateTable(final String projectName, final Map<String,
+            Set<String>> statusNames, final ChartFactory.PeriodName periodName, Date dateBegin) {
+        final Class timePeriodClass = ChartUtil.getTimePeriodClass(periodName);
+        return generateMapsForChart(projectName, dateBegin, statusNames, timePeriodClass, timeZoneManager.getLoggedInUserTimeZone());
+    }
+
     @Override
     public Chart generateChart(final String projectName, final Map<String, Set<String>> statusNames,
-            final ChartFactory.PeriodName periodName, final ChartFactory.VersionLabel label, Date dateBegin,
-            final int width, final int height) {
+                               final ChartFactory.PeriodName periodName, final ChartFactory.VersionLabel label, Date dateBegin,
+                               final int width, final int height) {
         List<ValueMarker> versionMarkers = getVersionMarkers(projectName, dateBegin, periodName, label);
         final Map<String, Object> params = new HashMap<String, Object>();
         final Class timePeriodClass = ChartUtil.getTimePeriodClass(periodName);
-        Map<String,Map<RegularTimePeriod, Integer>> chartMap = generateMapsForChart(projectName, dateBegin, statusNames, timePeriodClass, timeZoneManager.getLoggedInUserTimeZone());
+        Map<String, Map<RegularTimePeriod, Integer>> chartMap = generateMapsForChart(projectName, dateBegin, statusNames, timePeriodClass, timeZoneManager.getLoggedInUserTimeZone());
 
         Map[] dataMaps = chartMap.values().toArray(new Map[0]);
         String[] seriesName = chartMap.keySet().toArray(new String[0]);
@@ -132,10 +138,10 @@ public class JiraChartServiceImpl implements JiraChartService {
         return dataset;
     }
 
-    private Map<String,Map<RegularTimePeriod, Integer>> generateMapsForChart(String projectName, Date dateBegin, Map<String, Set<String>> statuses, Class timePeriodClass, TimeZone timeZone) {
-        Map<String,TreeMap<RegularTimePeriod, MutableInt>> chartPeriods = new HashMap<>();
+    private Map<String, Map<RegularTimePeriod, Integer>> generateMapsForChart(String projectName, Date dateBegin, Map<String, Set<String>> statuses, Class timePeriodClass, TimeZone timeZone) {
+        Map<String, TreeMap<RegularTimePeriod, MutableInt>> chartPeriods = new HashMap<>();
         for (String groupName : statuses.keySet()) {
-            chartPeriods.put(groupName,new TreeMap<RegularTimePeriod, MutableInt>());
+            chartPeriods.put(groupName, new TreeMap<RegularTimePeriod, MutableInt>());
         }
         Date currentDate = new Date();
         List<Issue> allIssues = new ArrayList<>();
@@ -209,12 +215,12 @@ public class JiraChartServiceImpl implements JiraChartService {
                 }
             }
         }
-        Map<String,Map<RegularTimePeriod, Integer>> chartMap = new HashMap<>();
+        Map<String, Map<RegularTimePeriod, Integer>> chartMap = new HashMap<>();
         for (String groupName : statuses.keySet()) {
             chartMap.put(groupName, new HashMap<RegularTimePeriod, Integer>());
         }
         Integer temp;
-        for (String groupName :     statuses.keySet()) {
+        for (String groupName : statuses.keySet()) {
             temp = 0;
             for (Map.Entry<RegularTimePeriod, MutableInt> entry : chartPeriods.get(groupName).entrySet()) {
                 chartMap.get(groupName).put(entry.getKey(), entry.getValue().intValue());

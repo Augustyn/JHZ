@@ -16,30 +16,33 @@
 
 package net.amg.jira.plugins.jhz.rest.controller;
 
-import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.google.gson.Gson;
-import net.amg.jira.plugins.jhz.services.*;
-import net.amg.jira.plugins.jhz.model.FormField;
-import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
-import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryChartModel;
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
 import com.atlassian.jira.rest.v1.util.CacheControl;
+import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+import com.google.gson.Gson;
+import net.amg.jira.plugins.jhz.model.FormField;
+import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
+import net.amg.jira.plugins.jhz.rest.model.IssueHistoryTableModel;
+import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryChartModel;
+import net.amg.jira.plugins.jhz.services.JiraChartServiceImpl;
+import net.amg.jira.plugins.jhz.services.SearchServiceImpl;
+import net.amg.jira.plugins.jhz.services.Validator;
+import org.jfree.data.time.RegularTimePeriod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.osgi.extensions.annotation.ServiceReference;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.logging.Level;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.Level;
 
 import static net.amg.jira.plugins.jhz.model.FormField.daysBackPattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.osgi.extensions.annotation.ServiceReference;
 
 /**
  * @author jarek
@@ -50,7 +53,6 @@ public class JiraChartResource {
     private static final Logger logger = LoggerFactory.getLogger(JiraChartResource.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    private final int ISSUES_GROUPS = 5;
     private SearchServiceImpl searchService;
     private Validator validator;
     private JiraChartServiceImpl jiraChartService;
@@ -79,7 +81,7 @@ public class JiraChartResource {
             @QueryParam("height") int height,
             @QueryParam("version") String versionLabel) {
         Map<FormField, String> paramMap = new HashMap<>();
-        issues = issues.replace("+"," ");
+        issues = issues.replace("+", " ");
         paramMap.put(FormField.PROJECT, project);
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.DATE, date);
@@ -105,6 +107,49 @@ public class JiraChartResource {
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), "title", chart.getImageMap(), chart.getImageMapName(), width, height);
 
         return Response.ok(jiraIssuesHistoryChart).cacheControl(CacheControl.NO_CACHE).build();
+    }
+
+    /**
+     * TODO JAVADOC
+     *
+     * @param project
+     * @param date
+     * @param periodName
+     * @param issues
+     * @return
+     */
+    @GET
+    @Path("/table")
+    @AnonymousAllowed
+    public Response generateTable(
+            @QueryParam("project") String project,
+            @QueryParam("date") String date,
+            @QueryParam("period") String periodName,
+            @QueryParam("issues") String issues) {
+        Map<FormField, String> paramMap = new HashMap<>();
+        issues = issues.replace("+", " ");
+        paramMap.put(FormField.PROJECT, project);
+        paramMap.put(FormField.ISSUES, issues);
+        paramMap.put(FormField.DATE, date);
+        paramMap.put(FormField.PERIOD, periodName);
+        ErrorCollection errorCollection = validator.validate(paramMap);
+        Gson gson = new Gson();
+        if (!errorCollection.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorCollection)).build();
+        }
+        Date dateBegin = null;
+
+        final Map<String, Set<String>> statusesSets = searchService.getGroupedIssueTypes(issues);
+        try {
+            dateBegin = getBeginDate(date);
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(JiraChartResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        final ChartFactory.PeriodName period = ChartFactory.PeriodName.valueOf(periodName.toLowerCase());
+        Map<String, Map<RegularTimePeriod, Integer>> history = jiraChartService.generateTable(project, statusesSets,
+                period, dateBegin);
+        IssueHistoryTableModel tableModel = new IssueHistoryTableModel(history);
+        return Response.ok(gson.toJson(tableModel)).cacheControl(CacheControl.NO_CACHE).build();
     }
 
 

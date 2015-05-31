@@ -214,6 +214,43 @@ AMG.jhz.init = function (params) {
                         return chartImg;
                     };
                 }();
+                if (gadgets.views.getCurrentView().getName() === "canvas") {
+                    var makeTable = function (data) {
+                        var tableDiv = AJS.$("<div/>");
+                        var table = AJS.$("<table/>");
+                        var header = AJS.$("<tr/>");
+                        header.append(AJS.$("<th/>").text("Period"));
+                        data.groupNames.forEach(function (groupName) {
+                                header.append(AJS.$("<th/>").text(groupName))
+                            }
+                        );
+                        table.append(header);
+                        data.entries.forEach(function(entry) {
+                            var row = AJS.$("<tr/>");
+                            row.append(AJS.$("<td/>").text(entry.period))
+                            entry.issueCount.forEach(function(count) {
+                                row.append(AJS.$("<td/>").text(count))
+                            })
+                            table.append(row);
+                        })
+                        tableDiv.append(table);
+                        gadget.getView().append(tableDiv);
+                    }
+                    AJS.$.ajax({
+                        url: "/rest/issueshistoryresource/1.0/chart/table",
+                        type: "GET",
+                        data: {
+                            project: this.getPref("Project"),
+                            date: this.getPref("Date"),
+                            period: this.getPref("Period"),
+                            issues: this.getPref("Issues")
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            makeTable(data);
+                        }
+                    });
+                }
             },
             args: [
                 {
