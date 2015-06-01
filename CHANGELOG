@@ -42,3 +42,4 @@
 - PIP-148 Pierwsza wersja tabelki
 - PIP-148 Druga wersja tabelki + optymalizacja rest
 - PIP-118 Poprawki podliczania elementów chartu + refactoring
+- Naprawa konfliktów z merge jarek -> development

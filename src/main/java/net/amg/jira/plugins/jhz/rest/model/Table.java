@@ -35,7 +35,7 @@ public class Table {
     @XmlElement
     Set<String> groupNames;
     
-    public IssueHistoryTableModel(List<XYSeriesWithStatusList> list) {
+    public Table(List<XYSeriesWithStatusList> list) {
         
         entries = new ArrayList<>();
         groupNames = new HashSet<>();
@@ -49,7 +49,7 @@ public class Table {
         for (RegularTimePeriod period : periods.keySet()) {
             TableEntry entry = new TableEntry(new Date(period.getLastMillisecond()));
             for (XYSeriesWithStatusList elem: list) {
-                entry.getIssueCount().add(elem.getXYSeries().get(period));
+                entry.getIssueCount().add(new IssueCount(elem.getXYSeries().get(period)));
             }
             entries.add(entry);
         }

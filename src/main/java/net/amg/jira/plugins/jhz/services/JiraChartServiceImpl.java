@@ -76,7 +76,7 @@ public class JiraChartServiceImpl implements JiraChartService {
     private List<XYSeriesWithStatusList> table;
 
     @Override
-    public Map<String, Map<RegularTimePeriod, Integer>> getTable() {
+    public List<XYSeriesWithStatusList> getTable() {
         return table;
     }
 
@@ -89,8 +89,6 @@ public class JiraChartServiceImpl implements JiraChartService {
         List<ValueMarker> versionMarkers = getVersionMarkers(projectName, dateBegin, periodName, label, timeZoneManager.getLoggedInUserTimeZone());
 
         final Map<String, Object> params = new HashMap<String, Object>();
-        final Class timePeriodClass = ChartUtil.getTimePeriodClass(periodName);
-        Map<String, Map<RegularTimePeriod, Integer>> chartMap = generateMapsForChart(projectName, dateBegin, statusNames, timePeriodClass, timeZoneManager.getLoggedInUserTimeZone());
 
         List<XYSeriesWithStatusList> listXYSeries = generateMapsForChart(projectName, dateBegin, statusesSets, periodName);
         table = listXYSeries;
@@ -152,11 +150,11 @@ public class JiraChartServiceImpl implements JiraChartService {
     }
 
     private List<XYSeriesWithStatusList> generateMapsForChart(String projectName, Date dateBegin, Map<String, Set<String>> statusesSets, ChartFactory.PeriodName periodName) {
-        
+
         Date dateEnd = new Date();
-        
+
         List<XYSeriesWithStatusList> seriesWithStatuses = new ArrayList<>();
-        
+
         for(Map.Entry<String, Set<String>> statusSet : statusesSets.entrySet()) {
             seriesWithStatuses.add(new XYSeriesWithStatusList(statusSet.getValue(), statusSet.getKey(), dateBegin, dateEnd, timeZoneManager.getLoggedInUserTimeZone(), periodName));
         }
@@ -174,7 +172,7 @@ public class JiraChartServiceImpl implements JiraChartService {
         for (Issue is : allIssues) {
 
             allStatusChangesForIssue = changeHistoryManager.getChangeItemsForField(is, "status");
-            
+
             if (allStatusChangesForIssue.isEmpty()) {
 
                 for (XYSeriesWithStatusList series : seriesWithStatuses) {
@@ -186,57 +184,31 @@ public class JiraChartServiceImpl implements JiraChartService {
                         } else {
                             series.addYPointsInRange(dateBegin, dateEnd);
                         }
-                        MutableInt num = chartPeriods.get(groupName).get(timePeriod);
-                        if (num == null) {
-                            num = new MutableInt(0);
-                            chartPeriods.get(groupName).put(timePeriod, num);
-                        }
-                        num.increment();
                     }
+
                 }
             } else {
                 for (XYSeriesWithStatusList series : seriesWithStatuses) {
                     dateStatusChanged = dateEnd;
-                    
+
                     for (int i = allStatusChangesForIssue.size() - 1; i >= 0 && dateStatusChanged.after(dateBegin); i--) {
                         if (series.containsStatus(allStatusChangesForIssue.get(i).getToString()) &&
                                 !series.checkIfChangeInTheSameTimePeriod(allStatusChangesForIssue.get(i).getCreated(), dateStatusChanged)) {
-                            
+
                             System.out.println( allStatusChangesForIssue.get(i).getCreated() +  "   " + dateStatusChanged);
 
                             series.addYPointsInRange(allStatusChangesForIssue.get(i).getCreated(), dateStatusChanged);
 
                         }
                         dateStatusChanged = allStatusChangesForIssue.get(i).getCreated();
-                        
+
                         if (i == 0 && dateStatusChanged.after(dateBegin) && series.containsStatus(allStatusChangesForIssue.get(i).getFromString())) {
                             series.addYPointsInRange(is.getCreated(), dateStatusChanged);
                         }
                     }
-
                 }
             }
-        }
-        Map<String, Map<RegularTimePeriod, Integer>> chartMap = new HashMap<>();
-        for (String groupName : statuses.keySet()) {
-            chartMap.put(groupName, new HashMap<RegularTimePeriod, Integer>());
-        }
-        Integer temp;
-        for (String groupName : statuses.keySet()) {
-            temp = 0;
-            for (Map.Entry<RegularTimePeriod, MutableInt> entry : chartPeriods.get(groupName).entrySet()) {
-                chartMap.get(groupName).put(entry.getKey(), entry.getValue().intValue());
-            }
-            timePeriod = RegularTimePeriod.createInstance(timePeriodClass, dateBegin, timeZone);
 
-            while (timePeriod.getStart().before(currentDate)) {
-                if (chartMap.get(groupName).get(timePeriod) != null) {
-                    temp = chartMap.get(groupName).get(timePeriod);
-                } else {
-                    chartMap.get(groupName).put(timePeriod, temp);
-                }
-                timePeriod = timePeriod.next();
-            }
         }
 
         return seriesWithStatuses;
@@ -293,4 +265,3 @@ public class JiraChartServiceImpl implements JiraChartService {
         this.projectManager = projectManager;
     }
 }
-

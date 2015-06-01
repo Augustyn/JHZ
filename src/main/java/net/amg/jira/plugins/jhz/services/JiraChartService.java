@@ -31,13 +31,24 @@ import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
  */
 public interface JiraChartService {
 
-    public Chart generateChart(final String projectName, final Map<String, Set<String>> statusNames, final ChartFactory.PeriodName periodName,
-                               final ChartFactory.VersionLabel label, Date dateBegin, final int width, final int height);
+    /**
+     * Generates chart for Jira using JFreeChart
+     *
+     * @param projectName project id of filter or project
+     * @param periodName  time period on the chart
+     * @param label       labels shown on the chart
+     * @param statusesSets
+     * @param dateBegin   beginning date from which chart will be drawn
+     * @param width       chart width
+     * @param height      chart height
+     * @return chart with values
+     */
+    public Chart generateChart(final String projectName, final ChartFactory.PeriodName periodName,
+                               final ChartFactory.VersionLabel label, Date dateBegin, Map<String, Set<String>> statusesSets, final int width, final int height);
 
     /**
      * TODO Javadoc
      */
-    public Map<String, Map<RegularTimePeriod, Integer>> generateTable(final String projectName, final Map<String,
-            Set<String>> statusNames, final ChartFactory.PeriodName periodName, Date dateBegin);
+    public List<XYSeriesWithStatusList> getTable();
 
 }

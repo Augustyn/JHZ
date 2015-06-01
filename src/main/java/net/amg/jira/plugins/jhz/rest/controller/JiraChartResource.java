@@ -24,7 +24,6 @@ import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.google.gson.Gson;
 import net.amg.jira.plugins.jhz.model.FormField;
 import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
-import net.amg.jira.plugins.jhz.rest.model.IssueHistoryTableModel;
 import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryChartModel;
 import net.amg.jira.plugins.jhz.rest.model.Table;
 import net.amg.jira.plugins.jhz.services.JiraChartServiceImpl;
@@ -86,7 +85,9 @@ public class JiraChartResource {
             @QueryParam("version") String versionLabel,
             @QueryParam("table") boolean table) {
         Map<FormField, String> paramMap = new HashMap<>();
+        //In canvas view gadget decides to replace all spaces with '+', thus the following are required:
         issues = issues.replace("+", " ");
+        versionLabel = versionLabel.replace("+", " ");
         paramMap.put(FormField.PROJECT, project);
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.DATE, date);
@@ -105,8 +106,8 @@ public class JiraChartResource {
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(JiraChartResource.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        final ChartFactory.VersionLabel label = ChartFactory.VersionLabel.valueOf(versionLabel);
+        //TODO FIXME
+        final ChartFactory.VersionLabel label = ChartFactory.VersionLabel.all;
         Chart chart = jiraChartService.generateChart(project, ChartFactory.PeriodName.valueOf(periodName.toLowerCase()), label, dateBegin, statusesSets, width, height);
 
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), "title", chart.getImageMap(), chart.getImageMapName(), width, height);
