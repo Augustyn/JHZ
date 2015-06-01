@@ -19,12 +19,14 @@ package net.amg.jira.plugins.jhz.rest.model;
 import org.jfree.data.time.RegularTimePeriod;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
 
 /**
  * Created by Ivo on 31/05/15.
  */
-public class IssueHistoryTableModel {
+@XmlRootElement
+public class Table {
 
     @XmlElement
     List<TableEntry> entries;
@@ -32,7 +34,7 @@ public class IssueHistoryTableModel {
     @XmlElement
     Set<String> groupNames;
 
-    public IssueHistoryTableModel(Map<String, Map<RegularTimePeriod, Integer>> history) {
+    public Table(Map<String, Map<RegularTimePeriod, Integer>> history) {
         groupNames = history.keySet();
         entries = new ArrayList<>();
         Iterator<Map<RegularTimePeriod, Integer>> iterator = history.values().iterator();
@@ -40,7 +42,7 @@ public class IssueHistoryTableModel {
         for (RegularTimePeriod period : periods.keySet()) {
             TableEntry entry = new TableEntry(new Date(period.getLastMillisecond()));
             for (String groupName : history.keySet()) {
-                entry.getIssueCount().add(history.get(groupName).get(period));
+                entry.getIssueCount().add(new IssueCount(history.get(groupName).get(period)));
             }
             entries.add(entry);
         }

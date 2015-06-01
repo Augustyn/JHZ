@@ -46,14 +46,8 @@ public interface JiraChartService {
 
     /**
      * TODO Javadoc
-     *
-     * @param projectName
-     * @param statusNames
-     * @param periodName
-     * @param dateBegin
      * @return
      */
-    public Map<String, Map<RegularTimePeriod, Integer>> generateTable(final String projectName, final Map<String,
-            Set<String>> statusNames, final ChartFactory.PeriodName periodName, Date dateBegin);
+    public Map<String, Map<RegularTimePeriod, Integer>> getTable();
 
 }

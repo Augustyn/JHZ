@@ -73,11 +73,11 @@ public class JiraChartServiceImpl implements JiraChartService {
     private TimeZoneManager timeZoneManager;
     private ChangeHistoryManager changeHistoryManager;
     private ProjectManager projectManager;
+    private Map<String, Map<RegularTimePeriod, Integer>> table;
 
-    public Map<String, Map<RegularTimePeriod, Integer>> generateTable(final String projectName, final Map<String,
-            Set<String>> statusNames, final ChartFactory.PeriodName periodName, Date dateBegin) {
-        final Class timePeriodClass = ChartUtil.getTimePeriodClass(periodName);
-        return generateMapsForChart(projectName, dateBegin, statusNames, timePeriodClass, timeZoneManager.getLoggedInUserTimeZone());
+    @Override
+    public Map<String, Map<RegularTimePeriod, Integer>> getTable() {
+        return table;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class JiraChartServiceImpl implements JiraChartService {
         final Map<String, Object> params = new HashMap<String, Object>();
         final Class timePeriodClass = ChartUtil.getTimePeriodClass(periodName);
         Map<String, Map<RegularTimePeriod, Integer>> chartMap = generateMapsForChart(projectName, dateBegin, statusNames, timePeriodClass, timeZoneManager.getLoggedInUserTimeZone());
-
+        table = chartMap;
         Map[] dataMaps = chartMap.values().toArray(new Map[0]);
         String[] seriesName = chartMap.keySet().toArray(new String[0]);
 

@@ -16,42 +16,29 @@
 
 package net.amg.jira.plugins.jhz.rest.model;
 
+import javax.annotation.concurrent.Immutable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Ivo on 31/05/15.
  */
+@Immutable
 @XmlRootElement
-public class TableEntry {
+public class IssueCount {
 
     @XmlElement
-    private Date period;
+    private Integer value;
 
-    @XmlElement
-    private List<IssueCount> issueCount;
-
-    public TableEntry(Date period) {
-        this.period = period;
-        this.issueCount = new ArrayList<>();
+    public IssueCount(Integer value) {
+        this.value = value;
     }
 
-    public Date getPeriod() {
-        return period;
+    public Integer getValue() {
+        return value;
     }
 
-    public void setPeriod(Date period) {
-        this.period = period;
-    }
-
-    public List<IssueCount> getIssueCount() {
-        return issueCount;
-    }
-
-    public void setIssueCount(List<IssueCount> issueCount) {
-        this.issueCount = issueCount;
+    public void setValue(Integer value) {
+        this.value = value;
     }
 }

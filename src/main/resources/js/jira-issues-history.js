@@ -215,41 +215,73 @@ AMG.jhz.init = function (params) {
                     };
                 }();
                 if (gadgets.views.getCurrentView().getName() === "canvas") {
-                    var makeTable = function (data) {
-                        var tableDiv = AJS.$("<div/>");
-                        var table = AJS.$("<table/>");
-                        var header = AJS.$("<tr/>");
-                        header.append(AJS.$("<th/>").text("Period"));
-                        data.groupNames.forEach(function (groupName) {
-                                header.append(AJS.$("<th/>").text(groupName))
-                            }
-                        );
-                        table.append(header);
-                        data.entries.forEach(function(entry) {
-                            var row = AJS.$("<tr/>");
-                            row.append(AJS.$("<td/>").text(entry.period))
-                            entry.issueCount.forEach(function(count) {
-                                row.append(AJS.$("<td/>").text(count))
-                            })
-                            table.append(row);
-                        })
-                        tableDiv.append(table);
-                        gadget.getView().append(tableDiv);
-                    }
-                    AJS.$.ajax({
-                        url: "/rest/issueshistoryresource/1.0/chart/table",
-                        type: "GET",
-                        data: {
-                            project: this.getPref("Project"),
-                            date: this.getPref("Date"),
-                            period: this.getPref("Period"),
-                            issues: this.getPref("Issues")
+
+                    var dataTable = AJS.gadgets.templater.Table({
+                        descriptor: function (args) {
+                            return {
+                                cols: function () {
+                                    var headers = [];
+                                    headers.push({
+                                        header: "Period"
+                                    })
+                                    args.groupNames.forEach(function (h) {
+                                        headers.push({
+                                            header: h
+                                        })
+                                    });
+                                    return headers;
+                                }(),
+                                data: function () {
+                                    var rows = [];
+                                    args.chartData.forEach(function (entry) {
+                                        var cells = [];
+                                        cells.push({
+                                            value: entry.period,
+                                            label: new Date(entry.period)
+                                        });
+                                        entry.issueCount.forEach(function(count) {
+                                            cells.push({
+                                                value: count.value,
+                                                label: count.value
+                                            })
+                                        })
+                                        rows.push(cells);
+                                    });
+                                    return rows;
+                                }()
+                            };
                         },
-                        dataType: "json",
-                        success: function (data) {
-                            makeTable(data);
-                        }
+                        sortable: true,
+                        args: [
+                            {key: "chartData", data: args.chart.table.entries},
+                            {key: "groupNames", data: args.chart.table.groupNames}
+                        ]
                     });
+
+                    var getDataTable = function () {
+                        return AJS.$("table.aui", gadget.getView());
+                    };
+
+                    var configureAlignment = function () {
+                        getDataTable().css("marginLeft", function () {
+                            var chartWidth = getChartContainer().outerWidth();
+                            var offsetX = (gadget.getView().outerWidth() - chartWidth - getDataTable().width()) / 2;
+                            if (offsetX > 0) {
+                                return offsetX;
+                            }
+                            return 0;
+                        }());
+                    };
+
+                    var createCanvasDataTable = function () {
+                        dataTable.addCallback(function (fragment) {
+                            gadget.getView().append(fragment);
+                            configureAlignment();
+                            gadget.resize();
+                        });
+                        dataTable.build();
+                    };
+                    getChartImg().append(createCanvasDataTable);
                 }
             },
             args: [
@@ -272,7 +304,8 @@ AMG.jhz.init = function (params) {
                                 issues: this.getPref("Issues"),
                                 width: width,
                                 height: height,
-                                version: this.getPref("Version")
+                                version: this.getPref("Version"),
+                                table: gadgets.views.getCurrentView().getName() === "canvas"
                             }
                         };
                     }
