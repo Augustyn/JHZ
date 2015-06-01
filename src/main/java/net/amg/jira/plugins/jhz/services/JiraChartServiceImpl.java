@@ -42,9 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.TreeMap;
-
-import org.apache.commons.lang.mutable.MutableInt;
+import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
@@ -53,6 +51,8 @@ import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.ui.RectangleAnchor;
+import org.jfree.ui.TextAnchor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
@@ -73,7 +73,7 @@ public class JiraChartServiceImpl implements JiraChartService {
     private TimeZoneManager timeZoneManager;
     private ChangeHistoryManager changeHistoryManager;
     private ProjectManager projectManager;
-    private Map<String, Map<RegularTimePeriod, Integer>> table;
+    private List<XYSeriesWithStatusList> table;
 
     @Override
     public Map<String, Map<RegularTimePeriod, Integer>> getTable() {
@@ -81,20 +81,33 @@ public class JiraChartServiceImpl implements JiraChartService {
     }
 
     @Override
-    public Chart generateChart(final String projectName, final Map<String, Set<String>> statusNames,
-                               final ChartFactory.PeriodName periodName, final ChartFactory.VersionLabel label, Date dateBegin,
-                               final int width, final int height) {
-        List<ValueMarker> versionMarkers = getVersionMarkers(projectName, dateBegin, periodName, label);
+    public Chart generateChart(
+            final String projectName, final ChartFactory.PeriodName periodName,
+            final ChartFactory.VersionLabel label, Date dateBegin, Map<String, Set<String>> statusesSets,
+            final int width, final int height
+    ) {
+        List<ValueMarker> versionMarkers = getVersionMarkers(projectName, dateBegin, periodName, label, timeZoneManager.getLoggedInUserTimeZone());
+
         final Map<String, Object> params = new HashMap<String, Object>();
         final Class timePeriodClass = ChartUtil.getTimePeriodClass(periodName);
         Map<String, Map<RegularTimePeriod, Integer>> chartMap = generateMapsForChart(projectName, dateBegin, statusNames, timePeriodClass, timeZoneManager.getLoggedInUserTimeZone());
-        table = chartMap;
-        Map[] dataMaps = chartMap.values().toArray(new Map[0]);
-        String[] seriesName = chartMap.keySet().toArray(new String[0]);
+
+        List<XYSeriesWithStatusList> listXYSeries = generateMapsForChart(projectName, dateBegin, statusesSets, periodName);
+        table = listXYSeries;
+        Map[] dataMaps = new Map[listXYSeries.size()];
+        String[] seriesName = new String[listXYSeries.size()];
+        for (int i = 0; i < dataMaps.length; i++) {
+            dataMaps[i] = listXYSeries.get(i).getXYSeries();
+            seriesName[i] = listXYSeries.get(i).getLineName();
+        }
 
         XYDataset issuesHistoryDataset = generateTimeSeries(seriesName, dataMaps);
+
         ChartHelper helper = new ChartHelper(org.jfree.chart.ChartFactory.createTimeSeriesChart(null, null, null, issuesHistoryDataset, true, false, false));
+
         XYPlot plot = (XYPlot) helper.getChart().getPlot();
+        NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
+        yAxis.setLowerBound(0);
 
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
         renderer.setAutoPopulateSeriesStroke(false);
@@ -138,29 +151,40 @@ public class JiraChartServiceImpl implements JiraChartService {
         return dataset;
     }
 
-    private Map<String, Map<RegularTimePeriod, Integer>> generateMapsForChart(String projectName, Date dateBegin, Map<String, Set<String>> statuses, Class timePeriodClass, TimeZone timeZone) {
-        Map<String, TreeMap<RegularTimePeriod, MutableInt>> chartPeriods = new HashMap<>();
-        for (String groupName : statuses.keySet()) {
-            chartPeriods.put(groupName, new TreeMap<RegularTimePeriod, MutableInt>());
+    private List<XYSeriesWithStatusList> generateMapsForChart(String projectName, Date dateBegin, Map<String, Set<String>> statusesSets, ChartFactory.PeriodName periodName) {
+        
+        Date dateEnd = new Date();
+        
+        List<XYSeriesWithStatusList> seriesWithStatuses = new ArrayList<>();
+        
+        for(Map.Entry<String, Set<String>> statusSet : statusesSets.entrySet()) {
+            seriesWithStatuses.add(new XYSeriesWithStatusList(statusSet.getValue(), statusSet.getKey(), dateBegin, dateEnd, timeZoneManager.getLoggedInUserTimeZone(), periodName));
         }
-        Date currentDate = new Date();
+
         List<Issue> allIssues = new ArrayList<>();
-        List<ChangeItemBean> changeItems;
-        RegularTimePeriod timePeriod;
+        List<ChangeItemBean> allStatusChangesForIssue;
+        Date dateStatusChanged;
+
         try {
             allIssues = searchService.findAllIssues(projectName);
         } catch (SearchException e) {
             logger.error("Unable to get issues" + e.getMessage());
         }
-        for (Issue isssue : allIssues) {
-            changeItems = changeHistoryManager.getChangeItemsForField(isssue, "status");
-            if (changeItems.isEmpty()) {
-                for (String groupName : statuses.keySet()) {
-                    if (statuses.get(groupName).contains(isssue.getStatusObject().getName())) {
-                        if (isssue.getCreated().after(dateBegin)) {
-                            timePeriod = RegularTimePeriod.createInstance(timePeriodClass, isssue.getCreated(), timeZone);
+
+        for (Issue is : allIssues) {
+
+            allStatusChangesForIssue = changeHistoryManager.getChangeItemsForField(is, "status");
+            
+            if (allStatusChangesForIssue.isEmpty()) {
+
+                for (XYSeriesWithStatusList series : seriesWithStatuses) {
+
+                    if (series.containsStatus(is.getStatusObject().getName())) {
+
+                        if (is.getCreated().after(dateBegin)) {
+                            series.addYPointsInRange(is.getCreated(), dateEnd);
                         } else {
-                            timePeriod = RegularTimePeriod.createInstance(timePeriodClass, dateBegin, timeZone);
+                            series.addYPointsInRange(dateBegin, dateEnd);
                         }
                         MutableInt num = chartPeriods.get(groupName).get(timePeriod);
                         if (num == null) {
@@ -171,44 +195,22 @@ public class JiraChartServiceImpl implements JiraChartService {
                     }
                 }
             } else {
-                for (String groupName : statuses.keySet()) {
-                    int index = changeItems.size() - 1;
-                    while (index >= 0 && changeItems.get(index).getCreated().after(dateBegin)) {
-                        if (statuses.get(groupName).contains(changeItems.get(index).getToString())) {
-                            timePeriod = RegularTimePeriod.createInstance(timePeriodClass, changeItems.get(index).getCreated(), timeZone);
-                            MutableInt num = chartPeriods.get(groupName).get(timePeriod);
-                            if (num == null) {
-                                num = new MutableInt(0);
-                                chartPeriods.get(groupName).put(timePeriod, num);
-                            }
-                            num.increment();
-                        }
-                        index--;
-                    }
+                for (XYSeriesWithStatusList series : seriesWithStatuses) {
+                    dateStatusChanged = dateEnd;
+                    
+                    for (int i = allStatusChangesForIssue.size() - 1; i >= 0 && dateStatusChanged.after(dateBegin); i--) {
+                        if (series.containsStatus(allStatusChangesForIssue.get(i).getToString()) &&
+                                !series.checkIfChangeInTheSameTimePeriod(allStatusChangesForIssue.get(i).getCreated(), dateStatusChanged)) {
+                            
+                            System.out.println( allStatusChangesForIssue.get(i).getCreated() +  "   " + dateStatusChanged);
 
-                    if (index < 0) {
-                        if (statuses.get(groupName).contains(changeItems.get(0).getFromString())) {
-                            if (isssue.getCreated().after(dateBegin)) {
-                                timePeriod = RegularTimePeriod.createInstance(timePeriodClass, isssue.getCreated(), timeZone);
-                            } else {
-                                timePeriod = RegularTimePeriod.createInstance(timePeriodClass, dateBegin, timeZone);
-                            }
-                            MutableInt num = chartPeriods.get(groupName).get(timePeriod);
-                            if (num == null) {
-                                num = new MutableInt(0);
-                                chartPeriods.get(groupName).put(timePeriod, num);
-                            }
-                            num.increment();
+                            series.addYPointsInRange(allStatusChangesForIssue.get(i).getCreated(), dateStatusChanged);
+
                         }
-                    } else {
-                        if (changeItems.size() < (index + 1) && dateBegin.before(currentDate) && statuses.get(groupName).contains(changeItems.get(index + 1).getFromString())) {
-                            timePeriod = RegularTimePeriod.createInstance(timePeriodClass, dateBegin, timeZone);
-                            MutableInt num = chartPeriods.get(groupName).get(timePeriod);
-                            if (num == null) {
-                                num = new MutableInt(0);
-                                chartPeriods.get(groupName).put(timePeriod, num);
-                            }
-                            num.increment();
+                        dateStatusChanged = allStatusChangesForIssue.get(i).getCreated();
+                        
+                        if (i == 0 && dateStatusChanged.after(dateBegin) && series.containsStatus(allStatusChangesForIssue.get(i).getFromString())) {
+                            series.addYPointsInRange(is.getCreated(), dateStatusChanged);
                         }
                     }
 
@@ -237,10 +239,10 @@ public class JiraChartServiceImpl implements JiraChartService {
             }
         }
 
-        return chartMap;
+        return seriesWithStatuses;
     }
 
-    private List<ValueMarker> getVersionMarkers(String projectName, Date beginDate, ChartFactory.PeriodName periodName, ChartFactory.VersionLabel versionLabel) {
+    private List<ValueMarker> getVersionMarkers(String projectName, Date beginDate, ChartFactory.PeriodName periodName, ChartFactory.VersionLabel versionLabel, TimeZone timeZone) {
         final Set<Version> versions = new HashSet<Version>();
 
         Long projectID = projectManager.getProjectObj(Long.parseLong(projectName.replace("project-", ""))).getId();
@@ -251,14 +253,15 @@ public class JiraChartServiceImpl implements JiraChartService {
         final List<ValueMarker> markers = new ArrayList<>();
         for (Version version : versions) {
             if (version.getReleaseDate() != null && beginDate.before(version.getReleaseDate())) {
-                RegularTimePeriod timePeriod = RegularTimePeriod.createInstance(periodClass, version.getReleaseDate(), timeZoneManager.getLoggedInUserTimeZone());
+                RegularTimePeriod timePeriod = RegularTimePeriod.createInstance(periodClass, version.getReleaseDate(), timeZone);
                 ValueMarker vMarker = new ValueMarker(timePeriod.getFirstMillisecond());
 
                 vMarker.setPaint(Color.GRAY);
                 vMarker.setStroke(new BasicStroke(1.2f));
                 vMarker.setLabelPaint(Color.GRAY);
                 vMarker.setLabel(version.getName());
-
+                vMarker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+                vMarker.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
                 markers.add(vMarker);
             }
         }

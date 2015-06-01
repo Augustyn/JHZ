@@ -21,33 +21,23 @@ import com.atlassian.jira.charts.ChartFactory;
 import org.jfree.data.time.RegularTimePeriod;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 
 /**
  * Created by Ivo on 31/05/15.
  */
 public interface JiraChartService {
 
-    /**
-     * Generates chart for Jira using JFreeChart
-     *
-     * @param projectName project id of filter or project
-     * @param statusNames statuses of the issues to be acquired
-     * @param periodName  time period on the chart
-     * @param label       labels shown on the chart
-     * @param dateBegin   beginning date from which chart will be drawn
-     * @param width       chart width
-     * @param height      chart height
-     * @return chart with values
-     */
     public Chart generateChart(final String projectName, final Map<String, Set<String>> statusNames, final ChartFactory.PeriodName periodName,
                                final ChartFactory.VersionLabel label, Date dateBegin, final int width, final int height);
 
     /**
      * TODO Javadoc
-     * @return
      */
-    public Map<String, Map<RegularTimePeriod, Integer>> getTable();
+    public Map<String, Map<RegularTimePeriod, Integer>> generateTable(final String projectName, final Map<String,
+            Set<String>> statusNames, final ChartFactory.PeriodName periodName, Date dateBegin);
 
 }

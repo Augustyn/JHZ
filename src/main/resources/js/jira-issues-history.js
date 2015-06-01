@@ -149,15 +149,15 @@ AMG.jhz.init = function (params) {
                             options: [
                                 {
                                     label: gadget.getMsg("issues.history.gadget.field.version.option.All"),
-                                    value: "All versions"
+                                    value: "all"
                                 },
                                 {
                                     label: gadget.getMsg("issues.history.gadget.field.version.option.Major"),
-                                    value: "Only major versions"
+                                    value: "major"
                                 },
                                 {
                                     label: gadget.getMsg("issues.history.gadget.field.version.option.None"),
-                                    value: "None"
+                                    value: "none"
                                 }
                             ]
                         },

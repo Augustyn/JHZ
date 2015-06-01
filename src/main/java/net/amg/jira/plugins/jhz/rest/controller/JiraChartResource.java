@@ -19,15 +19,18 @@ package net.amg.jira.plugins.jhz.rest.controller;
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
 import com.atlassian.jira.rest.v1.util.CacheControl;
+import com.atlassian.jira.timezone.TimeZoneManager;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.google.gson.Gson;
 import net.amg.jira.plugins.jhz.model.FormField;
 import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
+import net.amg.jira.plugins.jhz.rest.model.IssueHistoryTableModel;
 import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryChartModel;
 import net.amg.jira.plugins.jhz.rest.model.Table;
 import net.amg.jira.plugins.jhz.services.JiraChartServiceImpl;
 import net.amg.jira.plugins.jhz.services.SearchServiceImpl;
 import net.amg.jira.plugins.jhz.services.Validator;
+import org.jfree.data.time.RegularTimePeriod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
@@ -42,6 +45,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static net.amg.jira.plugins.jhz.model.FormField.daysBackPattern;
+import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 
 /**
  * @author jarek
@@ -55,6 +59,7 @@ public class JiraChartResource {
     private SearchServiceImpl searchService;
     private Validator validator;
     private JiraChartServiceImpl jiraChartService;
+    private TimeZoneManager timeZoneManager;
 
     /**
      * Allows to generate chart which will be displayed later
@@ -92,6 +97,7 @@ public class JiraChartResource {
             return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorCollection)).build();
         }
         Date dateBegin = null;
+        Date currentDate = new Date();
 
         final Map<String, Set<String>> statusesSets = searchService.getGroupedIssueTypes(issues);
         try {
@@ -100,23 +106,14 @@ public class JiraChartResource {
             java.util.logging.Logger.getLogger(JiraChartResource.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        final ChartFactory.PeriodName period = ChartFactory.PeriodName.valueOf(periodName.toLowerCase());
-        final ChartFactory.VersionLabel label = getVersionLabel(versionLabel);
-        Chart chart = jiraChartService.generateChart(project, statusesSets, period, label, dateBegin, width, height);
+        final ChartFactory.VersionLabel label = ChartFactory.VersionLabel.valueOf(versionLabel);
+        Chart chart = jiraChartService.generateChart(project, ChartFactory.PeriodName.valueOf(periodName.toLowerCase()), label, dateBegin, statusesSets, width, height);
 
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), "title", chart.getImageMap(), chart.getImageMapName(), width, height);
         if(table) {
             jiraIssuesHistoryChart.setTable(new Table(jiraChartService.getTable()));
         }
         return Response.ok(jiraIssuesHistoryChart).cacheControl(CacheControl.NO_CACHE).build();
-    }
-
-    private ChartFactory.VersionLabel getVersionLabel(String versionLabel) {
-        //TODO te stringi nie mogą być na sztywno
-        if (versionLabel.contains("major") || versionLabel.contains("znaczące")) return ChartFactory.VersionLabel.major;
-        else if (versionLabel.contains("all") || versionLabel.contains("Wszystkie"))
-            return ChartFactory.VersionLabel.all;
-        else return ChartFactory.VersionLabel.none;
     }
 
     private Date getBeginDate(String date) throws ParseException {
@@ -144,5 +141,10 @@ public class JiraChartResource {
     @ServiceReference
     public void setJiraChartService(JiraChartServiceImpl jiraChartService) {
         this.jiraChartService = jiraChartService;
+    }
+    
+    @ServiceReference
+    public void setTimeZoneManager(TimeZoneManager timeZoneManager) {
+        this.timeZoneManager = timeZoneManager;
     }
 }
