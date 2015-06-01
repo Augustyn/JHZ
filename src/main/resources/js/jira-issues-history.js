@@ -166,6 +166,10 @@ AMG.jhz.init = function (params) {
                             type: "callbackBuilder",
                             callback: function (parentDiv) {
                                 AJS.$("[name='Issues']").select2();
+                                AJS.$("[class*='select2-container']").attr({
+                                    style: "width: 250px"
+                                });
+                                AJS.$("[name='Issues']").on("select2:select", function (e) { gadget.resize(); });
                             }
                         },
                         AJS.gadget.fields.nowConfigured()

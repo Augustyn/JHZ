@@ -43,3 +43,4 @@
 - PIP-148 Druga wersja tabelki + optymalizacja rest
 - PIP-118 Poprawki podliczania elementów chartu + refactoring
 - Naprawa konfliktów z merge jarek -> development
+- PIP-150 Dodano listener zmieniający rozmiar gadżetu przy wyborze statusu
