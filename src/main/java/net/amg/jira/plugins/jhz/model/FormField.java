@@ -18,10 +18,12 @@ package net.amg.jira.plugins.jhz.model;
 
 import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
 import net.amg.jira.plugins.jhz.rest.model.ValidationError;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -45,7 +47,7 @@ public enum FormField {
         public void validate(ErrorCollection errorCollection, String value) {
             if (value == null || value.isEmpty()) {
                 errorCollection.addValidationError(new ValidationError(FormField.ISSUES.fieldName,
-                        ERROR_PREFIX + EMPTY_FIELD));
+                        ERROR_PREFIX + "emptyIssue"));
             } else if (!issuesPattern.matcher(value).matches()) {
                 errorCollection.addValidationError(new ValidationError(FormField.ISSUES.fieldName,
                         ERROR_PREFIX + "invalidValue"));
@@ -108,7 +110,6 @@ public enum FormField {
     public static final Pattern datePattern = Pattern.compile("^[1-2]\\d{3}[/\\-[.]](0[1-9]|1[012])[/\\-[.]](0[1-9]|[12][0-9]|3[01])$", Pattern.CASE_INSENSITIVE);
     public static final Pattern projectPattern = Pattern.compile("(project-|filter-)\\d+", Pattern.CASE_INSENSITIVE);
     public static final Pattern issuesPattern = Pattern.compile("[aA-zZ\\s]+\\d+((\\|[aA-zZ\\s]+\\d+)?)*", Pattern.CASE_INSENSITIVE);
-
     private final String fieldName;
 
     private FormField(String fieldName) {

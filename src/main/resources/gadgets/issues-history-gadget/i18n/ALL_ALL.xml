@@ -5,6 +5,7 @@
     <msg name="issues.history.gadget.headers.specificIssues">List of Issues from Project</msg>
     <msg name="issues.history.gadget.errors.emptyProjectOrFilter">Project or Filter field cannot be empty.</msg>
     <msg name="issues.history.gadget.errors.emptyField">Field is required.</msg>
+    <msg name="issues.history.gadget.errors.emptyIssue">One of issues field must be filled.</msg>
     <msg name="issues.history.gadget.errors.mustBeNumeric">Value must be a number.</msg>
     <msg name="issues.history.gadget.errors.invalidValue">Value is invalid.</msg>
     <msg name="issues.history.gadget.errors.wrongFormat">Wrong format. (eg. 10d, -10d, YYYY-MM-DD, max 1 year)</msg>
@@ -15,6 +16,7 @@
     <msg name="issues.history.gadget.field.project.description">Field is required.</msg>
     <msg name="issues.history.gadget.field.issue.label">Select Issues:</msg>
     <msg name="issues.history.gadget.field.issue.description">Different type of issues status represented on the graph.</msg>
+    <msg name="issues.history.gadget.field.issue.description.others">You can choose more than one group of statuses.</msg>
     <msg name="issues.history.gadget.field.period.label">Period:</msg>
     <msg name="issues.history.gadget.field.period.description">The length of periods represented on the graph.</msg>
     <msg name="issues.history.gadget.field.period.option.Hourly">Hourly</msg>
@@ -31,7 +33,7 @@
     <msg name="issues.history.gadget.field.date.label">Start Date:</msg>
     <msg name="issues.history.gadget.field.date.description">First day on the graph (date or previous days).</msg>
     <msg name="gadget.common.refresh.label">Refresh Interval</msg>
-    <msg name="gadget.common.refresh.description">How often you would like this gadget to update</msg>
+    <msg name="gadget.common.refresh.description">How often you would like this gadget to update.</msg>
     <msg name="gadget.common.refresh.never">Never</msg>
     <msg name="gadget.common.refresh.minutes">Every {0} Minutes</msg>
     <msg name="gadget.common.refresh.hour">Every 1 Hour</msg>

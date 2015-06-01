@@ -33,13 +33,13 @@
     <UserPref name="isConfigured" datatype="hidden" default_value="false"/>
     <UserPref name="refresh" datatype="hidden" default_value="false"/>
 
-    <UserPref name="Project" datatype="hidden" required="true"/>
+    <UserPref name="Project" required="true"/>
     <UserPref name="Issues" datatype="select" required="true"/>
     <UserPref name="Period" datatype="hidden" required="true"/>
     <UserPref name="Version" datatype="hidden"/>
     <UserPref name="Date" datatype="hidden"/>
 
-    <Content type="html" view="profile">
+    <Content type="html" view="profile,canvas">
         <![CDATA[
             #requireResource("com.atlassian.gadgets.publisher:ajs-gadgets")
             #requireResource("net.amg.jira.plugins.jira-issues-history:jira-issues-history-resources")

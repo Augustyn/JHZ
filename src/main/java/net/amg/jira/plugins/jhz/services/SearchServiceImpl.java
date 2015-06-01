@@ -26,6 +26,7 @@ import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.query.Query;
+import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
@@ -57,22 +58,25 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Map<String, List<Issue>> findIssues(String projectOrFilter, String issueTypes, String date)
+    public Map<String, List<Issue>> findIssues(ProjectOrFilter projectOrFilter, String issueTypes, String date)
             throws SearchException, ParseException {
         Date beginningDate = resolveDaysPreviously(date);
-        Map<String,Set<String>> groupedIssueTypes = getGroupedIssueTypes(issueTypes);
+        Map<String, Set<String>> groupedIssueTypes = getGroupedIssueTypes(issueTypes);
         JqlClauseBuilder commonClauseBuilder = JqlQueryBuilder.newBuilder().where().createdAfter(beginningDate).and();
-        if (validator.checkIfProject(projectOrFilter)) {
-            commonClauseBuilder.project(projectOrFilter.split("-")[1]);
-        } else {
-            commonClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
+        switch (projectOrFilter.getType()) {
+            case PROJECT:
+                commonClauseBuilder.project(String.valueOf(projectOrFilter.getId()));
+                break;
+            case FILTER:
+                commonClauseBuilder.savedFilter(String.valueOf(projectOrFilter.getId()));
+                break;
         }
         Query commonQuery = commonClauseBuilder.buildQuery();
-        Map<String,List<Issue>> issueMap = new HashMap<>();
-        for(String groupName : groupedIssueTypes.keySet()) {
+        Map<String, List<Issue>> issueMap = new HashMap<>();
+        for (String groupName : groupedIssueTypes.keySet()) {
             String[] typesGroup = groupedIssueTypes.get(groupName).toArray(new String[0]);
             jqlClauseBuilder = JqlQueryBuilder.newBuilder(commonQuery).where().and().status(typesGroup);
-            issueMap.put(groupName,searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
+            issueMap.put(groupName, searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
                     PagerFilter.getUnlimitedFilter()).getIssues());
         }
         return issueMap;
@@ -91,15 +95,17 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<Issue> findAllIssues(String projectOrFilter) throws SearchException {
+    public List<Issue> findAllIssues(ProjectOrFilter projectOrFilter) throws SearchException {
         JqlClauseBuilder commonClauseBuilder = JqlQueryBuilder.newBuilder().where();
-        if (validator.checkIfProject(projectOrFilter)) {
-            commonClauseBuilder.project(projectOrFilter.split("-")[1]);
-        } else {
-            commonClauseBuilder.savedFilter(projectOrFilter.split("-")[1]);
+        switch (projectOrFilter.getType()) {
+            case PROJECT:
+                commonClauseBuilder.project(String.valueOf(projectOrFilter.getId()));
+                break;
+            case FILTER:
+                commonClauseBuilder.savedFilter(String.valueOf(projectOrFilter.getId()));
+                break;
         }
         Query commonQuery = commonClauseBuilder.buildQuery();
-
         return searchProvider.search(commonQuery, jiraAuthenticationContext.getUser(),
                 PagerFilter.getUnlimitedFilter()).getIssues();
     }
@@ -107,18 +113,18 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public Map<String, Set<String>> getGroupedIssueTypes(String ungroupedTypes) {
         String[] ungroupedTypesArr = ungroupedTypes.split("\\|");
-        Map<String,Set<String>> issueTypeMap = new HashMap<>();
+        Map<String, Set<String>> issueTypeMap = new HashMap<>();
         Pattern pattern = Pattern.compile("\\d");
-        for(String type : ungroupedTypesArr) {
+        for (String type : ungroupedTypesArr) {
             Matcher matcher = pattern.matcher(type);
             matcher.find();
-            String groupName = LABEL_BASE +type.substring(matcher.start());
-            if(!issueTypeMap.containsKey(groupName)) {
-                issueTypeMap.put(groupName,new HashSet<String>());
+            String groupName = LABEL_BASE + type.substring(matcher.start());
+            if (!issueTypeMap.containsKey(groupName)) {
+                issueTypeMap.put(groupName, new HashSet<String>());
             }
-            issueTypeMap.get(groupName).add(type.replaceAll("\\d",""));
+            issueTypeMap.get(groupName).add(type.replaceAll("\\d", ""));
         }
-        return  issueTypeMap;
+        return issueTypeMap;
     }
 
     @ServiceReference

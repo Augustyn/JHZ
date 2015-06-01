@@ -32,3 +32,17 @@
 - PIP-134 Dodano licencje + usunięto puste testy jednostkowe
 - PIP-110 Interwał odświeżania poprawiony
 - PIP-125 Walidacja daty
+- PIP-143 Podwaliny pola multiselect
+- PIP-143 Przerzucenie select.min.2 js i css do resource oraz zmiania Ivo tyczy się już tylko pól od Issue.
+- Refactoring treści etykiet, opisów i błędów.
+- PIP-147 Naprawiono wyświetlanie chart
+- PIP-118 Naprawiono chart + minimalny refaktoring
+- PIP-148 Dodano tryb zmaksymalizowany
+- PIP-148 Poprawiono error w trybie zmaksymalizowanym
+- PIP-148 Pierwsza wersja tabelki
+- PIP-148 Druga wersja tabelki + optymalizacja rest
+- PIP-118 Poprawki podliczania elementów chartu + refactoring
+- Naprawa konfliktów z merge jarek -> development
+- PIP-150 Dodano listener zmieniający rozmiar gadżetu przy wyborze statusu
+- PIP-131 Stworzono pole ProjectOrFilter
+- PIP-152 Poprawiono warunki dotyczące wyboru wersji

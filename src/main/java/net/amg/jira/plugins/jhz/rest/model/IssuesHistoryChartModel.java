@@ -43,6 +43,8 @@ public class IssuesHistoryChartModel {
     private int width;
     @XmlElement
     private int height;
+    @XmlElement
+    private Table table;
 
     public IssuesHistoryChartModel(String location, String filterTitle, String imageMap, String imageMapName, int width, int height) {
         this.location = location;
@@ -53,5 +55,7 @@ public class IssuesHistoryChartModel {
         this.height = height;
     }
 
-
+    public void setTable(Table table) {
+        this.table = table;
+    }
 }
