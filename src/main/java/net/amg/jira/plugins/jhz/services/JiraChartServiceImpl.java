@@ -34,6 +34,7 @@ import java.awt.Color;
 import java.awt.geom.Ellipse2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,7 +45,9 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
+import net.amg.jira.plugins.jhz.model.ProjectsType;
 import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
+import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
@@ -197,8 +200,6 @@ public class JiraChartServiceImpl implements JiraChartService {
                         if (series.containsStatus(allStatusChangesForIssue.get(i).getToString()) &&
                                 !series.checkIfChangeInTheSameTimePeriod(allStatusChangesForIssue.get(i).getCreated(), dateStatusChanged)) {
 
-                            System.out.println( allStatusChangesForIssue.get(i).getCreated() +  "   " + dateStatusChanged);
-
                             series.addYPointsInRange(allStatusChangesForIssue.get(i).getCreated(), dateStatusChanged);
 
                         }
@@ -217,6 +218,11 @@ public class JiraChartServiceImpl implements JiraChartService {
     }
 
     private List<ValueMarker> getVersionMarkers(ProjectOrFilter projectOrFilter, Date beginDate, ChartFactory.PeriodName periodName, ChartFactory.VersionLabel versionLabel, TimeZone timeZone) {
+        
+        if(ChartFactory.VersionLabel.none.equals(versionLabel) || projectOrFilter.getType().equals(ProjectsType.FILTER)) {
+            return Collections.EMPTY_LIST;
+        }
+        
         final Set<Version> versions = new HashSet<Version>();
 
         Long projectID = projectManager.getProjectObj(new Long(projectOrFilter.getId())).getId();
@@ -236,10 +242,20 @@ public class JiraChartServiceImpl implements JiraChartService {
                 vMarker.setLabel(version.getName());
                 vMarker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
                 vMarker.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
+                if(ChartFactory.VersionLabel.major.equals(versionLabel) && !isMinorVersion(version)) {
                 markers.add(vMarker);
+                }
+                else markers.add(vMarker);
             }
         }
         return markers;
+    }
+    
+    private boolean isMinorVersion(Version version)
+    {
+        return StringUtils.countMatches(version.getName(), ".") > 1 ||
+                StringUtils.contains(version.getName().toLowerCase(), "alpha") ||
+                StringUtils.contains(version.getName().toLowerCase(), "beta");
     }
 
     @ServiceReference

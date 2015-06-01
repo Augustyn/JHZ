@@ -110,6 +110,10 @@ public class XYSeriesWithStatusList {
         MutableInt num;
         while (timePeriod.getEnd().before(dateEnd)) {
             num = XYSeries.get(timePeriod);
+            if (num == null) {
+                num = new MutableInt(0);
+                XYSeries.put(timePeriod, num);
+            }
             num.increment();
             timePeriod = timePeriod.next();
         }

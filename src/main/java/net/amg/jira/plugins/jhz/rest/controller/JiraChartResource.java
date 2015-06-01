@@ -31,7 +31,6 @@ import net.amg.jira.plugins.jhz.rest.model.Table;
 import net.amg.jira.plugins.jhz.services.JiraChartServiceImpl;
 import net.amg.jira.plugins.jhz.services.SearchServiceImpl;
 import net.amg.jira.plugins.jhz.services.Validator;
-import org.jfree.data.time.RegularTimePeriod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
@@ -46,7 +45,6 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static net.amg.jira.plugins.jhz.model.FormField.daysBackPattern;
-import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 
 /**
  * @author jarek
@@ -89,7 +87,6 @@ public class JiraChartResource {
         Map<FormField, String> paramMap = new HashMap<>();
         //In canvas view gadget decides to replace all spaces with '+', thus the following are required:
         issues = issues.replace("+", " ");
-        versionLabel = versionLabel.replace("+", " ");
         paramMap.put(FormField.PROJECT, project);
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.DATE, date);
@@ -108,9 +105,10 @@ public class JiraChartResource {
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(JiraChartResource.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //TODO FIXME
-        final ChartFactory.VersionLabel label = ChartFactory.VersionLabel.all;
+        
+        final ChartFactory.VersionLabel label = ChartFactory.VersionLabel.valueOf(versionLabel);
         ProjectOrFilter projectOrFilter = null;
+        
         if(validator.checkIfProject(project)) {
             projectOrFilter = new ProjectOrFilter(ProjectsType.PROJECT,Integer.parseInt(project.split("-")[1]));
         } else {
