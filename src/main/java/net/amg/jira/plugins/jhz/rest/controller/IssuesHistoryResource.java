@@ -20,6 +20,8 @@ import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.issue.status.Status;
 import com.google.gson.Gson;
+import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
+import net.amg.jira.plugins.jhz.model.ProjectsType;
 import net.amg.jira.plugins.jhz.services.SearchServiceImpl;
 import net.amg.jira.plugins.jhz.services.Validator;
 import net.amg.jira.plugins.jhz.model.FormField;
@@ -71,9 +73,15 @@ public class IssuesHistoryResource {
         if (!errorCollection.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorCollection)).build();
         }
+        ProjectOrFilter projectOrFilter = null;
+        if(validator.checkIfProject(project)) {
+            projectOrFilter = new ProjectOrFilter(ProjectsType.PROJECT,Integer.parseInt(project.split("-")[1]));
+        } else {
+            projectOrFilter = new ProjectOrFilter(ProjectsType.FILTER,Integer.parseInt(project.split("-")[1]));
+        }
         Map<String, List<Issue>> issueList = null;
         try {
-            issueList = searchService.findIssues(project, issues, date);
+            issueList = searchService.findIssues(projectOrFilter, issues, date);
         } catch (SearchException | ParseException e) {
             String timestamp = "TIMESTAMP: " +
                     new java.text.SimpleDateFormat("MM/dd/yyyy h:mm:ss a").format(new Date());

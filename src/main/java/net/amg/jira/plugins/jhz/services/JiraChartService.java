@@ -18,6 +18,7 @@ package net.amg.jira.plugins.jhz.services;
 
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
+import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
 import org.jfree.data.time.RegularTimePeriod;
 
 import java.util.Date;
@@ -34,7 +35,7 @@ public interface JiraChartService {
     /**
      * Generates chart for Jira using JFreeChart
      *
-     * @param projectName project id of filter or project
+     * @param projectName project id of filter or project //TODO UPDATE
      * @param periodName  time period on the chart
      * @param label       labels shown on the chart
      * @param statusesSets
@@ -43,7 +44,7 @@ public interface JiraChartService {
      * @param height      chart height
      * @return chart with values
      */
-    public Chart generateChart(final String projectName, final ChartFactory.PeriodName periodName,
+    public Chart generateChart(final ProjectOrFilter projectOrFilter, final ChartFactory.PeriodName periodName,
                                final ChartFactory.VersionLabel label, Date dateBegin, Map<String, Set<String>> statusesSets, final int width, final int height);
 
     /**

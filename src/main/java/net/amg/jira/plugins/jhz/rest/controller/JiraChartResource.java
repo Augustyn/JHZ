@@ -23,6 +23,8 @@ import com.atlassian.jira.timezone.TimeZoneManager;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.google.gson.Gson;
 import net.amg.jira.plugins.jhz.model.FormField;
+import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
+import net.amg.jira.plugins.jhz.model.ProjectsType;
 import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
 import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryChartModel;
 import net.amg.jira.plugins.jhz.rest.model.Table;
@@ -108,7 +110,13 @@ public class JiraChartResource {
         }
         //TODO FIXME
         final ChartFactory.VersionLabel label = ChartFactory.VersionLabel.all;
-        Chart chart = jiraChartService.generateChart(project, ChartFactory.PeriodName.valueOf(periodName.toLowerCase()), label, dateBegin, statusesSets, width, height);
+        ProjectOrFilter projectOrFilter = null;
+        if(validator.checkIfProject(project)) {
+            projectOrFilter = new ProjectOrFilter(ProjectsType.PROJECT,Integer.parseInt(project.split("-")[1]));
+        } else {
+            projectOrFilter = new ProjectOrFilter(ProjectsType.FILTER,Integer.parseInt(project.split("-")[1]));
+        }
+        Chart chart = jiraChartService.generateChart(projectOrFilter, ChartFactory.PeriodName.valueOf(periodName.toLowerCase()), label, dateBegin, statusesSets, width, height);
 
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), "title", chart.getImageMap(), chart.getImageMapName(), width, height);
         if(table) {

@@ -19,6 +19,7 @@ package net.amg.jira.plugins.jhz.services;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.issue.status.Status;
+import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
 
 import java.text.ParseException;
 import java.util.Collection;
@@ -36,14 +37,14 @@ public interface SearchService {
     /**
      * Finds issues given the search parameters.
      *
-     * @param projectOrFilter id of project or filter, should start with 'project-' or 'filter-'
+     * @param projectOrFilter id of project or filter, should start with 'project-' or 'filter-' //TODO update
      * @param issueTypes      to be found (ungrouped)
      * @param date            date or number of days into the past constituting the beginning of requested history
      * @return List of issues constituting issue history grouped by graph index
      * @throws SearchException thrown by Lucene SearchProvider
      * @throws ParseException  thrown whenever user preference cannot be parsed
      */
-    Map<String, List<Issue>> findIssues(String projectOrFilter, String issueTypes, String date)
+    Map<String, List<Issue>> findIssues(ProjectOrFilter projectOrFilter, String issueTypes, String date)
             throws SearchException, ParseException;
 
     /**
@@ -57,11 +58,11 @@ public interface SearchService {
     /**
      * Finds all issues from chosen project or filter
      *
-     * @param projectOrFilter id of project or filter, should start with 'project-' or 'filter-'
+     * @param projectOrFilter id of project or filter, should start with 'project-' or 'filter-' //TODO update
      * @return List of issues
      * @throws SearchException thrown by Lucene SearchProvider
      */
-    List<Issue> findAllIssues(String projectOrFilter) throws SearchException;
+    List<Issue> findAllIssues(ProjectOrFilter projectOrFilter) throws SearchException;
 
     /**
      * Groups issue type names in sets mapped to group names.

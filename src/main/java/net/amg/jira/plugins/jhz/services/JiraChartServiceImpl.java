@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+
+import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
 import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.ValueMarker;
@@ -82,15 +84,15 @@ public class JiraChartServiceImpl implements JiraChartService {
 
     @Override
     public Chart generateChart(
-            final String projectName, final ChartFactory.PeriodName periodName,
+            final ProjectOrFilter projectOrFilter, final ChartFactory.PeriodName periodName,
             final ChartFactory.VersionLabel label, Date dateBegin, Map<String, Set<String>> statusesSets,
             final int width, final int height
     ) {
-        List<ValueMarker> versionMarkers = getVersionMarkers(projectName, dateBegin, periodName, label, timeZoneManager.getLoggedInUserTimeZone());
+        List<ValueMarker> versionMarkers = getVersionMarkers(projectOrFilter, dateBegin, periodName, label, timeZoneManager.getLoggedInUserTimeZone());
 
         final Map<String, Object> params = new HashMap<String, Object>();
 
-        List<XYSeriesWithStatusList> listXYSeries = generateMapsForChart(projectName, dateBegin, statusesSets, periodName);
+        List<XYSeriesWithStatusList> listXYSeries = generateMapsForChart(projectOrFilter, dateBegin, statusesSets, periodName);
         table = listXYSeries;
         Map[] dataMaps = new Map[listXYSeries.size()];
         String[] seriesName = new String[listXYSeries.size()];
@@ -149,7 +151,7 @@ public class JiraChartServiceImpl implements JiraChartService {
         return dataset;
     }
 
-    private List<XYSeriesWithStatusList> generateMapsForChart(String projectName, Date dateBegin, Map<String, Set<String>> statusesSets, ChartFactory.PeriodName periodName) {
+    private List<XYSeriesWithStatusList> generateMapsForChart(ProjectOrFilter projectOrFilter   , Date dateBegin, Map<String, Set<String>> statusesSets, ChartFactory.PeriodName periodName) {
 
         Date dateEnd = new Date();
 
@@ -164,7 +166,7 @@ public class JiraChartServiceImpl implements JiraChartService {
         Date dateStatusChanged;
 
         try {
-            allIssues = searchService.findAllIssues(projectName);
+            allIssues = searchService.findAllIssues(projectOrFilter);
         } catch (SearchException e) {
             logger.error("Unable to get issues" + e.getMessage());
         }
@@ -214,10 +216,10 @@ public class JiraChartServiceImpl implements JiraChartService {
         return seriesWithStatuses;
     }
 
-    private List<ValueMarker> getVersionMarkers(String projectName, Date beginDate, ChartFactory.PeriodName periodName, ChartFactory.VersionLabel versionLabel, TimeZone timeZone) {
+    private List<ValueMarker> getVersionMarkers(ProjectOrFilter projectOrFilter, Date beginDate, ChartFactory.PeriodName periodName, ChartFactory.VersionLabel versionLabel, TimeZone timeZone) {
         final Set<Version> versions = new HashSet<Version>();
 
-        Long projectID = projectManager.getProjectObj(Long.parseLong(projectName.replace("project-", ""))).getId();
+        Long projectID = projectManager.getProjectObj(new Long(projectOrFilter.getId())).getId();
 
         versions.addAll(versionManager.getVersionsUnarchived(projectID));
 

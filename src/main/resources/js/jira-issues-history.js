@@ -23,6 +23,7 @@ AMG.jhz.init = function (params) {
                     };
                 }
                 else {
+                    gadget.projectOrFilterName = this.getPref("projectOrFilterName");
                     searchParam = AJS.gadget.fields.projectOrFilterPicker(gadget, "Project");
                 }
                 return {
