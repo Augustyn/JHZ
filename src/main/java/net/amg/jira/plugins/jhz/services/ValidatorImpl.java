@@ -16,7 +16,6 @@
 
 package net.amg.jira.plugins.jhz.services;
 
-import com.atlassian.jira.util.InjectableComponent;
 import net.amg.jira.plugins.jhz.model.FormField;
 import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
 import org.slf4j.Logger;

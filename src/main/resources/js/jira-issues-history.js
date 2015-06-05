@@ -23,7 +23,6 @@ AMG.jhz.init = function (params) {
                     };
                 }
                 else {
-                    gadget.projectOrFilterName = this.getPref("projectOrFilterName");
                     searchParam = AJS.gadget.fields.projectOrFilterPicker(gadget, "Project");
                 }
                 return {
@@ -219,6 +218,7 @@ AMG.jhz.init = function (params) {
                         return chartImg;
                     };
                 }();
+                gadget.projectOrFilterName = args.chart.filterTitle;
                 if (gadgets.views.getCurrentView().getName() === "canvas") {
 
                     var dataTable = AJS.gadgets.templater.Table({

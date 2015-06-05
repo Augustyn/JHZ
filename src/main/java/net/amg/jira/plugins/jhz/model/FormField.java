@@ -18,12 +18,10 @@ package net.amg.jira.plugins.jhz.model;
 
 import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
 import net.amg.jira.plugins.jhz.rest.model.ValidationError;
-import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -62,16 +60,15 @@ public enum FormField {
                 if (!daysBackPattern.matcher(value).matches() && !datePattern.matcher(value).matches()) {
                     errorCollection.addValidationError(new ValidationError(FormField.DATE.fieldName,
                             ERROR_PREFIX + "wrongFormat"));
-                }
-                else {
+                } else {
                     if (datePattern.matcher(value).matches()) {
                         Calendar today = Calendar.getInstance();
                         Calendar setDate = Calendar.getInstance();
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-                        if(value.charAt(4)== '/' || value.charAt(4)=='.' ||
-                                value.charAt(7)== '/' || value.charAt(7)=='.'){
-                           value= value.substring(0,4)+ "-"+value.substring(5,7)+ "-"+value.substring(8);
+                        if (value.charAt(4) == '/' || value.charAt(4) == '.' ||
+                                value.charAt(7) == '/' || value.charAt(7) == '.') {
+                            value = value.substring(0, 4) + "-" + value.substring(5, 7) + "-" + value.substring(8);
                         }
 
                         try {
@@ -81,13 +78,13 @@ public enum FormField {
                                     ERROR_PREFIX + "noWay"));
                         }
 
-                        if (setDate.after(today)){
+                        if (setDate.after(today)) {
                             errorCollection.addValidationError(new ValidationError(FormField.DATE.fieldName,
                                     ERROR_PREFIX + "futureDate"));
                         }
 
-                        today.set(Calendar.YEAR,today.get(Calendar.YEAR)-1);
-                        if(setDate.before(today)){
+                        today.set(Calendar.YEAR, today.get(Calendar.YEAR) - 1);
+                        if (setDate.before(today)) {
                             errorCollection.addValidationError(new ValidationError(FormField.DATE.fieldName,
                                     ERROR_PREFIX + "overYear"));
                         }

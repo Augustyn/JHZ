@@ -37,7 +37,7 @@ public interface SearchService {
     /**
      * Finds issues given the search parameters.
      *
-     * @param projectOrFilter id of project or filter, should start with 'project-' or 'filter-' //TODO update
+     * @param projectOrFilter representing project or filter with an id
      * @param issueTypes      to be found (ungrouped)
      * @param date            date or number of days into the past constituting the beginning of requested history
      * @return List of issues constituting issue history grouped by graph index
@@ -58,7 +58,7 @@ public interface SearchService {
     /**
      * Finds all issues from chosen project or filter
      *
-     * @param projectOrFilter id of project or filter, should start with 'project-' or 'filter-' //TODO update
+     * @param projectOrFilter representing project or filter with an id
      * @return List of issues
      * @throws SearchException thrown by Lucene SearchProvider
      */

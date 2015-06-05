@@ -29,11 +29,9 @@
     </ModulePrefs>
 
     <UserPref name="baseUrl" datatype="hidden" default_value="__ATLASSIAN_BASE_URL__"/>
-
     <UserPref name="isConfigured" datatype="hidden" default_value="false"/>
     <UserPref name="refresh" datatype="hidden" default_value="false"/>
-
-    <UserPref name="Project" required="true"/>
+    <UserPref name="Project" datatype="hidden"/>
     <UserPref name="Issues" datatype="select" required="true"/>
     <UserPref name="Period" datatype="hidden" required="true"/>
     <UserPref name="Version" datatype="hidden"/>

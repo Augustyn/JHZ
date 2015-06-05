@@ -20,5 +20,5 @@ package net.amg.jira.plugins.jhz.model;
  * Created by Ivo on 01/06/15.
  */
 public enum ProjectsType {
-    PROJECT,FILTER
+    PROJECT, FILTER
 }

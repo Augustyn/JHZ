@@ -28,22 +28,6 @@ import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.project.version.VersionManager;
 import com.atlassian.jira.timezone.TimeZoneManager;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.geom.Ellipse2D;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-
 import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
 import net.amg.jira.plugins.jhz.model.ProjectsType;
 import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
@@ -63,9 +47,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
+
 /**
- * Class responsible for generating chart using JFreeChart
- *
  * @author jarek
  */
 @Component
@@ -90,7 +78,7 @@ public class JiraChartServiceImpl implements JiraChartService {
             final ProjectOrFilter projectOrFilter, final ChartFactory.PeriodName periodName,
             final ChartFactory.VersionLabel label, Date dateBegin, Map<String, Set<String>> statusesSets,
             final int width, final int height
-    ) {
+    ) throws IOException, SearchException {
         List<ValueMarker> versionMarkers = getVersionMarkers(projectOrFilter, dateBegin, periodName, label, timeZoneManager.getLoggedInUserTimeZone());
 
         final Map<String, Object> params = new HashMap<String, Object>();
@@ -128,12 +116,7 @@ public class JiraChartServiceImpl implements JiraChartService {
         for (ValueMarker versionMarker : versionMarkers) {
             plot.addDomainMarker(versionMarker);
         }
-
-        try {
-            helper.generate(width, height);
-        } catch (IOException e) {
-            logger.error("Error while generating chart" + e.getMessage());
-        }
+        helper.generate(width, height);
 
         return new Chart(helper.getLocation(), helper.getImageMapHtml(), helper.getImageMapName(), params);
     }
@@ -154,13 +137,13 @@ public class JiraChartServiceImpl implements JiraChartService {
         return dataset;
     }
 
-    private List<XYSeriesWithStatusList> generateMapsForChart(ProjectOrFilter projectOrFilter   , Date dateBegin, Map<String, Set<String>> statusesSets, ChartFactory.PeriodName periodName) {
+    private List<XYSeriesWithStatusList> generateMapsForChart(ProjectOrFilter projectOrFilter, Date dateBegin, Map<String, Set<String>> statusesSets, ChartFactory.PeriodName periodName) throws SearchException {
 
         Date dateEnd = new Date();
 
         List<XYSeriesWithStatusList> seriesWithStatuses = new ArrayList<>();
 
-        for(Map.Entry<String, Set<String>> statusSet : statusesSets.entrySet()) {
+        for (Map.Entry<String, Set<String>> statusSet : statusesSets.entrySet()) {
             seriesWithStatuses.add(new XYSeriesWithStatusList(statusSet.getValue(), statusSet.getKey(), dateBegin, dateEnd, timeZoneManager.getLoggedInUserTimeZone(), periodName));
         }
 
@@ -168,11 +151,7 @@ public class JiraChartServiceImpl implements JiraChartService {
         List<ChangeItemBean> allStatusChangesForIssue;
         Date dateStatusChanged;
 
-        try {
-            allIssues = searchService.findAllIssues(projectOrFilter);
-        } catch (SearchException e) {
-            logger.error("Unable to get issues" + e.getMessage());
-        }
+        allIssues = searchService.findAllIssues(projectOrFilter);
 
         for (Issue is : allIssues) {
 
@@ -218,11 +197,11 @@ public class JiraChartServiceImpl implements JiraChartService {
     }
 
     private List<ValueMarker> getVersionMarkers(ProjectOrFilter projectOrFilter, Date beginDate, ChartFactory.PeriodName periodName, ChartFactory.VersionLabel versionLabel, TimeZone timeZone) {
-        
-        if(ChartFactory.VersionLabel.none.equals(versionLabel) || projectOrFilter.getType().equals(ProjectsType.FILTER)) {
+
+        if (ChartFactory.VersionLabel.none.equals(versionLabel) || projectOrFilter.getType().equals(ProjectsType.FILTER)) {
             return Collections.EMPTY_LIST;
         }
-        
+
         final Set<Version> versions = new HashSet<Version>();
 
         Long projectID = projectManager.getProjectObj(new Long(projectOrFilter.getId())).getId();
@@ -242,17 +221,15 @@ public class JiraChartServiceImpl implements JiraChartService {
                 vMarker.setLabel(version.getName());
                 vMarker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
                 vMarker.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
-                if(ChartFactory.VersionLabel.major.equals(versionLabel) && !isMinorVersion(version)) {
-                markers.add(vMarker);
-                }
-                else markers.add(vMarker);
+                if (ChartFactory.VersionLabel.major.equals(versionLabel) && !isMinorVersion(version)) {
+                    markers.add(vMarker);
+                } else markers.add(vMarker);
             }
         }
         return markers;
     }
-    
-    private boolean isMinorVersion(Version version)
-    {
+
+    private boolean isMinorVersion(Version version) {
         return StringUtils.countMatches(version.getName(), ".") > 1 ||
                 StringUtils.contains(version.getName().toLowerCase(), "alpha") ||
                 StringUtils.contains(version.getName().toLowerCase(), "beta");

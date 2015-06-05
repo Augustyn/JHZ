@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * Represents a row corresponding to a single period in an issues history table
  * Created by Ivo on 31/05/15.
  */
 @XmlRootElement

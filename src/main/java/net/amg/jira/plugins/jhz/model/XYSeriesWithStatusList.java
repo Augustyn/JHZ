@@ -17,14 +17,10 @@ package net.amg.jira.plugins.jhz.model;
 
 import com.atlassian.jira.charts.ChartFactory;
 import com.atlassian.jira.charts.jfreechart.util.ChartUtil;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.TreeMap;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.jfree.data.time.RegularTimePeriod;
+
+import java.util.*;
 
 /**
  * Class with list of statuses and XY series for chart
@@ -60,6 +56,7 @@ public class XYSeriesWithStatusList {
 
     /**
      * Set of statuses that are used to create this xy series
+     *
      * @return set of statuses
      */
     public Set<String> getStatusesSet() {
@@ -67,21 +64,19 @@ public class XYSeriesWithStatusList {
     }
 
     /**
-     * 
      * @return map with x and y used to generate chart
      */
     public Map<RegularTimePeriod, Integer> getXYSeries() {
         Map<RegularTimePeriod, Integer> map = new HashMap<>();
-        
+
         for (Map.Entry<RegularTimePeriod, MutableInt> entry : XYSeries.entrySet()) {
-                map.put(entry.getKey(), entry.getValue().intValue());
-            }
-        
+            map.put(entry.getKey(), entry.getValue().intValue());
+        }
+
         return map;
     }
 
     /**
-     * 
      * @return name of this xy series line
      */
     public String getLineName() {
@@ -90,6 +85,7 @@ public class XYSeriesWithStatusList {
 
     /**
      * checks if string with statusName is contained in statuses of this xy series
+     *
      * @param statusName name of status to check
      * @return true if statusName is in set of statuses
      */
@@ -99,11 +95,12 @@ public class XYSeriesWithStatusList {
 
     /**
      * adds points for each time period between two dates
+     *
      * @param dateBegin date for first time period
-     * @param dateEnd end date for periods
+     * @param dateEnd   end date for periods
      */
     public void addYPointsInRange(Date dateBegin, Date dateEnd) {
-        if(dateBegin.before(this.dateBegin)) {
+        if (dateBegin.before(this.dateBegin)) {
             dateBegin = this.dateBegin;
         }
         RegularTimePeriod timePeriod = RegularTimePeriod.createInstance(ChartUtil.getTimePeriodClass(periodName), dateBegin, timeZone);
@@ -117,14 +114,15 @@ public class XYSeriesWithStatusList {
             num.increment();
             timePeriod = timePeriod.next();
         }
-        if(dateEnd.equals(this.dateEnd)) {
+        if (dateEnd.equals(this.dateEnd)) {
             num = XYSeries.get(timePeriod);
             num.increment();
         }
     }
-    
+
     /**
      * Checks if two dates are in the same time period
+     *
      * @param date1 first Date to check
      * @param date2 second Date
      * @return true if dates are in the same period
@@ -132,7 +130,7 @@ public class XYSeriesWithStatusList {
     public boolean checkIfChangeInTheSameTimePeriod(Date date1, Date date2) {
         RegularTimePeriod timePeriod1 = RegularTimePeriod.createInstance(ChartUtil.getTimePeriodClass(periodName), date1, timeZone);
         RegularTimePeriod timePeriod2 = RegularTimePeriod.createInstance(ChartUtil.getTimePeriodClass(periodName), date2, timeZone);
-        
+
         return timePeriod1.getStart().equals(timePeriod2.getStart());
     }
 
