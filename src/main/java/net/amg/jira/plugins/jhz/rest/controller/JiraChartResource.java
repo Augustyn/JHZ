@@ -100,6 +100,7 @@ public class JiraChartResource {
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.DATE, date);
         paramMap.put(FormField.PERIOD, periodName);
+        paramMap.put(FormField.VERSION, versionLabel);
         ErrorCollection errorCollection = validator.validate(paramMap);
         Gson gson = new Gson();
         if (!errorCollection.isEmpty()) {
@@ -185,8 +186,7 @@ public class JiraChartResource {
                 return null == aProject ? null : aProject.getName();
             case FILTER:
                 SearchRequest searchRequest = searchRequestService.getFilter(getJiraServiceContext(),
-                        new Long(projectOrFilterId.getId())
-                );
+                        new Long(projectOrFilterId.getId()));
                 return null == searchRequest ? null : searchRequest.getName();
             default:
                 return "gadget.common.anonymous.filter";

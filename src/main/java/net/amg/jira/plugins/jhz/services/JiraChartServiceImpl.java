@@ -111,7 +111,19 @@ public class JiraChartServiceImpl implements JiraChartService {
         numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         plot.setBackgroundPaint(Color.white);
-        plot.setRangeGridlinePaint(Color.black);
+        plot.setRangeGridlinePaint(Color.lightGray);
+        Stroke s2 = new BasicStroke(0.7f);
+        plot.setRangeGridlineStroke(s2);
+        plot.setRangeGridlinePaint(new Color(208,208,208));
+        plot.setOutlineVisible(false);
+        plot.getRangeAxis().setAxisLineVisible(false);
+        plot.getRangeAxis().setTickMarksVisible(false);
+        Color axisGrey = new Color(120,120,120);
+        plot.getRangeAxis().setTickLabelPaint(axisGrey);
+        plot.getDomainAxis().setTickLabelPaint(axisGrey);
+        plot.getDomainAxis().setTickMarkPaint(axisGrey);
+        plot.getDomainAxis().setAxisLinePaint(axisGrey);
+        plot.getDomainAxis().setLabelPaint(axisGrey);
 
         for (ValueMarker versionMarker : versionMarkers) {
             plot.addDomainMarker(versionMarker);

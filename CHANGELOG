@@ -47,3 +47,4 @@
 - PIP-131 Stworzono pole ProjectOrFilter
 - PIP-152 Poprawiono warunki dotyczące wyboru wersji
 - PIP-165 Nazwa projektu już pojawia się w widoku konfiguracji + poprawiono obsługę wyjątków w usłudze chart + refaktoring
+- Dodano walidację pola version w JiraChartResource, zmiana formatu daty w tabelce na UTC, polepszony wygląd wykresu + refaktoring

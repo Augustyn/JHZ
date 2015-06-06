@@ -242,7 +242,7 @@ AMG.jhz.init = function (params) {
                                         var cells = [];
                                         cells.push({
                                             value: entry.period,
-                                            label: new Date(entry.period)
+                                            label: new Date(entry.period).toUTCString()
                                         });
                                         entry.issueCount.forEach(function(count) {
                                             cells.push({
