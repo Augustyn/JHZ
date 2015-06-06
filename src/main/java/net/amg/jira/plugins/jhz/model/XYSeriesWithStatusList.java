@@ -107,16 +107,16 @@ public class XYSeriesWithStatusList {
         MutableInt num;
         while (timePeriod.getEnd().before(dateEnd)) {
             num = XYSeries.get(timePeriod);
-            if (num == null) {
-                num = new MutableInt(0);
-                XYSeries.put(timePeriod, num);
+            if (num != null) {
+                num.increment();
             }
-            num.increment();
             timePeriod = timePeriod.next();
         }
         if (dateEnd.equals(this.dateEnd)) {
             num = XYSeries.get(timePeriod);
-            num.increment();
+            if (num != null) {
+                num.increment();
+            }
         }
     }
 
@@ -131,7 +131,7 @@ public class XYSeriesWithStatusList {
         RegularTimePeriod timePeriod1 = RegularTimePeriod.createInstance(ChartUtil.getTimePeriodClass(periodName), date1, timeZone);
         RegularTimePeriod timePeriod2 = RegularTimePeriod.createInstance(ChartUtil.getTimePeriodClass(periodName), date2, timeZone);
 
-        return timePeriod1.getStart().equals(timePeriod2.getStart());
+        return timePeriod1.getStart().equals(timePeriod2.getStart()) && !date2.equals(dateEnd);
     }
 
 }
