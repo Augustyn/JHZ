@@ -20,6 +20,7 @@ import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.bc.filter.SearchRequestService;
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
+import com.atlassian.jira.datetime.DateTimeFormatter;
 import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.issue.search.SearchRequest;
 import com.atlassian.jira.project.Project;
@@ -68,6 +69,7 @@ public class JiraChartResource {
     private SearchServiceImpl searchService;
     private Validator validator;
     private JiraChartServiceImpl jiraChartService;
+    private DateTimeFormatter dateTimeFormatter;
 
     /**
      * Allows to generate chart to be displayed in the gadget
@@ -158,7 +160,7 @@ public class JiraChartResource {
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), getProjectNameOrFilterTitle(projectOrFilter),
                 chart.getImageMap(), chart.getImageMapName(), width, height);
         if (table) {
-            jiraIssuesHistoryChart.setTable(new Table(jiraChartService.getTable()));
+            jiraIssuesHistoryChart.setTable(new Table(jiraChartService.getTable(),dateTimeFormatter));
         }
         return Response.ok(jiraIssuesHistoryChart).cacheControl(CacheControl.NO_CACHE).build();
     }
@@ -225,5 +227,10 @@ public class JiraChartResource {
     @ServiceReference
     public void setProjectManager(ProjectManager projectManager) {
         this.projectManager = projectManager;
+    }
+
+    @ServiceReference
+    public void setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+        this.dateTimeFormatter = dateTimeFormatter;
     }
 }

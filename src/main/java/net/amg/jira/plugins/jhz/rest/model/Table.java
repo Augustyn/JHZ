@@ -16,6 +16,8 @@
 
 package net.amg.jira.plugins.jhz.rest.model;
 
+import com.atlassian.jira.datetime.DateTimeFormatter;
+import com.atlassian.jira.datetime.DateTimeStyle;
 import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 import org.jfree.data.time.RegularTimePeriod;
 
@@ -36,7 +38,7 @@ public class Table {
     @XmlElement
     Set<String> groupNames;
 
-    public Table(List<XYSeriesWithStatusList> list) {
+    public Table(List<XYSeriesWithStatusList> list, DateTimeFormatter dateTimeFormatter) {
 
         entries = new ArrayList<>();
         groupNames = new HashSet<>();
@@ -48,7 +50,9 @@ public class Table {
         Map<RegularTimePeriod, Integer> periods = list.get(0).getXYSeries();
 
         for (RegularTimePeriod period : periods.keySet()) {
-            TableEntry entry = new TableEntry(new Date(period.getLastMillisecond()));
+            Date entryDate = new Date(period.getLastMillisecond());
+            TableEntry entry = new TableEntry(entryDate,
+                    dateTimeFormatter.forLoggedInUser().withStyle(DateTimeStyle.DATE_TIME_PICKER).format(entryDate));
             for (XYSeriesWithStatusList elem : list) {
                 entry.getIssueCount().add(new IssueCount(elem.getXYSeries().get(period)));
             }
@@ -77,4 +81,6 @@ public class Table {
     public void setGroupNames(Set<String> groupNames) {
         this.groupNames = groupNames;
     }
+
+
 }

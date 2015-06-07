@@ -133,5 +133,4 @@ public class XYSeriesWithStatusList {
 
         return timePeriod1.getStart().equals(timePeriod2.getStart()) && !date2.equals(dateEnd);
     }
-
 }

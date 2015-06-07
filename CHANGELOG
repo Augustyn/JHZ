@@ -49,3 +49,4 @@
 - PIP-165 Nazwa projektu już pojawia się w widoku konfiguracji + poprawiono obsługę wyjątków w usłudze chart + refaktoring
 - Dodano walidację pola version w JiraChartResource, zmiana formatu daty w tabelce na UTC, polepszony wygląd wykresu + refaktoring
 - PIP-166 Poprawiono zliczanie zmian statusów w ostatnim okresie czasu + poprawiono obliczenia w przypadku niepoprawnych zmian statusów
+- Zmiana formatu daty w tabelce na jirowy

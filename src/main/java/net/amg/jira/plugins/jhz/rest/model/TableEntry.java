@@ -16,6 +16,9 @@
 
 package net.amg.jira.plugins.jhz.rest.model;
 
+import com.atlassian.jira.datetime.DateTimeFormatter;
+import com.atlassian.jira.datetime.DateTimeFormatterFactory;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -32,11 +35,14 @@ public class TableEntry {
     @XmlElement
     private Date period;
 
+    @XmlElement String periodLabel;
+
     @XmlElement
     private List<IssueCount> issueCount;
 
-    public TableEntry(Date period) {
+    public TableEntry(Date period, String periodLabel) {
         this.period = period;
+        this.periodLabel = periodLabel;
         this.issueCount = new ArrayList<>();
     }
 
