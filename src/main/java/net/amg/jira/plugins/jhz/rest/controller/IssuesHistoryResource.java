@@ -24,9 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
@@ -52,6 +50,24 @@ public class IssuesHistoryResource {
         Collection<Status> allStatuses = searchService.findAllStatuses();
         Gson gson = new Gson();
         return Response.ok(gson.toJson(new StatusesResourceModel(allStatuses))).build();
+    }
+
+    @POST
+    @Path("/")
+    public Response postStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
+    }
+
+    @PUT
+    @Path("/")
+    public Response putStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
+    }
+
+    @DELETE
+    @Path("/")
+    public Response deleteStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
     }
 
     @ServiceReference

@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,6 +46,8 @@ import java.util.regex.Pattern;
 public class SearchServiceImpl implements SearchService {
 
     private static final Logger log = LoggerFactory.getLogger(SearchServiceImpl.class);
+    private static final Pattern numberPattern = Pattern.compile("\\d");
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private JiraAuthenticationContext jiraAuthenticationContext;
     private SearchProvider searchProvider;
@@ -85,7 +88,7 @@ public class SearchServiceImpl implements SearchService {
     private Date resolveDaysPreviously(String date) throws ParseException {
         Date beginningDate;
         if (validator.checkIfDate(date)) {
-            beginningDate = new SimpleDateFormat("yyyy-MM-dd").parse(date.replace("/", "-").replace(".", "-"));
+            beginningDate = dateFormat.parse(date.replace("/", "-").replace(".", "-"));
         } else {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DAY_OF_YEAR, -Integer.parseInt(date.replaceAll("[d-]", "")));
@@ -114,9 +117,8 @@ public class SearchServiceImpl implements SearchService {
     public Map<String, Set<String>> getGroupedIssueTypes(String ungroupedTypes) {
         String[] ungroupedTypesArr = ungroupedTypes.split("\\|");
         Map<String, Set<String>> issueTypeMap = new HashMap<>();
-        Pattern pattern = Pattern.compile("\\d");
         for (String type : ungroupedTypesArr) {
-            Matcher matcher = pattern.matcher(type);
+            Matcher matcher = numberPattern.matcher(type);
             matcher.find();
             String groupName = LABEL_BASE + type.substring(matcher.start());
             if (!issueTypeMap.containsKey(groupName)) {

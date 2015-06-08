@@ -41,11 +41,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -95,23 +95,27 @@ public class JiraChartResource {
             @QueryParam("height") int height,
             @QueryParam("version") String versionLabel,
             @QueryParam("table") boolean table) {
+        Gson gson = new Gson();
+        try {
+            issues = URLDecoder.decode(issues,"UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            String timestamp = generateTimestamp();
+            logger.error("{} Unable to decode issues parameter:{} cause:{}", new Object[]{timestamp,issues, ex});
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp)).build();
+        }
         Map<FormField, String> paramMap = new HashMap<>();
-        //In canvas view gadget decides to replace all spaces with '+', thus the following are required:
-        issues = issues.replace("+", " ");
         paramMap.put(FormField.PROJECT, project);
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.DATE, date);
         paramMap.put(FormField.PERIOD, periodName);
         paramMap.put(FormField.VERSION, versionLabel);
         ErrorCollection errorCollection = validator.validate(paramMap);
-        Gson gson = new Gson();
         if (!errorCollection.isEmpty()) {
-            String timestamp = generateTimestamp();
-            String message = String.format("Invalid rest request parameters: project=%1, issues=%2, date=%3, period=%4",
-                    project, issues, date, periodName);
-            logger.error(timestamp, message);
+            String timestamp =  generateTimestamp();
+            logger.error("{} Invalid rest request parameters: project={}, issues={}, date={}, period={}",
+                    new Object[]{timestamp, project, issues, date, periodName});
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp))
-                    .entity(gson.toJson(message)).entity(gson.toJson(errorCollection)).build();
+                    .entity(gson.toJson(errorCollection)).build();
         }
         Date dateBegin = null;
 
@@ -120,10 +124,8 @@ public class JiraChartResource {
             dateBegin = getBeginDate(date);
         } catch (ParseException | NumberFormatException ex) {
             String timestamp = generateTimestamp();
-            String message = String.format("Unable to parse date for chart generation date=%1", date);
-            logger.error(timestamp, message, ex);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp))
-                    .entity(gson.toJson(message)).build();
+            logger.error("{} Unable to parse date for chart generation date={} cause: {}", new Object[]{timestamp,date,ex});
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp)).build();
         }
 
         final ChartFactory.VersionLabel label = ChartFactory.VersionLabel.valueOf(versionLabel);
@@ -137,10 +139,8 @@ public class JiraChartResource {
             }
         } catch (NumberFormatException ex) {
             String timestamp = generateTimestamp();
-            String message = String.format("Unable to parse project or filter: project=%1", project);
-            logger.error(timestamp, message, ex);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp))
-                    .entity(gson.toJson(message)).build();
+            logger.error("{} Unable to parse project or filter: project={} cause:{}",new Object[]{timestamp, project,ex});
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp)).build();
         }
 
         Chart chart = null;
@@ -149,12 +149,10 @@ public class JiraChartResource {
                     label, dateBegin, statusesSets, width, height);
         } catch (IOException | SearchException ex) {
             String timestamp = generateTimestamp();
-            String message = String.format("Unable to generate chart with parameters: project=%1, issues=%2, date=%3, period=%4" +
-                            " width=%5, height=%6, version=%7, table=%8",
-                    project, issues, date, periodName, width, height, versionLabel, table);
-            logger.error(timestamp, message, ex);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp))
-                    .entity(gson.toJson(message)).build();
+            logger.error("{} Unable to generate chart with parameters: project={}, issues={}, date={}, period={}" +
+                            " width={}, height={}, version={}, table={} cause:{}",
+                    new Object[]{timestamp,project, issues, date, periodName, width, height, versionLabel, table, ex});
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp)).build();
         }
 
         IssuesHistoryChartModel jiraIssuesHistoryChart = new IssuesHistoryChartModel(chart.getLocation(), getProjectNameOrFilterTitle(projectOrFilter),
@@ -163,6 +161,24 @@ public class JiraChartResource {
             jiraIssuesHistoryChart.setTable(new Table(jiraChartService.getTable(),dateTimeFormatter));
         }
         return Response.ok(jiraIssuesHistoryChart).cacheControl(CacheControl.NO_CACHE).build();
+    }
+
+    @POST
+    @Path("/")
+    public Response postStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
+    }
+
+    @PUT
+    @Path("/")
+    public Response putStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
+    }
+
+    @DELETE
+    @Path("/")
+    public Response deleteStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
     }
 
     private Date getBeginDate(String date) throws ParseException, NumberFormatException {
@@ -196,7 +212,7 @@ public class JiraChartResource {
     }
 
     private String generateTimestamp() {
-        return "TIMESTAMP: " + new java.text.SimpleDateFormat("MM/dd/yyyy h:mm:ss a").format(new Date());
+        return "Timestamp:"+System.currentTimeMillis();
     }
 
     @ServiceReference
