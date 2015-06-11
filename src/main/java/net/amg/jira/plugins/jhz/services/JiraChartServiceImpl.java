@@ -54,7 +54,7 @@ import java.util.*;
 import java.util.List;
 
 /**
- * @author jarek
+ * Implementation of JiraChartService responsible for generating chart
  */
 @Component
 public class JiraChartServiceImpl implements JiraChartService {
@@ -85,14 +85,8 @@ public class JiraChartServiceImpl implements JiraChartService {
 
         List<XYSeriesWithStatusList> listXYSeries = generateMapsForChart(projectOrFilter, dateBegin, statusesSets, periodName);
         table = listXYSeries;
-        Map[] dataMaps = new Map[listXYSeries.size()];
-        String[] seriesName = new String[listXYSeries.size()];
-        for (int i = 0; i < dataMaps.length; i++) {
-            dataMaps[i] = listXYSeries.get(i).getXYSeries();
-            seriesName[i] = listXYSeries.get(i).getLineName();
-        }
 
-        XYDataset issuesHistoryDataset = generateTimeSeries(seriesName, dataMaps);
+        XYDataset issuesHistoryDataset = generateTimeSeries(listXYSeries);
 
         ChartHelper helper = new ChartHelper(org.jfree.chart.ChartFactory.createTimeSeriesChart(null, null, null, issuesHistoryDataset, true, false, false));
 
@@ -133,19 +127,17 @@ public class JiraChartServiceImpl implements JiraChartService {
         return new Chart(helper.getLocation(), helper.getImageMapHtml(), helper.getImageMapName(), params);
     }
 
-    private XYDataset generateTimeSeries(String seriesNames[], Map[] maps) {
+    private XYDataset generateTimeSeries(List<XYSeriesWithStatusList> xyList) {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
 
-        TimeSeries series = null;
-        for (int i = 0; i < maps.length; i++) {
-            series = new TimeSeries(seriesNames[i]);
-            for (Iterator iterator = maps[i].keySet().iterator(); iterator.hasNext(); ) {
-                RegularTimePeriod period = (RegularTimePeriod) iterator.next();
-
-                series.add(period, (Integer) maps[i].get(period));
+        for (XYSeriesWithStatusList elem : xyList) {
+            TimeSeries series = new TimeSeries(elem.getLineName());
+            for (RegularTimePeriod period : elem.getXYSeries().keySet()) {
+                series.add(period, elem.getXYSeries().get(period));
             }
             dataset.addSeries(series);
         }
+        
         return dataset;
     }
 
@@ -187,6 +179,9 @@ public class JiraChartServiceImpl implements JiraChartService {
                 for (XYSeriesWithStatusList series : seriesWithStatuses) {
                     dateStatusChanged = dateEnd;
 
+                    //begin checking issue status changes from most recent to oldest, until all matching status changes are counted 
+                    //(this means that all changes are between starting and ending period for chart)
+                    //or status change was before beginning date shown on chart, ignore all changes in the same time period besides last to count every issue once
                     for (int i = allStatusChangesForIssue.size() - 1; i >= 0 && dateStatusChanged.after(dateBegin); i--) {
                         if (series.containsStatus(allStatusChangesForIssue.get(i).getToString()) &&
                                 !series.checkIfChangeInTheSameTimePeriod(allStatusChangesForIssue.get(i).getCreated(), dateStatusChanged)) {
@@ -196,6 +191,7 @@ public class JiraChartServiceImpl implements JiraChartService {
                         }
                         dateStatusChanged = allStatusChangesForIssue.get(i).getCreated();
 
+                        //if oldest status change was between ending and starting period for chart, check time between issue creation and oldest status change
                         if (i == 0 && dateStatusChanged.after(dateBegin) && series.containsStatus(allStatusChangesForIssue.get(i).getFromString())) {
                             series.addYPointsInRange(is.getCreated(), dateStatusChanged);
                         }
@@ -210,8 +206,8 @@ public class JiraChartServiceImpl implements JiraChartService {
 
     private List<ValueMarker> getVersionMarkers(ProjectOrFilter projectOrFilter, Date beginDate, ChartFactory.PeriodName periodName, ChartFactory.VersionLabel versionLabel, TimeZone timeZone) {
 
-        if (ChartFactory.VersionLabel.none.equals(versionLabel) || projectOrFilter.getType().equals(ProjectsType.FILTER)) {
-            return Collections.EMPTY_LIST;
+        if (ChartFactory.VersionLabel.none.equals(versionLabel) || ProjectsType.FILTER.equals(projectOrFilter.getType())) {
+            return Collections.emptyList();
         }
 
         final Set<Version> versions = new HashSet<Version>();

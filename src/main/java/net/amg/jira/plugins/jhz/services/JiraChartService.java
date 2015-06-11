@@ -40,7 +40,7 @@ public interface JiraChartService {
      * @param projectOrFilter project id of filter or project
      * @param periodName      time period on the chart
      * @param label           labels shown on the chart
-     * @param statusesSets
+     * @param statusesSets    sets of statuses chosen for all chart series
      * @param dateBegin       beginning date from which chart will be drawn
      * @param width           chart width
      * @param height          chart height

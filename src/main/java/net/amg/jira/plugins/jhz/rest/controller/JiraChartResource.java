@@ -55,7 +55,6 @@ import static net.amg.jira.plugins.jhz.model.FormField.daysBackPattern;
 /**
  * Resource providing chart generation service
  *
- * @author jarek
  */
 @Path("/chart")
 public class JiraChartResource {

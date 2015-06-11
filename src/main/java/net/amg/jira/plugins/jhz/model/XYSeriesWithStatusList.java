@@ -23,7 +23,7 @@ import org.jfree.data.time.RegularTimePeriod;
 import java.util.*;
 
 /**
- * Class with list of statuses and XY series for chart
+ * Class with list of statuses and map used to create XY series for chart
  */
 public class XYSeriesWithStatusList {
 
@@ -35,6 +35,16 @@ public class XYSeriesWithStatusList {
     private final Date dateBegin;
     private final Date dateEnd;
 
+    /**
+     * Creates XY series for chosen statuses, that is later used to generate chart
+     * 
+     * @param statusesSet set of statuses chosen to be shown
+     * @param lineName name of line to be created on chart
+     * @param dateBegin beginning date of requested history
+     * @param dateEnd ending date of requested history
+     * @param timeZone current user time zone
+     * @param periodName name of period used on chart
+     */
     public XYSeriesWithStatusList(Set<String> statusesSet, String lineName, Date dateBegin, Date dateEnd, TimeZone timeZone, ChartFactory.PeriodName periodName) {
         this.statusesSet = statusesSet;
         this.lineName = lineName;
@@ -55,7 +65,7 @@ public class XYSeriesWithStatusList {
     }
 
     /**
-     * Set of statuses that are used to create this xy series
+     * Returns set of statuses that are used to create this XY series
      *
      * @return set of statuses
      */
@@ -64,7 +74,9 @@ public class XYSeriesWithStatusList {
     }
 
     /**
-     * @return map with x and y used to generate chart
+     * Returns map with x and y series used to generate chart
+     * 
+     * @return x and y series map
      */
     public Map<RegularTimePeriod, Integer> getXYSeries() {
         Map<RegularTimePeriod, Integer> map = new HashMap<>();
@@ -77,14 +89,16 @@ public class XYSeriesWithStatusList {
     }
 
     /**
-     * @return name of this xy series line
+     * Returns name of chart line created for chosen statuses
+     * 
+     * @return name of xy series
      */
     public String getLineName() {
         return lineName;
     }
 
     /**
-     * checks if string with statusName is contained in statuses of this xy series
+     * Checks if string with statusName is contained in status list of this xy series
      *
      * @param statusName name of status to check
      * @return true if statusName is in set of statuses
@@ -94,7 +108,7 @@ public class XYSeriesWithStatusList {
     }
 
     /**
-     * adds points for each time period between two dates
+     * Adds points for each time period between two dates
      *
      * @param dateBegin date for first time period
      * @param dateEnd   end date for periods
