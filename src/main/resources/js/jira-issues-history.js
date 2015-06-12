@@ -227,7 +227,7 @@ AMG.jhz.init = function (params) {
                                 cols: function () {
                                     var headers = [];
                                     headers.push({
-                                        header: "Period"
+                                        header: gadget.getMsg("issues.history.gadget.table.period")
                                     })
                                     args.groupNames.forEach(function (h) {
                                         headers.push({

@@ -52,3 +52,4 @@
 - Zmiana formatu daty w tabelce na jirowy
 - PIP-177 Refaktoring
 - PIP-182 Drobny refaktoring, optymalizacja i javadoc dla klasy generującej chart
+- PIP-164 Internacjonalizacja 500, 404 i kolumny Period
