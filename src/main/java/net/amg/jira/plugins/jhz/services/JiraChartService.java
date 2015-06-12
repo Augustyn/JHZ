@@ -18,16 +18,18 @@ package net.amg.jira.plugins.jhz.services;
 
 import com.atlassian.jira.charts.Chart;
 import com.atlassian.jira.charts.ChartFactory;
+import com.atlassian.jira.issue.search.SearchException;
 import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
-import org.jfree.data.time.RegularTimePeriod;
+import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 
 /**
+ * Responsible for generating chart using JFreeChart
  * Created by Ivo on 31/05/15.
  */
 public interface JiraChartService {
@@ -35,20 +37,23 @@ public interface JiraChartService {
     /**
      * Generates chart for Jira using JFreeChart
      *
-     * @param projectName project id of filter or project //TODO UPDATE
-     * @param periodName  time period on the chart
-     * @param label       labels shown on the chart
-     * @param statusesSets
-     * @param dateBegin   beginning date from which chart will be drawn
-     * @param width       chart width
-     * @param height      chart height
-     * @return chart with values
+     * @param projectOrFilter project id of filter or project
+     * @param periodName      time period on the chart
+     * @param label           labels shown on the chart
+     * @param statusesSets    sets of statuses chosen for all chart series
+     * @param dateBegin       beginning date from which chart will be drawn
+     * @param width           chart width
+     * @param height          chart height
+     * @return chart data
      */
     public Chart generateChart(final ProjectOrFilter projectOrFilter, final ChartFactory.PeriodName periodName,
-                               final ChartFactory.VersionLabel label, Date dateBegin, Map<String, Set<String>> statusesSets, final int width, final int height);
+                               final ChartFactory.VersionLabel label, Date dateBegin, Map<String, Set<String>> statusesSets,
+                               final int width, final int height) throws IOException, SearchException;
 
     /**
-     * TODO Javadoc
+     * Provides issues history data created during chart generation. Will not work if no chart was generated.
+     *
+     * @return issues history data.
      */
     public List<XYSeriesWithStatusList> getTable();
 

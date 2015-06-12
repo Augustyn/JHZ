@@ -16,19 +16,10 @@
 
 package net.amg.jira.plugins.jhz.rest.controller;
 
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.issue.status.Status;
 import com.google.gson.Gson;
-import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
-import net.amg.jira.plugins.jhz.model.ProjectsType;
-import net.amg.jira.plugins.jhz.services.SearchServiceImpl;
-import net.amg.jira.plugins.jhz.services.Validator;
-import net.amg.jira.plugins.jhz.model.FormField;
-import net.amg.jira.plugins.jhz.rest.model.ErrorCollection;
-import net.amg.jira.plugins.jhz.rest.model.IssuesHistoryResourceModel;
 import net.amg.jira.plugins.jhz.rest.model.StatusesResourceModel;
-import net.amg.jira.plugins.jhz.services.SearchService;
+import net.amg.jira.plugins.jhz.services.SearchServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
@@ -36,63 +27,16 @@ import org.springframework.osgi.extensions.annotation.ServiceReference;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.text.ParseException;
-import java.util.*;
+import java.util.Collection;
 
 /**
- * Resource providing all Issues in all Projects for which the requesting User has BROWSE Permission.
+ * Resource providing all issue status types
  */
 @Path("/issues")
 public class IssuesHistoryResource {
 
     private static final Logger logger = LoggerFactory.getLogger(IssuesHistoryResource.class);
-
     private SearchServiceImpl searchService;
-    private Validator validator;
-
-    /**
-     * Returns issue history required by the gadget according to the user preferences.
-     *
-     * @param project id of filter or project, from which the issues are extracted
-     * @param issues  statuses of the issues to be acquired
-     * @param date    date or number of days from the present moment, which constitute the beginning of requested
-     *                issue history
-     * @return Response with issue history (IssueHistoryResourceModel) in JSON format.
-     */
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/history")
-    public Response getIssues(@QueryParam("Project") String project, @QueryParam("Issues") String issues
-            , @QueryParam("Date") String date) {
-        Map<FormField, String> paramMap = new HashMap<>();
-        paramMap.put(FormField.PROJECT, project);
-        paramMap.put(FormField.ISSUES, issues);
-        paramMap.put(FormField.DATE, date);
-        ErrorCollection errorCollection = validator.validate(paramMap);
-        Gson gson = new Gson();
-        if (!errorCollection.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorCollection)).build();
-        }
-        ProjectOrFilter projectOrFilter = null;
-        if(validator.checkIfProject(project)) {
-            projectOrFilter = new ProjectOrFilter(ProjectsType.PROJECT,Integer.parseInt(project.split("-")[1]));
-        } else {
-            projectOrFilter = new ProjectOrFilter(ProjectsType.FILTER,Integer.parseInt(project.split("-")[1]));
-        }
-        Map<String, List<Issue>> issueList = null;
-        try {
-            issueList = searchService.findIssues(projectOrFilter, issues, date);
-        } catch (SearchException | ParseException e) {
-            String timestamp = "TIMESTAMP: " +
-                    new java.text.SimpleDateFormat("MM/dd/yyyy h:mm:ss a").format(new Date());
-            String message = String.format("Unable to get Issue history for projectOrFilter=%1 issues=%2 previously=%3",
-                    project, issues, date);
-            logger.error(timestamp, message, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp))
-                    .entity(gson.toJson(message)).build();
-        }
-        return Response.ok(gson.toJson(new IssuesHistoryResourceModel(issueList))).build();
-    }
 
     /**
      * Exposes all available statuses in Jira for the currently logged in user
@@ -108,13 +52,26 @@ public class IssuesHistoryResource {
         return Response.ok(gson.toJson(new StatusesResourceModel(allStatuses))).build();
     }
 
-    @ServiceReference
-    public void setSearchService(SearchServiceImpl searchService) {
-        this.searchService = searchService;
+    @POST
+    @Path("/")
+    public Response postStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
+    }
+
+    @PUT
+    @Path("/")
+    public Response putStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
+    }
+
+    @DELETE
+    @Path("/")
+    public Response deleteStub() {
+        return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
     }
 
     @ServiceReference
-    public void setValidator(Validator validator) {
-        this.validator = validator;
+    public void setSearchService(SearchServiceImpl searchService) {
+        this.searchService = searchService;
     }
 }

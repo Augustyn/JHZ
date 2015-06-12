@@ -32,6 +32,7 @@
     <msg name="issues.history.gadget.field.version.option.None">None</msg>
     <msg name="issues.history.gadget.field.date.label">Start Date:</msg>
     <msg name="issues.history.gadget.field.date.description">First day on the graph (date or previous days).</msg>
+    <msg name="issues.history.gadget.table.period">Period</msg>
     <msg name="gadget.common.refresh.label">Refresh Interval</msg>
     <msg name="gadget.common.refresh.description">How often you would like this gadget to update.</msg>
     <msg name="gadget.common.refresh.never">Never</msg>
@@ -46,4 +47,6 @@
     <msg name="gadget.common.advanced.search">Advanced Search</msg>
     <msg name="gadget.common.quick.find">Quick Find</msg>
     <msg name="gadget.common.projects">Projects</msg>
+    <msg name="gadget.common.error.500">500 Internal Server Error.</msg>
+    <msg name="gadget.common.error.404">404 The requested resource could not be found but may be available again in the future. Subsequent requests by the client are permissible.</msg>
 </messagebundle>

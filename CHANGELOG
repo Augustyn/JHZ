@@ -46,3 +46,10 @@
 - PIP-150 Dodano listener zmieniający rozmiar gadżetu przy wyborze statusu
 - PIP-131 Stworzono pole ProjectOrFilter
 - PIP-152 Poprawiono warunki dotyczące wyboru wersji
+- PIP-165 Nazwa projektu już pojawia się w widoku konfiguracji + poprawiono obsługę wyjątków w usłudze chart + refaktoring
+- Dodano walidację pola version w JiraChartResource, zmiana formatu daty w tabelce na UTC, polepszony wygląd wykresu + refaktoring
+- PIP-166 Poprawiono zliczanie zmian statusów w ostatnim okresie czasu + poprawiono obliczenia w przypadku niepoprawnych zmian statusów
+- Zmiana formatu daty w tabelce na jirowy
+- PIP-177 Refaktoring
+- PIP-182 Drobny refaktoring, optymalizacja i javadoc dla klasy generującej chart
+- PIP-164 Internacjonalizacja 500, 404 i kolumny Period

@@ -32,6 +32,7 @@
     <msg name="issues.history.gadget.field.version.option.None">Żadne</msg>
     <msg name="issues.history.gadget.field.date.label">Data początkowa:</msg>
     <msg name="issues.history.gadget.field.date.description">Pierwszy dzień na wykresie (data lub dni wstecz).</msg>
+    <msg name="issues.history.gadget.table.period">Okres</msg>
     <msg name="gadget.common.refresh.label">Odśwież:</msg>
     <msg name="gadget.common.refresh.description">Jak często gadżet ma byc odświeżany</msg>
     <msg name="gadget.common.refresh.never">Nigdy</msg>
@@ -46,4 +47,6 @@
     <msg name="gadget.common.advanced.search">Wyszukiwanie zaawansowane</msg>
     <msg name="gadget.common.quick.find">Szukaj</msg>
     <msg name="gadget.common.projects">Projekty</msg>
+    <msg name="gadget.common.error.500">Wewnętrzny błąd serwera – serwer napotkał niespodziewane trudności, które uniemożliwiły zrealizowanie żądania</msg>
+    <msg name="gadget.common.error.404">404 Serwer nie odnalazł zasobu według podanego URL ani niczego co by wskazywało na istnienie takiego zasobu w przeszłości.</msg>
 </messagebundle>

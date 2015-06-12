@@ -16,14 +16,17 @@
 
 package net.amg.jira.plugins.jhz.rest.model;
 
+import com.atlassian.jira.datetime.DateTimeFormatter;
+import com.atlassian.jira.datetime.DateTimeStyle;
+import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 import org.jfree.data.time.RegularTimePeriod;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
-import net.amg.jira.plugins.jhz.model.XYSeriesWithStatusList;
 
 /**
+ * Represents all data required to present issues history in tabular form
  * Created by Ivo on 31/05/15.
  */
 @XmlRootElement
@@ -34,21 +37,23 @@ public class Table {
 
     @XmlElement
     Set<String> groupNames;
-    
-    public Table(List<XYSeriesWithStatusList> list) {
-        
+
+    public Table(List<XYSeriesWithStatusList> list, DateTimeFormatter dateTimeFormatter) {
+
         entries = new ArrayList<>();
         groupNames = new HashSet<>();
-        
+
         for (XYSeriesWithStatusList elem : list) {
             groupNames.add(elem.getLineName());
         }
-        
+
         Map<RegularTimePeriod, Integer> periods = list.get(0).getXYSeries();
-        
+
         for (RegularTimePeriod period : periods.keySet()) {
-            TableEntry entry = new TableEntry(new Date(period.getLastMillisecond()));
-            for (XYSeriesWithStatusList elem: list) {
+            Date entryDate = new Date(period.getLastMillisecond());
+            TableEntry entry = new TableEntry(entryDate,
+                    dateTimeFormatter.forLoggedInUser().withStyle(DateTimeStyle.DATE_TIME_PICKER).format(entryDate));
+            for (XYSeriesWithStatusList elem : list) {
                 entry.getIssueCount().add(new IssueCount(elem.getXYSeries().get(period)));
             }
             entries.add(entry);
@@ -76,4 +81,6 @@ public class Table {
     public void setGroupNames(Set<String> groupNames) {
         this.groupNames = groupNames;
     }
+
+
 }

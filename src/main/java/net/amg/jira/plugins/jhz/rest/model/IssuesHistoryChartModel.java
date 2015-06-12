@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Represents all data required to display requested chart in JIRA gadget
+ *
  * @author jarek
  */
 @XmlRootElement

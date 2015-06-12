@@ -17,6 +17,7 @@
 package net.amg.jira.plugins.jhz.model;
 
 /**
+ * Represents project of filter with an id
  * Created by Ivo on 01/06/15.
  */
 public class ProjectOrFilter {

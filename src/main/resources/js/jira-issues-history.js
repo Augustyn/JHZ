@@ -23,7 +23,6 @@ AMG.jhz.init = function (params) {
                     };
                 }
                 else {
-                    gadget.projectOrFilterName = this.getPref("projectOrFilterName");
                     searchParam = AJS.gadget.fields.projectOrFilterPicker(gadget, "Project");
                 }
                 return {
@@ -219,6 +218,7 @@ AMG.jhz.init = function (params) {
                         return chartImg;
                     };
                 }();
+                gadget.projectOrFilterName = args.chart.filterTitle;
                 if (gadgets.views.getCurrentView().getName() === "canvas") {
 
                     var dataTable = AJS.gadgets.templater.Table({
@@ -227,7 +227,7 @@ AMG.jhz.init = function (params) {
                                 cols: function () {
                                     var headers = [];
                                     headers.push({
-                                        header: "Period"
+                                        header: gadget.getMsg("issues.history.gadget.table.period")
                                     })
                                     args.groupNames.forEach(function (h) {
                                         headers.push({
@@ -242,7 +242,7 @@ AMG.jhz.init = function (params) {
                                         var cells = [];
                                         cells.push({
                                             value: entry.period,
-                                            label: new Date(entry.period)
+                                            label: entry.periodLabel
                                         });
                                         entry.issueCount.forEach(function(count) {
                                             cells.push({
