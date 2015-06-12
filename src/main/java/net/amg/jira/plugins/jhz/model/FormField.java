@@ -133,6 +133,9 @@ public enum FormField {
         this.fieldName = fieldName;
     }
 
+    public String getFieldName(){
+        return fieldName;
+    }
     /**
      * Checks field value for correctness.
      *

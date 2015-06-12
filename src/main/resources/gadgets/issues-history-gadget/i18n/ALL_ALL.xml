@@ -12,6 +12,7 @@
     <msg name="issues.history.gadget.errors.noWay">Something go wrong. Pick date from calendar.</msg>
     <msg name="issues.history.gadget.errors.futureDate">Date cannot be later than today.</msg>
     <msg name="issues.history.gadget.errors.overYear">Date can be a year ago at the most.</msg>
+    <msg name="issues.history.gadget.errors.toManyPeriods">When the Period is hourly, date can be a 10 days ago at the most.</msg>
     <msg name="issues.history.gadget.field.project.label">Projects or Saved Filters:</msg>
     <msg name="issues.history.gadget.field.project.description">Field is required.</msg>
     <msg name="issues.history.gadget.field.issue.label">Select Issues:</msg>

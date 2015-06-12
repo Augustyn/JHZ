@@ -10,8 +10,9 @@
     <msg name="issues.history.gadget.errors.mustBeNumeric">Wartość musi być liczbą.</msg>
     <msg name="issues.history.gadget.errors.invalidValue">Wartość nieprawidłowa.</msg>
     <msg name="issues.history.gadget.errors.noWay">Coś poszło nie tak. Wybierz datę z kalendarza.</msg>
-    <msg name="issues.history.gadget.errors.futureDate">Data musi być późniejsza niż dzisiaj.</msg>
+    <msg name="issues.history.gadget.errors.futureDate">Data musi być wcześniejsza niż dzisiaj.</msg>
     <msg name="issues.history.gadget.errors.overYear">Nie można wybrać daty starszej niż rok wstecz licząc od dzisiaj.</msg>
+    <msg name="issues.history.gadget.errors.toManyPeriods">Przy okresie godzinowym data nie może przekroczyć 10 dni wstecz.</msg>
     <msg name="issues.history.gadget.field.project.label">Projekty i Zapisane Filtry:</msg>
     <!--<msg name="issues.history.gadget.field.project.description">Pole jest wymagane.</msg>-->
     <msg name="issues.history.gadget.field.issue.label">Wybierz Zgłoszenia:</msg>
