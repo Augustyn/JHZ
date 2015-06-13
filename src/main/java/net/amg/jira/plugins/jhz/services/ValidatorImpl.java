@@ -69,11 +69,11 @@ public class ValidatorImpl implements Validator {
                 String value=entry.getValue();
 
                 if(value.startsWith("-")){
-                    value=value.substring(1, value.length()-1);
+                    value=value.substring(1, value.length()-1).replaceAll("\\s","");
                 }else
                 if(value.length()>0)
                 {
-                    value=value.substring(0, value.length()-1);
+                    value=value.substring(0, value.length()-1).replaceAll("\\s","");
                 }
 
                 if(Integer.parseInt(value)>10){
