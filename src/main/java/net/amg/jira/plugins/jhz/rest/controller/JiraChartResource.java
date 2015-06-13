@@ -184,7 +184,7 @@ public class JiraChartResource {
         Date beginningDate;
         if (daysBackPattern.matcher(date).matches()) {
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_YEAR, -Integer.parseInt(date.replaceAll("[\\wd-]", "")));
+            calendar.add(Calendar.DAY_OF_YEAR, -Integer.parseInt(date.replaceAll("[d-]", "")));
             beginningDate = calendar.getTime();
         } else {
             beginningDate = dateFormat.parse(date.replace("/", "-").replace(".", "-"));
