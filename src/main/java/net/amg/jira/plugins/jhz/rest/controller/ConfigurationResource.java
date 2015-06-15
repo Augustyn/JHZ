@@ -76,19 +76,19 @@ public class ConfigurationResource {
     }
 
     @POST
-    @Path("/")
+    @Path("{args : (.*)?}")
     public Response postStub() {
         return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
     }
 
     @PUT
-    @Path("/")
+    @Path("{args : (.*)?}")
     public Response putStub() {
         return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
     }
 
     @DELETE
-    @Path("/")
+    @Path("{args : (.*)?}")
     public Response deleteStub() {
         return Response.status(Response.Status.NOT_FOUND).entity("No such resource").build();
     }

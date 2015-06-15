@@ -32,9 +32,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.osgi.extensions.annotation.ServiceReference;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,54 +44,15 @@ public class SearchServiceImpl implements SearchService {
 
     private static final Logger log = LoggerFactory.getLogger(SearchServiceImpl.class);
     private static final Pattern numberPattern = Pattern.compile("\\d");
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private JiraAuthenticationContext jiraAuthenticationContext;
     private SearchProvider searchProvider;
     private ConstantsService constantsService;
     private Validator validator;
-    private JqlClauseBuilder jqlClauseBuilder;
 
     @Override
     public Collection<Status> findAllStatuses() {
         return constantsService.getAllStatuses(jiraAuthenticationContext.getUser().getDirectoryUser()).getReturnedValue();
-    }
-
-    @Override
-    public Map<String, List<Issue>> findIssues(ProjectOrFilter projectOrFilter, String issueTypes, String date)
-            throws SearchException, ParseException {
-        Date beginningDate = resolveDaysPreviously(date);
-        Map<String, Set<String>> groupedIssueTypes = getGroupedIssueTypes(issueTypes);
-        JqlClauseBuilder commonClauseBuilder = JqlQueryBuilder.newBuilder().where().createdAfter(beginningDate).and();
-        switch (projectOrFilter.getType()) {
-            case PROJECT:
-                commonClauseBuilder.project(String.valueOf(projectOrFilter.getId()));
-                break;
-            case FILTER:
-                commonClauseBuilder.savedFilter(String.valueOf(projectOrFilter.getId()));
-                break;
-        }
-        Query commonQuery = commonClauseBuilder.buildQuery();
-        Map<String, List<Issue>> issueMap = new HashMap<>();
-        for (String groupName : groupedIssueTypes.keySet()) {
-            String[] typesGroup = groupedIssueTypes.get(groupName).toArray(new String[0]);
-            jqlClauseBuilder = JqlQueryBuilder.newBuilder(commonQuery).where().and().status(typesGroup);
-            issueMap.put(groupName, searchProvider.search(jqlClauseBuilder.buildQuery(), jiraAuthenticationContext.getUser(),
-                    PagerFilter.getUnlimitedFilter()).getIssues());
-        }
-        return issueMap;
-    }
-
-    private Date resolveDaysPreviously(String date) throws ParseException {
-        Date beginningDate;
-        if (validator.checkIfDate(date)) {
-            beginningDate = dateFormat.parse(date.replace("/", "-").replace(".", "-"));
-        } else {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_YEAR, -Integer.parseInt(date.replaceAll("[d-]", "")));
-            beginningDate = calendar.getTime();
-        }
-        return beginningDate;
     }
 
     @Override

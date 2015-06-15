@@ -122,7 +122,7 @@ public enum FormField {
     private final static String ERROR_PREFIX = "issues.history.gadget.errors.";
     private final static String EMPTY_FIELD = "emptyField";
     private final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    public static final Pattern daysBackPattern = Pattern.compile("^-?([0-9][0-9]?|[12][0-9][0-9]|3[0-5][0-9]|36[0-5])d$", Pattern.CASE_INSENSITIVE);
+    public static final Pattern daysBackPattern = Pattern.compile("^-?([0-9][0-9]?|[12][0-9][0-9]|3[0-5][0-9]|36[0-5])[ ]?d$", Pattern.CASE_INSENSITIVE);
     public static final Pattern datePattern = Pattern.compile("^[1-2]\\d{3}[/\\-[.]](0[1-9]|1[012])[/\\-[.]](0[1-9]|[12][0-9]|3[01])$", Pattern.CASE_INSENSITIVE);
     public static final Pattern projectPattern = Pattern.compile("(project-|filter-)\\d+", Pattern.CASE_INSENSITIVE);
     public static final Pattern issuesPattern = Pattern.compile("[aA-zZ\\s]+\\d+((\\|[aA-zZ\\s]+\\d+)?)*", Pattern.CASE_INSENSITIVE);
@@ -133,6 +133,9 @@ public enum FormField {
         this.fieldName = fieldName;
     }
 
+    public String getFieldName(){
+        return fieldName;
+    }
     /**
      * Checks field value for correctness.
      *

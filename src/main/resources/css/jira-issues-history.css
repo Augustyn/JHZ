@@ -1,0 +1,11 @@
+body .chart img {
+    margin: 0px auto;
+    margin-left: 10%;
+    margin-right: auto;
+    padding-bottom: 50px;
+}
+
+body table.aui{
+    margin-left: 24% !important;
+    margin-right: 24% !important;
+}

@@ -53,3 +53,11 @@
 - PIP-177 Refaktoring
 - PIP-182 Drobny refaktoring, optymalizacja i javadoc dla klasy generującej chart
 - PIP-164 Internacjonalizacja 500, 404 i kolumny Period
+- PIP-155 Wstęp do ogranicznika okresów.
+- PIP-155 ogranicznik okresow.
+- Patch poprawiajacy obsługę ścieżek rest / na /*
+- Poprawka do patcha
+- PIP 178 Wyśrodkowanie tabeli i charta w trybie zmaksymalizowanym + poprawka językowa w języku polskim
+- PIP Zachcianka Augustyna :P
+- PIP-182 Usunięcie niewykorzystywanych metod, zmiana legendy według sugestii
+- Drobny refactor

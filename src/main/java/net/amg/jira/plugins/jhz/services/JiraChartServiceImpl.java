@@ -148,7 +148,7 @@ public class JiraChartServiceImpl implements JiraChartService {
         List<XYSeriesWithStatusList> seriesWithStatuses = new ArrayList<>();
 
         for (Map.Entry<String, Set<String>> statusSet : statusesSets.entrySet()) {
-            seriesWithStatuses.add(new XYSeriesWithStatusList(statusSet.getValue(), statusSet.getKey(), dateBegin, dateEnd, timeZoneManager.getLoggedInUserTimeZone(), periodName));
+            seriesWithStatuses.add(new XYSeriesWithStatusList(statusSet.getValue(), dateBegin, dateEnd, timeZoneManager.getLoggedInUserTimeZone(), periodName));
         }
 
         List<Issue> allIssues = new ArrayList<>();
