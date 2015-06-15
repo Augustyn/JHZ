@@ -47,14 +47,13 @@ public class ValidatorImpl implements Validator {
 
         for (Map.Entry<FormField, String> entry : paramMap.entrySet()) {
             entry.getKey().validate(errorCollection, entry.getValue());
-            if(entry.getKey().equals(FormField.DATE) && FormField.datePattern.matcher(entry.getValue()).matches()){
+            if(FormField.DATE.equals(entry.getKey()) && FormField.datePattern.matcher(entry.getValue()).matches()){
                 Date beginningDate = null;
 
                 try {
                     beginningDate = new SimpleDateFormat("yyyy-MM-dd").parse(entry.getValue().replace("/", "-").replace(".", "-"));
                 } catch (ParseException e) {
-                    String timestamp = "Timestamp:"+System.currentTimeMillis();
-                    log.error("{} Unable to parse date={} cause: {}", new Object[]{timestamp, beginningDate, e});
+                    log.error("{} Unable to parse date={} cause: {}", new Object[]{beginningDate, e});
                 }
 
                 Calendar calendar = Calendar.getInstance();
@@ -65,7 +64,7 @@ public class ValidatorImpl implements Validator {
                 }
 
             }else
-            if(entry.getKey().equals(FormField.DATE) && FormField.daysBackPattern.matcher(entry.getValue()).matches()){
+            if(FormField.DATE.equals(entry.getKey()) && FormField.daysBackPattern.matcher(entry.getValue()).matches()){
                 String value=entry.getValue();
 
                 if(value.startsWith("-")){
@@ -76,11 +75,16 @@ public class ValidatorImpl implements Validator {
                     value=value.substring(0, value.length()-1).replaceAll("\\s","");
                 }
 
-                if(Integer.parseInt(value)>10){
-                  days=true;
+                try{
+                    if(Integer.parseInt(value)>10){
+                        days=true;
+                    }
+                }catch(NumberFormatException e){
+                    log.error("{} Unable to parse string={} cause: {}", new Object[]{value, e});
                 }
+
             }else
-            if(entry.getKey().equals(FormField.PERIOD) && entry.getValue().equals("hourly")){
+            if(FormField.PERIOD.equals(entry.getKey()) && entry.getValue().equals("hourly")){
                 period=true;
             }
         }
