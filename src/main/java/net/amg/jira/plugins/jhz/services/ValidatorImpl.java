@@ -38,6 +38,7 @@ import java.util.Map;
 public class ValidatorImpl implements Validator {
 
     private static final Logger log = LoggerFactory.getLogger(ValidatorImpl.class);
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public ErrorCollection validate(Map<FormField, String> paramMap){
@@ -51,7 +52,7 @@ public class ValidatorImpl implements Validator {
                 Date beginningDate = null;
 
                 try {
-                    beginningDate = new SimpleDateFormat("yyyy-MM-dd").parse(entry.getValue().replace("/", "-").replace(".", "-"));
+                    beginningDate = dateFormat.parse(entry.getValue().replace("/", "-").replace(".", "-"));
                 } catch (ParseException e) {
                     log.error("{} Unable to parse date={} cause: {}", new Object[]{beginningDate, e});
                 }
