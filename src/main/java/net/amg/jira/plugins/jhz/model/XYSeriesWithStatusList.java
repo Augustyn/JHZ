@@ -27,28 +27,29 @@ import java.util.*;
  */
 public class XYSeriesWithStatusList {
 
+    private final int STATUSES_IN_LEGEND = 3;
     private final Set<String> statusesSet;
     private Map<RegularTimePeriod, MutableInt> XYSeries;
-    private final String lineName;
+    private String lineName;
     private final TimeZone timeZone;
     private final ChartFactory.PeriodName periodName;
     private final Date dateBegin;
     private final Date dateEnd;
+    private StringBuilder sb;
 
     /**
      * Creates XY series for chosen statuses, that is later used to generate chart
      * 
      * @param statusesSet set of statuses chosen to be shown
-     * @param lineName name of line to be created on chart
      * @param dateBegin beginning date of requested history
      * @param dateEnd ending date of requested history
      * @param timeZone current user time zone
      * @param periodName name of period used on chart
      */
-    public XYSeriesWithStatusList(Set<String> statusesSet, String lineName, Date dateBegin, Date dateEnd, TimeZone timeZone, ChartFactory.PeriodName periodName) {
+    public XYSeriesWithStatusList(Set<String> statusesSet, Date dateBegin, Date dateEnd, TimeZone timeZone, ChartFactory.PeriodName periodName) {
         this.statusesSet = statusesSet;
-        this.lineName = lineName;
         this.XYSeries = new TreeMap<>();
+        sb = new StringBuilder();
         this.periodName = periodName;
         this.timeZone = timeZone;
         this.dateBegin = dateBegin;
@@ -62,6 +63,13 @@ public class XYSeriesWithStatusList {
             XYSeries.put(timePeriod, new MutableInt(0));
             timePeriod = timePeriod.next();
         }
+        Iterator<String> iterator = statusesSet.iterator();
+        for (int i = 0; i < STATUSES_IN_LEGEND && iterator.hasNext(); i++) {
+            sb.append(iterator.next());
+            if(iterator.hasNext()) sb.append(", ");
+        }
+        if(iterator.hasNext()) sb.append("...");
+        this.lineName = sb.toString();
     }
 
     /**

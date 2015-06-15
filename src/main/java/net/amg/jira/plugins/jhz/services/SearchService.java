@@ -21,7 +21,6 @@ import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.issue.status.Status;
 import net.amg.jira.plugins.jhz.model.ProjectOrFilter;
 
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,19 +32,6 @@ import java.util.Set;
 public interface SearchService {
 
     public static final String LABEL_BASE = "group";
-
-    /**
-     * Finds issues given the search parameters.
-     *
-     * @param projectOrFilter representing project or filter with an id
-     * @param issueTypes      to be found (ungrouped)
-     * @param date            date or number of days into the past constituting the beginning of requested history
-     * @return List of issues constituting issue history grouped by graph index
-     * @throws SearchException thrown by Lucene SearchProvider
-     * @throws ParseException  thrown whenever user preference cannot be parsed
-     */
-    Map<String, List<Issue>> findIssues(ProjectOrFilter projectOrFilter, String issueTypes, String date)
-            throws SearchException, ParseException;
 
     /**
      * Returns all JIRA statuses available for the currently logged in user.
