@@ -145,13 +145,13 @@ public class JiraChartServiceImpl implements JiraChartService {
 
         Date dateEnd = new Date();
 
-        List<XYSeriesWithStatusList> seriesWithStatuses = new ArrayList<>();
+        List<XYSeriesWithStatusList> seriesWithStatuses = new ArrayList<XYSeriesWithStatusList>();
 
         for (Map.Entry<String, Set<String>> statusSet : statusesSets.entrySet()) {
             seriesWithStatuses.add(new XYSeriesWithStatusList(statusSet.getValue(), dateBegin, dateEnd, timeZoneManager.getLoggedInUserTimeZone(), periodName));
         }
 
-        List<Issue> allIssues = new ArrayList<>();
+        List<Issue> allIssues = new ArrayList<Issue>();
         List<ChangeItemBean> allStatusChangesForIssue;
         Date dateStatusChanged;
 
@@ -217,7 +217,7 @@ public class JiraChartServiceImpl implements JiraChartService {
         versions.addAll(versionManager.getVersionsUnarchived(projectID));
 
         final Class periodClass = ChartUtil.getTimePeriodClass(periodName);
-        final List<ValueMarker> markers = new ArrayList<>();
+        final List<ValueMarker> markers = new ArrayList<ValueMarker>();
         for (Version version : versions) {
             if (version.getReleaseDate() != null && beginDate.before(version.getReleaseDate())) {
                 RegularTimePeriod timePeriod = RegularTimePeriod.createInstance(periodClass, version.getReleaseDate(), timeZone);

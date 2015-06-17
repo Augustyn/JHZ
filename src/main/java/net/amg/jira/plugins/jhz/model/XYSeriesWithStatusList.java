@@ -48,7 +48,7 @@ public class XYSeriesWithStatusList {
      */
     public XYSeriesWithStatusList(Set<String> statusesSet, Date dateBegin, Date dateEnd, TimeZone timeZone, ChartFactory.PeriodName periodName) {
         this.statusesSet = statusesSet;
-        this.XYSeries = new TreeMap<>();
+        this.XYSeries = new TreeMap<RegularTimePeriod, MutableInt>();
         sb = new StringBuilder();
         this.periodName = periodName;
         this.timeZone = timeZone;
@@ -87,7 +87,7 @@ public class XYSeriesWithStatusList {
      * @return x and y series map
      */
     public Map<RegularTimePeriod, Integer> getXYSeries() {
-        Map<RegularTimePeriod, Integer> map = new HashMap<>();
+        Map<RegularTimePeriod, Integer> map = new HashMap<RegularTimePeriod, Integer>();
 
         for (Map.Entry<RegularTimePeriod, MutableInt> entry : XYSeries.entrySet()) {
             map.put(entry.getKey(), entry.getValue().intValue());

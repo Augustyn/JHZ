@@ -43,7 +43,7 @@ public class TableEntry {
     public TableEntry(Date period, String periodLabel) {
         this.period = period;
         this.periodLabel = periodLabel;
-        this.issueCount = new ArrayList<>();
+        this.issueCount = new ArrayList<IssueCount>();
     }
 
     public Date getPeriod() {

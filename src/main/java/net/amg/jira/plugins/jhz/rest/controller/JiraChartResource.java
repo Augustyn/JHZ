@@ -102,7 +102,7 @@ public class JiraChartResource {
             logger.error("{} Unable to decode issues parameter:{} cause:{}", new Object[]{timestamp,issues, ex});
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp)).build();
         }
-        Map<FormField, String> paramMap = new HashMap<>();
+        Map<FormField, String> paramMap = new HashMap<FormField, String>();
         paramMap.put(FormField.PROJECT, project);
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.DATE, date);
@@ -121,7 +121,11 @@ public class JiraChartResource {
         final Map<String, Set<String>> statusesSets = searchService.getGroupedIssueTypes(issues);
         try {
             dateBegin = getBeginDate(date);
-        } catch (ParseException | NumberFormatException ex) {
+        } catch (ParseException ex) {
+            String timestamp = generateTimestamp();
+            logger.error("{} Unable to parse date for chart generation date={} cause: {}", new Object[]{timestamp,date,ex});
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp)).build();
+        } catch (NumberFormatException ex) {
             String timestamp = generateTimestamp();
             logger.error("{} Unable to parse date for chart generation date={} cause: {}", new Object[]{timestamp,date,ex});
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp)).build();
@@ -146,7 +150,13 @@ public class JiraChartResource {
         try {
             chart = jiraChartService.generateChart(projectOrFilter, ChartFactory.PeriodName.valueOf(periodName.toLowerCase()),
                     label, dateBegin, statusesSets, width, height);
-        } catch (IOException | SearchException ex) {
+        } catch (IOException ex) {
+            String timestamp = generateTimestamp();
+            logger.error("{} Unable to generate chart with parameters: project={}, issues={}, date={}, period={}" +
+                            " width={}, height={}, version={}, table={} cause:{}",
+                    new Object[]{timestamp,project, issues, date, periodName, width, height, versionLabel, table, ex});
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(timestamp)).build();
+        } catch (SearchException ex) {
             String timestamp = generateTimestamp();
             logger.error("{} Unable to generate chart with parameters: project={}, issues={}, date={}, period={}" +
                             " width={}, height={}, version={}, table={} cause:{}",

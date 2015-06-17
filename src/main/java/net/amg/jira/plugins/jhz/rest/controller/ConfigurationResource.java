@@ -58,7 +58,7 @@ public class ConfigurationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPrefsValidation(@QueryParam("Project") String project, @QueryParam("Issues") String issues
             , @QueryParam("Period") String period, @QueryParam("Date") String date) {
-        Map<FormField, String> paramMap = new HashMap<>();
+        Map<FormField, String> paramMap = new HashMap<FormField, String>();
         paramMap.put(FormField.PROJECT, project);
         paramMap.put(FormField.ISSUES, issues);
         paramMap.put(FormField.PERIOD, period);

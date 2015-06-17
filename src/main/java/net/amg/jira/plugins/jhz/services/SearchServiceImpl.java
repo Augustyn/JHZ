@@ -74,7 +74,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public Map<String, Set<String>> getGroupedIssueTypes(String ungroupedTypes) {
         String[] ungroupedTypesArr = ungroupedTypes.split("\\|");
-        Map<String, Set<String>> issueTypeMap = new HashMap<>();
+        Map<String, Set<String>> issueTypeMap = new HashMap<String, Set<String>>();
         for (String type : ungroupedTypesArr) {
             Matcher matcher = numberPattern.matcher(type);
             matcher.find();

@@ -40,8 +40,8 @@ public class Table {
 
     public Table(List<XYSeriesWithStatusList> list, DateTimeFormatter dateTimeFormatter) {
 
-        entries = new ArrayList<>();
-        groupNames = new HashSet<>();
+        entries = new ArrayList<TableEntry>();
+        groupNames = new HashSet<String>();
 
         for (XYSeriesWithStatusList elem : list) {
             groupNames.add(elem.getLineName());

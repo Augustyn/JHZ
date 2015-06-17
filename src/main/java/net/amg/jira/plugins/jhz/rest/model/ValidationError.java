@@ -34,7 +34,7 @@ public class ValidationError {
     private String error;
 
     @XmlElement
-    private Collection<String> params = new ArrayList<>();
+    private Collection<String> params = new ArrayList<String>();
 
     /**
      * @param field  UserPref name to which the error refers to
